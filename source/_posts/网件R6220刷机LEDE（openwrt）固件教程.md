@@ -295,6 +295,6 @@ mtd -r write /tmp/mtd10.bin factory
   [3]: /images/3e9a5f6d55c07d805533d03e2d3b8a24.png
   [4]: /images/772ab39a5aa6a5091dc7111ab7983f0f.png
   [5]: /images/6450c2de39907259390b2e4f293b4ec4.png
-  [6]: http://static.zybuluo.com/zwh8800/enhzlaeur5yom5uwyqi7hjab/image_1bnvgfsoh81jeg01t6rrjs195441.png
+  [6]: /images/bd8cad4893f595c6e743cdd80dc143c2.png
   [7]: /images/b2fc85fcbac6955b1c2fc2c68fa01d89.png
   [8]: /images/38b4a52764c74bf82b95b87032f00a2f.png

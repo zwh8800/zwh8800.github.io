@@ -216,4 +216,4 @@ https://caddyserver.com/docs
 
 [EOF]
 
-  [1]: http://static.zybuluo.com/zwh8800/i1yzmlylv9gyc0ouxhchgf18/image_1bn3mbk8jov2es3vu41l842ac9.png 
+  [1]: /images/f3ac2345c6df862838743d2dd0c02830.png 

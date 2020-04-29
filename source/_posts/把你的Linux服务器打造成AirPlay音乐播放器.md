@@ -61,4 +61,4 @@ sudo usermod -aG audio shairport-sync
 
 ![IMG_1197.PNG-394.9kB][1]
 
-  [1]: http://static.zybuluo.com/zwh8800/uw62xa700g4emr8karlhey0x/IMG_1197.PNG
+  [1]: /images/1ee3cfdd2eb20f717381a3c95775dec8.PNG

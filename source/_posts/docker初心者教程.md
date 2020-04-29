@@ -259,6 +259,6 @@ docker默认有 `--link` 选项，但是现在已经不推荐了。目前有一�
 上次同事的分享会上谈了一些使用docker过程中的大坑，有空再谈。
 
   [1]: https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1459619617&di=854e04f972bc3c5e6bddddb01ed6a637&src=http://i3.sinaimg.cn/gm/2015/0104/U7232P115DT20150104121600.png
-  [2]: http://static.zybuluo.com/zwh8800/9eljwd5yrke20m5n2v34f02t/docker-distribute-shapes.001.png
-  [3]: http://static.zybuluo.com/zwh8800/66q85iwi6l7t8v3ngmhsx8jl/docker-distribute-shapes.002.png
-  [4]: http://static.zybuluo.com/zwh8800/ew6an4tfwra4eauo9yt7g9uq/docker-distribute-shapes.003.png
+  [2]: /images/e830566a7050449e155d2665fb6d80de.png
+  [3]: /images/e5f3f4502af28337bf285417fceaca9f.png
+  [4]: /images/cf194fa8a1352a8aab63100b0d1bfcf6.png

@@ -511,5 +511,5 @@ https://github.com/zwh8800/nodemcu-firmware/commit/1f31aa32901f07b6414c0471eb19f
   [2]: /images/2dd8de9102de224c2f27d180f808ee2d.jpg
   [3]: /images/d6fcc3dbe149d5f6cdc4eeb0fba867b1.png
   [4]: /images/54aa11f5b1b9229bb14b4a0b83ea4a0d.jpeg
-  [5]: http://static.zybuluo.com/zwh8800/1dedfeobeekfitgbcmcw7tct/IMG_0002.JPG
+  [5]: /images/3059806708259f0625355a121f019f20.JPG
   [6]: /images/94e476dfa01186c4655281e79aedcfa1.png
