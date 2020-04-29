@@ -10,7 +10,7 @@
   
 
   
-  <meta name="description" content="lua 语言最大的卖点之一就是他的协程（coroutine）了。但是在 lua5.1 中有一个文档都没提到的一个坑：协程只能在 lua 中使用，当调用 yield 时，如果当前的调用栈上有 c 代码，则会报错 “attempt to yield across metamethod/C-call bo">
+  <meta name="description" content="lua 语言最大的卖点之一就是他的协程（coroutine）了。但是在 lua5.1 中有一个文档都没提到的一个坑：协程只能在 lua 中使用，当调用 yield 时，如果当前的调用栈上有 c 代码，则会报错 “attempt to yield across metamethod/C-call boundary”。目前有个第三方的 patch 叫做 luaCoco 可以让 lua 支持 “真协程”。本文研究了 luaCoco 的内部实现，并把它移植到了 xtensa 处理器上。">
   
 
   
@@ -90,6 +90,8 @@
         <p>lua 语言最大的卖点之一就是他的协程（coroutine）了。但是在 lua5.1 中有一个文档都没提到的一个坑：协程<strong>只能</strong>在 lua 中使用，当调用 yield 时，如果当前的调用栈上有 c 代码，则会报错 <strong>“attempt to yield across metamethod/C-call boundary”</strong>。目前有个第三方的 patch 叫做 <a href="http://coco.luajit.org/" target="_blank" rel="noopener" title="Coco — True C Coroutines for Lua">luaCoco</a> 可以让 lua 支持 “真协程”。本文研究了 luaCoco 的内部实现，并把它移植到了 <a href="https://en.wikipedia.org/wiki/Tensilica" target="_blank" rel="noopener">xtensa</a> 处理器上。</p>
 <p><a href="/notename/" title="porting luaCoco"></a></p>
 <p><img src="/images/7101caf8fc0075b8d52d5a15ad9f6cb9.png" alt="image_1bhbpomnrk0m58270a54k789.png-16.9kB"></p>
+<a id="more"></a>
+
 <p>[toc]</p>
 <h2 id="setjmp-的实现"><a href="#setjmp-的实现" class="headerlink" title="setjmp 的实现"></a>setjmp 的实现</h2><p>在文章的开头需要先讲解一下c语言标准库中 <a href="http://www.cplusplus.com/reference/csetjmp/" target="_blank" rel="noopener">setjmp</a> 的内部实现，因为之后的 luaCoco 的实现就是对 setjmp 的数据结构的一个 hack。</p>
 <p>先看看 setjmp 的用法</p>

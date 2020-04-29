@@ -10,7 +10,7 @@
   
 
   
-  <meta name="description" content="说起 HTTP server，使用最广泛的就是 apache 和 nginx 了，功能都非常强大，但相对而言，学习它们的配置是有一定难度的。最近发现了一个 golang 开发的 HTTP server，叫做 Caddy，它配置起来十分简便，甚至可以 28 秒配置好一个支持 http2 的 serve">
+  <meta name="description" content="说起 HTTP server，使用最广泛的就是 apache 和 nginx 了，功能都非常强大，但相对而言，学习它们的配置是有一定难度的。最近发现了一个 golang 开发的 HTTP server，叫做 Caddy，它配置起来十分简便，甚至可以 28 秒配置好一个支持 http2 的 server  ，而且对各种 http 新特性都支持的比较早（比如 http2、quic都有支持）。因此对于不用于生产环境只搭建个人博客是十分友好的，我就简单介绍下 caddy。">
   
 
   
@@ -89,6 +89,8 @@
       
         <p>说起 HTTP server，使用最广泛的就是 apache 和 nginx 了，功能都非常强大，但相对而言，学习它们的配置是有一定难度的。最近发现了一个 golang 开发的 HTTP server，叫做 <a href="https://caddyserver.com/" target="_blank" rel="noopener" title="Caddy is the HTTP/2 web server with automatic HTTPS.">Caddy</a>，它配置起来十分简便，甚至可以 <a href="http://www.bilibili.com/video/av4219585/" target="_blank" rel="noopener" title="Caddy - Automatic HTTPS in 28s">28 秒配置好一个支持 http2 的 server </a> ，而且对各种 http 新特性都支持的比较早（比如 http2、quic都有支持）。因此对于不用于生产环境只搭建个人博客是十分友好的，我就简单介绍下 caddy。</p>
 <p><a href="/notename/" title="caddy HTTP/2 web server guide for beginners"></a></p>
+<a id="more"></a>
+
 <p>[toc]</p>
 <h2 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h2><p>用过 golang 的应该都知道，golang 程序基本上不会有各种依赖，都是光秃秃一个可执行程序，cp 到 <code>/usr/local/bin</code> 就算安装完成了，所以说安装 caddy 是很简单的，我给出三种方法。</p>
 <h3 id="1-1-脚本安装"><a href="#1-1-脚本安装" class="headerlink" title="1.1 脚本安装"></a>1.1 脚本安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s https://getcaddy.com | bash</span><br></pre></td></tr></table></figure>

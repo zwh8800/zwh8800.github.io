@@ -10,7 +10,7 @@
   
 
   
-  <meta name="description" content="之前买了个小蚁智能摄像机，原生只支持向小米路由器里同步视频，我只有一个群晖 nas 做网络存储，所以元旦放假在家研究了下怎么样“破解”小蚁摄像头使它能同步视频到 nas 上。本质上，小蚁摄像头也是一个 Linux 服务器，只不过是运行在 arm 上的嵌入式 Linux，所以 Linux 的整个生态环">
+  <meta name="description" content="之前买了个小蚁智能摄像机，原生只支持向小米路由器里同步视频，我只有一个群晖 nas 做网络存储，所以元旦放假在家研究了下怎么样“破解”小蚁摄像头使它能同步视频到 nas 上。本质上，小蚁摄像头也是一个 Linux 服务器，只不过是运行在 arm 上的嵌入式 Linux，所以 Linux 的整个生态环境都可以利用的上。我这次的解决方案是使用 Linux 上著名的 rsync 做同步工具，但是必须编译出一个在 arm 上能用使用的 rsync。所以这篇文章的重点是 交叉编译。">
   
 
   
@@ -89,6 +89,8 @@
       
         <p>之前买了个小蚁智能摄像机，原生只支持向小米路由器里同步视频，我只有一个群晖 nas 做网络存储，所以元旦放假在家研究了下怎么样“破解”小蚁摄像头使它能同步视频到 nas 上。本质上，小蚁摄像头也是一个 Linux 服务器，只不过是运行在 arm 上的嵌入式 Linux，所以 Linux 的整个生态环境都可以利用的上。我这次的解决方案是使用 Linux 上著名的 <a href="https://rsync.samba.org/" target="_blank" rel="noopener">rsync</a> 做同步工具，但是必须编译出一个在 arm 上能用使用的 rsync。所以这篇文章的重点是 <strong>交叉编译</strong>。</p>
 <p><a href="/notename/" title="sync video from Yi Camera to Synology nas"></a></p>
+<a id="more"></a>
+
 <h2 id="拿到小蚁摄像头的-shell"><a href="#拿到小蚁摄像头的-shell" class="headerlink" title="拿到小蚁摄像头的 shell"></a>拿到小蚁摄像头的 shell</h2><p>据说某些系统版本的小蚁摄像头默认没关闭 telnet 服务，那么在做以下事情之前可以先试试你的摄像头是不是已经开启了 telnet 。在终端里运行 <code>telnet xxx.xxx.xxx.xxx</code> xxx.xxx.xxx.xxx 是你摄像头的 ip 地址，可以在路由器管理界面中查到。如果出现 <code>(none) login:</code> 字样，说明你已经拿到了 shell，就不用做下面的操作了，直接跳到<a href="#jumpto-1">这里</a>。</p>
 <ul>
 <li>把小蚁摄像头里的内存卡取出来，在内存卡根目录建立一个文件夹 test</li>
