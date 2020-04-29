@@ -14,6 +14,8 @@ tags:
 
 ![atlassian-getting-git-right.jpg-94.4kB][1]
 
+<!-- more -->
+
 ## 1. 开发一个功能
 
 ```bash

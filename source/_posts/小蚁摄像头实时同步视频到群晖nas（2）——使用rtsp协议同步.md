@@ -13,6 +13,8 @@ tags:
 
 [](/notename/ "sync video from yi camera to synology nas 2")
 
+<!-- more -->
+
 Surveillance Station 是群晖上的一个功能套件，可以管理网络摄像机，功能十分强大，而且原生支持很多品牌的网络摄像机，但是不支持小蚁摄像机。不过还好的是 Surveillance Station 支持 rtsp 协议，只要能在小蚁上开启 rtsp 服务就可以了。
 
 <center width="80%">

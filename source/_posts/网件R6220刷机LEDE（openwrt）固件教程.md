@@ -14,6 +14,8 @@ tags:
 
 [](/notename/ "install lede on netgear r6220")
 
+<!-- more -->
+
 [toc]
 
 > **请全程使用网线连接进行操作，操作时千万不要断电，因为 R6220 使用 NAND flash，刷坏后无法使用普通编程器修复，刷机有风险，请扶稳方向盘谨慎驾驶**

@@ -13,6 +13,8 @@ AirPlay 是苹果设备上最方便的播放技术，可以很方便的把音频
 
 [](/notename/ "make your linux server a airplay player")
 
+<!-- more -->
+
 shairport 是一个音频 AirPlay receiver 服务器。但是不幸的是 shairport 的作者两年前停止更新了，就有了另一个开发者 fork 了 shairport 做出了 shairport-sync。
 
 shairport-sync 基于 shairport，在此基础上还改进了音视频的同步的问题，这样使用 shairport-sync 播放视频时不会出现影音不同步的问题了。

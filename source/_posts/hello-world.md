@@ -15,6 +15,8 @@ npm install
 
 这几步是在本机上安装好 hexo，并且生成一个 hexo 项目文件。
 
+<!-- more -->
+
 ## 配置主题
 
 默认的主题不太喜欢，换了个叫 [Hacker](https://github.com/CodeDaraW/Hacker) 的。

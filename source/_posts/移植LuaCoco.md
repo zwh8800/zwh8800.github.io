@@ -16,6 +16,8 @@ lua 语言最大的卖点之一就是他的协程（coroutine）了。但是在 
 
 ![image_1bhbpomnrk0m58270a54k789.png-16.9kB][1]
 
+<!-- more -->
+
 [toc]
 
 ## setjmp 的实现

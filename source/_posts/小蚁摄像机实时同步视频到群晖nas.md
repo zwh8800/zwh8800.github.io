@@ -14,6 +14,8 @@ tags:
 
 [](/notename/ "sync video from Yi Camera to Synology nas")
 
+<!-- more -->
+
 ## 拿到小蚁摄像头的 shell
 
 据说某些系统版本的小蚁摄像头默认没关闭 telnet 服务，那么在做以下事情之前可以先试试你的摄像头是不是已经开启了 telnet 。在终端里运行 `telnet xxx.xxx.xxx.xxx` xxx.xxx.xxx.xxx 是你摄像头的 ip 地址，可以在路由器管理界面中查到。如果出现 `(none) login:` 字样，说明你已经拿到了 shell，就不用做下面的操作了，直接跳到[这里](#jumpto-1)。

@@ -33,6 +33,8 @@ type Writer interface {
 
 ```
 
+<!-- more -->
+
 ### Seeker、ReaderAt、WriterAt、Closer
 
 更进一步的，最常见的流就是文件了。对于文件来说，除了简单的读写操作之外，还有 **Seek、ReadAt、WriteAt、Close** 操作。标准库对这些操作也进行了抽象。
