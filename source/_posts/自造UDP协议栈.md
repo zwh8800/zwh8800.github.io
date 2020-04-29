@@ -88,5 +88,5 @@ DELAY_CALLBACK 函数需要休眠指定的毫秒数, 如果程序运行在一个
 ![image_1bl057v6q5uq1rbf1b5ejk311q9.png-579.9kB][1]
 ![image_1bl058hv31jct1gsd4slnej20dm.png-68.2kB][2]
 
-  [1]: http://static.zybuluo.com/zwh8800/8udhjsjuss6yjpkyot8a2bbt/image_1bl057v6q5uq1rbf1b5ejk311q9.png
-  [2]: http://static.zybuluo.com/zwh8800/mx6gtpluys5m0of6dm4o9rvo/image_1bl058hv31jct1gsd4slnej20dm.png
+  [1]: /images/13880d8baedd7994327526f1a8aa7556.png
+  [2]: /images/27fff57e412e0967ec53c768c9485894.png

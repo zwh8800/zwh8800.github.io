@@ -104,6 +104,6 @@ https://hi.baidu.com/zhujian0805/item/cf54470f0bec70c02f4c6b4e
 
 ![image_1bl0fnhvhft51tdk8q87491gkj9.png-268.8kB][1]
 
-  [1]: http://static.zybuluo.com/zwh8800/z5vfopj00g0q8qt6dcme95yx/image_1bl0fnhvhft51tdk8q87491gkj9.png
+  [1]: /images/51be3d1bb94f696d1331e6a9654b0ff5.png
   
   

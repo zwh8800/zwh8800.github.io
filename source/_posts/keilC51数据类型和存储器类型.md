@@ -44,5 +44,5 @@ tags:
 
 ![image_1bl03j66u1lv51rila2p1ref6jp9.png-71.3kB][2]
 
-  [1]: http://static.zybuluo.com/zwh8800/d6ajmww1q4umy7fn8e2aj8dw/image_1bl03lo6r1b1i1ulu9rh7cau16m.png
-  [2]: http://static.zybuluo.com/zwh8800/ny60iwy68gd1zd0r2ymfby4q/image_1bl03j66u1lv51rila2p1ref6jp9.png
+  [1]: /images/d6b938f5426aa61b879062ea20023cdf.png
+  [2]: /images/1ed8417da90effaee1475ce507c40be6.png

@@ -106,9 +106,9 @@ CHAP验证，比PAP验证安全，不明文发送密码。具体流程是这样�
 
 ![image_1bl05krd67doh1ujmh5kkga72a.png-131.7kB][6]
 
-  [1]: http://static.zybuluo.com/zwh8800/a6hlyfbtpz4boecszdsyxzx3/image_1bl05ebacvgpurr6fpo7neq79.png
-  [2]: http://static.zybuluo.com/zwh8800/r3biqwsowcpafr5ecs8neoeq/image_1bl05fa3u39duuo146u5bl194em.png
-  [3]: http://static.zybuluo.com/zwh8800/7wzboy6euy4kf8va6pprg1u1/image_1bl05h1551vu94i197egm118ie13.png
-  [4]: http://static.zybuluo.com/zwh8800/gwucrscztqpdjg9s762gdu14/image_1bl05jtp3qs1148f13051c0d18491g.png
-  [5]: http://static.zybuluo.com/zwh8800/xnl0u041txsy909p91bwigvd/image_1bl05kjrq19ln1tdg9fb1k4h159a1t.png
-  [6]: http://static.zybuluo.com/zwh8800/3a6w8fs79dilcdzuberagmpt/image_1bl05krd67doh1ujmh5kkga72a.png
+  [1]: /images/3dc070a6f0c827a9ed80b5c778dab22c.png
+  [2]: /images/1a21f812dfa6fdfedc42c59ebcd46001.png
+  [3]: /images/a63555aa4d314fa7fa1b837ce3a9e9d1.png
+  [4]: /images/2beeaa2f453bfb081b05aff37e0f47b6.png
+  [5]: /images/c55642822978f4b456742be1a5ae4aea.png
+  [6]: /images/6d96e129603fcad51dcdbc37bec4942a.png

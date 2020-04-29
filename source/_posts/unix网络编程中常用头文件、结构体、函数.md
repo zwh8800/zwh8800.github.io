@@ -244,5 +244,5 @@ if (inet_pton(AF_INET, "192.168.1.1", &cltaddr.sin_addr) == -1)
 }
 ```
 
-  [1]: http://static.zybuluo.com/zwh8800/no486kcpx7qwh2xcpizxm9ft/image_1bl0dmjqfum819j74jn19na1ecv9.png
-  [2]: http://static.zybuluo.com/zwh8800/0izqzgecyfprgyoinf0c13vy/image_1bl0dnjs71238jhiqo21omc17s5m.png
+  [1]: /images/4ea58ed2d79ce2287587598283256931.png
+  [2]: /images/b096dbb637e71cfe09740ba797dfbdcd.png

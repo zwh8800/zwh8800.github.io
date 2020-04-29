@@ -87,5 +87,5 @@ docker start xware
 
 ## have fun
 
-  [1]: http://static.zybuluo.com/zwh8800/xnsrrhlt7ceoabxwd2c7umpl/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-04-16%20%E4%B8%8B%E5%8D%889.16.58.png
-  [2]: http://static.zybuluo.com/zwh8800/z4lbd5z2ue9qmpwdn26zbwsd/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-04-16%20%E4%B8%8B%E5%8D%889.22.45.png
+  [1]: /images/dbc5bdf519aa5b3f0d811bddaf2c7794.png
+  [2]: /images/e12f3c73089d5f1d46aaf088ee189a22.png

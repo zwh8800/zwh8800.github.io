@@ -237,9 +237,9 @@ void dump_ufsr()
 }
 ```
 
-  [1]: http://static.zybuluo.com/zwh8800/1191dgqrfw76d139d4omlu1n/image_1bl04ftuo1f9ck9318ol1pqn195c9.png
-  [2]: http://static.zybuluo.com/zwh8800/6f6kib4vfu4gk2c15b7j8lb1/image_1bl04gc7heidbq71ikbn99tanm.png
-  [3]: http://static.zybuluo.com/zwh8800/8qp2dq1oke7qkd28ew17j5wn/image_1bl04hde214oj1i9i13iv194p1vam13.png
-  [4]: http://static.zybuluo.com/zwh8800/20pp7nw51faremehckt1mqt5/image_1bl04hodm70q11la19pkuuh1jhr1g.png
-  [5]: http://static.zybuluo.com/zwh8800/zvi2cg6p0okw2wm9pss3roam/image_1bl04i123oasa21c94f1u1r01t.png
-  [6]: http://static.zybuluo.com/zwh8800/61h1c9pz2dfw4lhcjgy54xpz/image_1bl04u1pi1o0v9cc19ugj11c672a.png
+  [1]: /images/9217acc0633aec776f0c1e576e7f60aa.png
+  [2]: /images/0e7e828be09772fd5701e17ef40b6ded.png
+  [3]: /images/e857b991510838a7396f60709d84975e.png
+  [4]: /images/5448a87044eab9d5022d8e3198693777.png
+  [5]: /images/e0f28d11a0752c032a3c25f01ffe9fef.png
+  [6]: /images/8a5c925cd0748610da6b5fb56510f475.png

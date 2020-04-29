@@ -14,4 +14,4 @@ tags:
 ![在此输入正文][1]
 简直赞！
 
-  [1]: http://static.zybuluo.com/zwh8800/c7ngh26uo3ec5aizl3clh6dz/image_1bl08rk611v9b1v7f1565lla1ofp9.png
+  [1]: /images/9ab2dc1212bb2c282e4038f5a45e0056.png

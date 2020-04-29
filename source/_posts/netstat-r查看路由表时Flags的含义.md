@@ -34,4 +34,4 @@ netstat 命令解释
 
 **H说明了目的地址是一个完整的主机地址, 没有设置H则说明目的地址是一个网络地址(主机号为0), 当搜索路由表时, 主机地址必须与目的地址完全匹配, 而网络地址只需要匹配网络号和子网号.**
 
-  [1]: http://static.zybuluo.com/zwh8800/pl5inkizmskrlmz5ldzdxbxj/image_1bl028klq1b7e1khd4qnkplh0n9.png
+  [1]: /images/4e4e9f538b86a12216c0534a2c8c7daf.png

@@ -20,4 +20,4 @@ tags:
 
 ![屏幕快照 2016-05-25 下午4.06.56.png-311.7kB][1]
 
-  [1]: http://static.zybuluo.com/zwh8800/irj91ef52ump2v4ap7b2bti2/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-05-25%20%E4%B8%8B%E5%8D%884.06.56.png
+  [1]: /images/1f5556f01de37fc838e02d1c4d7a6682.png

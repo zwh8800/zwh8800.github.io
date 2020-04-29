@@ -57,4 +57,4 @@ echo '[[ -s $(brew --prefix)/etc/profile.d/autojump.sh ]] && . $(brew --prefix)/
 
 重启下 terminal 现在可以使用命令 `j xxx` 了。autojump使用一个数据库，记录你最常使用的目录，你只需要打目录名字的一部分就可以 `jump` 到目录。
 
-  [1]: http://static.zybuluo.com/zwh8800/bqid4nhf69zl7c8e8qq19359/QQ20160412-1@2x.png
+  [1]: /images/6edcb8ffc969d2e387e32c5aba2302a0.png

@@ -68,4 +68,4 @@ https://oa.jmu.edu.cn/netoa/libq/pubdisc.nsf/66175841be38919248256e35005f4497/77
 
 参考两篇文章
 
-  [1]: http://static.zybuluo.com/zwh8800/hk6o73lt9mqidvp371w7mff0/image_1bl00gri2a201k807s01gk016t99.png
+  [1]: /images/2e95c9356c5ac4439a50150f7767c123.png

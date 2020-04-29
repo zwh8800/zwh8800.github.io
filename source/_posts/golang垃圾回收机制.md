@@ -106,5 +106,5 @@ go 除了标准的三色收集以外，还有一个辅助回收功能，防止�
 
 因此，当程序由于高并发等原因造成大量小对象的gc问题时，最好可以使用 [`sync.Pool`](https://golang.org/pkg/sync/#Pool) 等对象池技术，避免大量小对象加大 GC 压力。
 
-  [1]: http://static.zybuluo.com/zwh8800/m4mhohyyesdbb15repsbu12t/Animation_of_the_Naive_Mark_and_Sweep_Garbage_Collector_Algorithm.gif
-  [2]: http://static.zybuluo.com/zwh8800/h1yckkjd1az3q64y55z8bvbx/Animation_of_tri-color_garbage_collection.gif
+  [1]: /images/d86a2fc011c99baadcde3c12b046b2ef.gif
+  [2]: /images/c9dbfac2f1b6bf5f73efe8dd6f551c36.gif

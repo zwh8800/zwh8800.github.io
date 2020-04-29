@@ -162,5 +162,5 @@ arm架构共有37个寄存器但在不同时刻有20个寄存器是隐藏的(图
 
 下面想要学一学eabi相关的东西了除了指令集就是这个最重要了.
 
-  [1]: http://static.zybuluo.com/zwh8800/z5m5jxx45x7iy1qvaksufyf8/image_1bl0ld0ga1lkn16khh2rvg1j3a9.png
-  [2]: http://static.zybuluo.com/zwh8800/ksx9ajg9g1bzznq9qd8doqu7/image_1bl0lfomu104c13dd161112p81p89m.png
+  [1]: /images/28991ebc5db7944a343f3ed4838bf94b.png
+  [2]: /images/c60cfa84042bad9d13e432b0b7436873.png

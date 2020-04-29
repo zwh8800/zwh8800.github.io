@@ -14,4 +14,4 @@ tags:
 
 ![image_1bl0ma8d91eq8nqp8718oehht9.png-335.7kB][1]
 
-  [1]: http://static.zybuluo.com/zwh8800/1sjrgb7nqqmla5pdr9ww6r5l/image_1bl0ma8d91eq8nqp8718oehht9.png
+  [1]: /images/5a497b53624ca4e1c74d8546f1d20c07.png

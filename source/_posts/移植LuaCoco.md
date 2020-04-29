@@ -507,9 +507,9 @@ https://github.com/zwh8800/nodemcu-firmware/commit/1f31aa32901f07b6414c0471eb19f
 
 [EOF] 基本上这次移植涉及到的内容就这些，完。
 
-  [1]: http://static.zybuluo.com/zwh8800/ubwij67dsbcovkbihpd9cmfr/image_1bhbpomnrk0m58270a54k789.png
-  [2]: http://static.zybuluo.com/zwh8800/hj35vma3bngfrivazii6ml5c/FullSizeRender%202.jpg
-  [3]: http://static.zybuluo.com/zwh8800/dr4o3fz11cdqpms9kb08fplp/image_1bhcc3die5r3c7tg95ab069b1e.png
-  [4]: http://static.zybuluo.com/zwh8800/7o9m3fu856wkwv1te2z2ap76/WechatIMG23.jpeg
+  [1]: /images/7101caf8fc0075b8d52d5a15ad9f6cb9.png
+  [2]: /images/2dd8de9102de224c2f27d180f808ee2d.jpg
+  [3]: /images/d6fcc3dbe149d5f6cdc4eeb0fba867b1.png
+  [4]: /images/54aa11f5b1b9229bb14b4a0b83ea4a0d.jpeg
   [5]: http://static.zybuluo.com/zwh8800/1dedfeobeekfitgbcmcw7tct/IMG_0002.JPG
-  [6]: http://static.zybuluo.com/zwh8800/ultko7iylckid969jnozvr7o/image_1bktgc5jiv8p1bqh1ot5pcf1v0i9.png
+  [6]: /images/94e476dfa01186c4655281e79aedcfa1.png

@@ -179,5 +179,5 @@ git revert HEAD
 git push
 ```
 
-  [1]: http://static.zybuluo.com/zwh8800/p9gv31npuv5lqfnblpih4h8e/atlassian-getting-git-right.jpg
-  [2]: http://static.zybuluo.com/zwh8800/r4u5jiql8a1vxy09rkct22ef/image_1aps6uir211qg14423s41qjq85g9.png
+  [1]: /images/56a0d8728d3325d70ca114f659975936.jpg
+  [2]: /images/40fd3596ffd1775197277b3916aa77ed.png

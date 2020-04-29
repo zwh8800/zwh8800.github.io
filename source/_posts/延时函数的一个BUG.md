@@ -67,4 +67,4 @@ SYSCLK / 1000000 = 1 < 1.5
 
 一定记住教训!
 
-  [1]: http://static.zybuluo.com/zwh8800/8qz85rwvubngw6a4i33hr5w8/image_1bl05485217g51fci1kl2i1g19809.png
+  [1]: /images/132ae9b227d5c8db1ebcfed996305a03.png

@@ -343,6 +343,6 @@ int main()
 }
 ```
 
-  [1]: http://static.zybuluo.com/zwh8800/yxzjw2003d933c3cqjw2booi/image_1bl02vap6ei5s7s112g1mbk14lc9.png
-  [2]: http://static.zybuluo.com/zwh8800/t3ix9lub7frb8uyvgm5swdxx/image_1bl03203113feqll1ha0nmr1mitm.png
-  [3]: http://static.zybuluo.com/zwh8800/1tillp0vpj5q5oms8kh9liz0/image_1bl033glufm211471ra5f481eh413.png
+  [1]: /images/e6e8878aa8fa4f4102f6388b9dd5f61a.png
+  [2]: /images/dee9d44d274a4a5738d5763465258f0b.png
+  [3]: /images/e47bde1b4ce8cf7f97094a8b94b890c8.png

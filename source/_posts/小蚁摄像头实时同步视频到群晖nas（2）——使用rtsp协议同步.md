@@ -69,5 +69,5 @@ udp        0      0 0.0.0.0:1500            0.0.0.0:*                           
 
 之后，就可以好好享受 Surveillance Station 的强大功能了。
 
-  [1]: http://static.zybuluo.com/zwh8800/obh6frw0djqaum7ibwkg8kfi/QQ20170104-1@2x.png
-  [2]: http://static.zybuluo.com/zwh8800/fdsn1kae71w3krm42sn58ede/image_1b5k8dc0o19jf8bt1fe1abrtjr17.png
+  [1]: /images/0bb29b8abd72e650e5ab013749e6a4c8.png
+  [2]: /images/c5056a2da99646ecea5ee8e10bf43334.png

@@ -70,5 +70,5 @@ http://my.oschina.net/tsl0922/blog/178775
 http://segmentfault.com/q/1010000000636402
 http://linfan.info/blog/2012/02/27/colorful-terminal-in-mac/
 
-  [1]: http://static.zybuluo.com/zwh8800/b5u3rmn57t6u0uypxk4tv1z7/QQ20160405-0.png
-  [2]: http://static.zybuluo.com/zwh8800/peskdj249yup1sjlk5qvjd41/QQ20160405-1.png
+  [1]: /images/153964c26e8bc6368ba06f0efc732702.png
+  [2]: /images/fedfa200617b7a190459b9a0e8890b70.png

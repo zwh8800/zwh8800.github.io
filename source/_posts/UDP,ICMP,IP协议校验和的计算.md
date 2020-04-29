@@ -81,4 +81,4 @@ static unsigned short checksum(unsigned short* data, int size)
 
 看到这么好的实现, 我也放弃用我自己写的了, 干脆用这个. 另外, stm32 中有一个硬件实现的 CRC 模块. 下次移植到 stm32 上的时候用用它试试.
 
-  [1]: http://static.zybuluo.com/zwh8800/3jd3lz3cgr4pcagcvta67lbd/image_1bl0634aqgqv1tka1fej1j7a10pjp.png
+  [1]: /images/5d32396325fc40f864812808283a7581.png

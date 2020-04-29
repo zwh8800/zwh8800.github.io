@@ -20,4 +20,4 @@ Win7 开启路由转发功能
 可以把两个网卡的网络连接起来
 ![image_1bl043idv1j451elr1n8btk756i9.png-108.4kB][1]
 
-  [1]: http://static.zybuluo.com/zwh8800/qk4tpeqeuatvrnhqjvibo1jx/image_1bl043idv1j451elr1n8btk756i9.png
+  [1]: /images/faeaea83640c5bc3aa293c1d3ef9b0ea.png

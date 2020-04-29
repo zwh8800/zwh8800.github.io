@@ -16,4 +16,4 @@ tags:
 
 点这个按钮哦
 
-  [1]: http://static.zybuluo.com/zwh8800/blgrh0ja2sgglap4zzvz8muf/image_1b68k36vh18er1h5ltlqn3o1b1pm.png
+  [1]: /images/5970731776c90dd6af3c828ca79433c3.png

@@ -81,4 +81,4 @@ Description: 具有很多特性的 Shell
 
 总之就是各种命令清晰漂亮了很多，个人用起来很舒服。
 
-  [1]: http://static.zybuluo.com/zwh8800/j8b5ircljx0gzxv76c6w9wiv/image_1ajqh3qkm1kf81vb81kmtjldlipg.png
+  [1]: /images/78febf75a690a0a0b38c17a8c046defe.png

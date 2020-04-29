@@ -277,7 +277,7 @@ int main(int argc, char* argv[])
 0x00008971  SIOCSIFMAP                  const struct ifreq *
 ```
 
-  [1]: http://static.zybuluo.com/zwh8800/fu1zcw4n9u9mpcec1o2h65q1/image_1bl0lpcf75ua1ea638dn4f1oo89.png
-  [2]: http://static.zybuluo.com/zwh8800/e4t46c0hrrdj4htwbj3uva6h/image_1bl0ltenadtdr9f1ks21kiiiuqm.png
-  [3]: http://static.zybuluo.com/zwh8800/fg8xnfk3k89ko14f3ilt9kvk/image_1bl0lvsc41v0a13lv6un1pt810eo13.png
-  [4]: http://static.zybuluo.com/zwh8800/9oavqmtde9l8d9b187taivrz/image_1bl0m0e19ragkr17lcv8dt9s1g.png
+  [1]: /images/e6fba0113ebbc5f6315342287ba3a627.png
+  [2]: /images/97ff068b74a84e72146009b5973992ab.png
+  [3]: /images/be58798f81332e9dae6a82a114a2b077.png
+  [4]: /images/9032114a97a6c77c3bde4eea60528224.png

@@ -240,4 +240,4 @@ err:
 }
 ```
 [EOF]
-  [1]: http://static.zybuluo.com/zwh8800/ftvt6tioo62u69zyo3m8r7z8/image_1bl0atutt1kn7iv5t3b18q8fr49.png
+  [1]: /images/86e4c5cbc6dbb08baa8ba93e91a4fccd.png

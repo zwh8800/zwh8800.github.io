@@ -344,4 +344,4 @@ func SearchNoteByKeyword(keyword string,
 
 总的来说，elasticsearch 还是很方便强大的，好评。
 
-  [1]: http://static.zybuluo.com/zwh8800/ohw9r0kvh69o6stu45td81sj/90.pic_hd.jpg
+  [1]: /images/e1cb8a757d384d5cc83ac6945bdeef0e.jpg

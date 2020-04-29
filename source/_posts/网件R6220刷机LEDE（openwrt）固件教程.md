@@ -290,11 +290,11 @@ mtd -r write /tmp/mtd10.bin factory
 
 然后在**系统**、**备份/升级**里重新上传sysupgrade.tar，并且不勾选**保留设置**。
 
-  [1]: http://static.zybuluo.com/zwh8800/87dgejkt4rs7ov1wgy8ejzyx/image_1bnv9ksf91joebhc5uvi451l14p.png
-  [2]: http://static.zybuluo.com/zwh8800/say5dhokusmabok0w2ix1d8x/image_1bnvblmm81d0t1hgfpfu1h0ft4116.png
-  [3]: http://static.zybuluo.com/zwh8800/s5ltalpg46voaket5azleek1/image_1bnvc6apsorr15en13he1l7s1mei1j.png
-  [4]: http://static.zybuluo.com/zwh8800/noqu5zni5zwm6uazgqiy4i1o/image_1bnvcca3pf6dfb6177rr9b70o20.png
-  [5]: http://static.zybuluo.com/zwh8800/oyll40uphimhngb1t8pmfcql/image_1bnvd5mqeofhlp61sa51q0c11fm2d.png
+  [1]: /images/1a797a80091c5a2290a090407be0801f.png
+  [2]: /images/6f4b994612ac748b39bf5768d96db680.png
+  [3]: /images/3e9a5f6d55c07d805533d03e2d3b8a24.png
+  [4]: /images/772ab39a5aa6a5091dc7111ab7983f0f.png
+  [5]: /images/6450c2de39907259390b2e4f293b4ec4.png
   [6]: http://static.zybuluo.com/zwh8800/enhzlaeur5yom5uwyqi7hjab/image_1bnvgfsoh81jeg01t6rrjs195441.png
-  [7]: http://static.zybuluo.com/zwh8800/6krs6kpjj5jtaxxs4we8ma47/image_1bnvf7v6un84c0v11qm1vku1sd37.png
-  [8]: http://static.zybuluo.com/zwh8800/5lt2mgcipjm2xiucliey687v/image_1bnvfagtt1k5f105kcgr7r132a3k.png
+  [7]: /images/b2fc85fcbac6955b1c2fc2c68fa01d89.png
+  [8]: /images/38b4a52764c74bf82b95b87032f00a2f.png

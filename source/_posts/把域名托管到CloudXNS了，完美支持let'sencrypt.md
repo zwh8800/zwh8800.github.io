@@ -29,7 +29,7 @@ CloudXNS 的页面就看着比较顺眼。据说 DNSPod 也不错，但是我感
 
 ![QQ20160501-3@2x.png-138.9kB][4]
 
-  [1]: http://static.zybuluo.com/zwh8800/gmz55dfpsc6k07y0ctrcf80y/QQ20160501-0@2x.png
-  [2]: http://static.zybuluo.com/zwh8800/cpgnk0wkgntpg08az7heqecr/QQ20160501-1@2x.png
-  [3]: http://static.zybuluo.com/zwh8800/a3cvhjcpf7v0d965cnxeceqo/QQ20160501-2@2x.png
-  [4]: http://static.zybuluo.com/zwh8800/nh72858jdjk7fwt42x1us6rp/QQ20160501-3@2x.png
+  [1]: /images/f9e146686ecd27ddbd7424e8c6a6169b.png
+  [2]: /images/0e13753a1874c7bf2b348f4aca064f45.png
+  [3]: /images/24d97e9041fe854f0a0a90461e921a72.png
+  [4]: /images/7d9691daa44d1454cc69023bfa78d502.png

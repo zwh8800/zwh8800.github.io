@@ -23,4 +23,4 @@ l : 32位
 
 都是放在specifier (d, x, f等等)的前面
 
-  [1]: http://static.zybuluo.com/zwh8800/xnascz3x9790fgdho2kug714/image_1bl03pjqtfqa17gbgkgqu9m5e9.png
+  [1]: /images/8e130967f7e72f831364c1bce484a21f.png

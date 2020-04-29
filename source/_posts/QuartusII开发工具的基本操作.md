@@ -46,11 +46,11 @@ Quartus II 与ModelSim联合开发
 
 设置完毕后,进行工程编译,无误后选择Tools ->Run EDA Simulation tool ->EDA RTL simulation 调用modelsim进行仿真.
 
-  [1]: http://static.zybuluo.com/zwh8800/3uecudnb738kr99yyjs5ft6r/image_1bl0cvqbj1cp8m9miju13lffdg9.png
-  [2]: http://static.zybuluo.com/zwh8800/e9um0n29wpd3zvha1ycy30i9/image_1bl0d0ep0v0r1tfg1ddhh5ev2m.png
-  [3]: http://static.zybuluo.com/zwh8800/chryl7k40ypf5wz7836ck9dy/image_1bl0d0r7u1nb31f0v1kl719vgic213.png
-  [4]: http://static.zybuluo.com/zwh8800/2ou97rycqb1i5hsbx1tsup40/image_1bl0d1p0hbqh11anq6k9u717io2g.png
-  [5]: http://static.zybuluo.com/zwh8800/azlmr3jwxsfqh4alr7z7hjiu/image_1bl0d28ne1pp711i3gj2toc10ba2t.png
-  [6]: http://static.zybuluo.com/zwh8800/r7xo8urwrnmlgk13sly1yd39/image_1bl0d2o351ca6qcp1b7hkkq41e3a.png
-  [7]: http://static.zybuluo.com/zwh8800/7rr32o2udef3yi5s0lwwqn6q/image_1bl0d33qb1upr1836mr01br11umg3n.png
-  [8]: http://static.zybuluo.com/zwh8800/vdvmqpajl7epb72ya804by2z/image_1bl0d44n11p6r1aob1guvj9gp44.png
+  [1]: /images/7eaf49a4ca86aed1594b17f2e50c99e9.png
+  [2]: /images/398b4b18f9458e2b73a3a076650f8935.png
+  [3]: /images/f29e7afe9d3c69600e51e369ae8bf3a3.png
+  [4]: /images/fe67cb460aa38c4a9ecb6fc17b2b79a8.png
+  [5]: /images/de4269738854f31936d4a83eb5683771.png
+  [6]: /images/80a945aa2bb2664e98bde7f55469f709.png
+  [7]: /images/280fdedb63e565f594ad7ade46e0fbd3.png
+  [8]: /images/c83b76a623082408c3abe6760bb0e0e4.png

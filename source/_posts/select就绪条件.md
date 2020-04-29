@@ -37,5 +37,5 @@ unix网络编程中给出了详细解释:
 
 表格6.7更加清晰
 
-  [1]: http://static.zybuluo.com/zwh8800/xvnf7dr7n0o9sykpcmglpgnp/image_1bl0e2qg7f8r1he3n4p1lh510ec9.png
-  [2]: http://static.zybuluo.com/zwh8800/ym29f11vmo4t5l8dpc6eepda/image_1bl0e35vmqrg1oie1bohovt16qdm.png
+  [1]: /images/cde5a02a26e5290df06952242382d83f.png
+  [2]: /images/2eaf22fffc2f1de1ae608463fa17086b.png

@@ -34,8 +34,8 @@ tags:
 ![image_1bl07q50dkns1flb1hid1ffn19ot1t.png-20.2kB][5]
 一路 ok 后, 应该可以下载和调试程序了
 
-  [1]: http://static.zybuluo.com/zwh8800/7jgd86b8v29dssmfeya7paxn/image_1bl07o71mk7i521141i1rbr6nj9.png
-  [2]: http://static.zybuluo.com/zwh8800/pbkcy680p6wxoi54xk8gip7e/image_1bl07om2r1ecb7vtphf4bdpnjm.png
-  [3]: http://static.zybuluo.com/zwh8800/s353yhzpofjn0l6la6cpj862/image_1bl07p8up16eg8n53951jbvk4s13.png
-  [4]: http://static.zybuluo.com/zwh8800/p47bb6vw9z3eivk7mzjx2sy0/image_1bl07pm2ni37imc1vsi5tt9s61g.png
-  [5]: http://static.zybuluo.com/zwh8800/poxp24jgkqvkypwbo3w597mz/image_1bl07q50dkns1flb1hid1ffn19ot1t.png
+  [1]: /images/f1c9058ce384de181b36051a4ccd708e.png
+  [2]: /images/5d3d0d46b7e71c86c003290f2b5beb97.png
+  [3]: /images/ccb30f2edad539ab033211205e4fa60f.png
+  [4]: /images/73380b8df88ae85e71eef1924ff7fff0.png
+  [5]: /images/80dea70e0e6242d5b4ac0a0f6ddc7628.png

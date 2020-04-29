@@ -13,4 +13,4 @@ tags:
 
 ![image_1bl0468548leamrde1h49jbn9.png-128.1kB][1]
 
-  [1]: http://static.zybuluo.com/zwh8800/1a4d4dev8p6pwl7qkzheyy18/image_1bl0468548leamrde1h49jbn9.png
+  [1]: /images/3d0659bdf1dfb2cf95909be08f41a54b.png

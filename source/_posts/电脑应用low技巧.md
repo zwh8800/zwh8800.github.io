@@ -42,4 +42,4 @@ word 中,选择 审阅->批注 可以增添批注;
 
 ![image_1bl0d7dpn1akd1um2g5l146315sm9.png-52.6kB][1]
 
-  [1]: http://static.zybuluo.com/zwh8800/qobbndeljix43rqkm925zkw2/image_1bl0d7dpn1akd1um2g5l146315sm9.png
+  [1]: /images/b96610542193d9d157bcb3feee0a57f1.png

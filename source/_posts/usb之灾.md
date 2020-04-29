@@ -15,4 +15,4 @@ usb之灾
 
 柜子里还有两三根
 
-  [1]: http://static.zybuluo.com/zwh8800/cnrrr0uaes0tkwxfw4fap46t/image_1bkvvue4ic3c10fp1v2frh017co9.png
+  [1]: /images/2d968e05d5f7fa17fff7f3b0b2bfcceb.png

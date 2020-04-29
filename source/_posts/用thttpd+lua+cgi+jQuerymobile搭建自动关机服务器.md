@@ -253,9 +253,9 @@ ok 了, 效果如图:
 ![image_1bl02a0ek97d1m54foe9suips1t.png-177.8kB][5]
 ![image_1bl02ajhhg2v1vqc1kmbmrm1ilh2a.png-124.4kB][6]
 
-  [1]: http://static.zybuluo.com/zwh8800/f9e5nxrsul19mal0edw8p4c2/image_1bl0277mi94vhuh2v11d3gar49.png
-  [2]: http://static.zybuluo.com/zwh8800/7lfovihp8gzsvxasli8e21ce/image_1bl028649hrj10b9p66155e14jtm.png
-  [3]: http://static.zybuluo.com/zwh8800/0i0piuanimshib8yylomlau4/image_1bl028n31qgj1ikq13e81ktcqam13.png
-  [4]: http://static.zybuluo.com/zwh8800/b4nzpv6egxd8v02ar2pryqz1/image_1bl029cp41lakb6l1f1m1tfmrf91g.png
-  [5]: http://static.zybuluo.com/zwh8800/yesdko4og6c4izj08lc24o65/image_1bl02a0ek97d1m54foe9suips1t.png
-  [6]: http://static.zybuluo.com/zwh8800/4g3vx68fnyc5jqvkmtwehqjr/image_1bl02ajhhg2v1vqc1kmbmrm1ilh2a.png
+  [1]: /images/dc6301a96e391057fb0cfb8bcd3fc74a.png
+  [2]: /images/4789e1c26caf08227eaa3c091e0bb62e.png
+  [3]: /images/f7b3757809fd7dba1d21960dbd536c63.png
+  [4]: /images/06fb4e81672adaec9ccc9460df3dd743.png
+  [5]: /images/c33dce5afd2795a43a0449814d7bcc60.png
+  [6]: /images/d30655870f70159bab5687b887a3dc3d.png

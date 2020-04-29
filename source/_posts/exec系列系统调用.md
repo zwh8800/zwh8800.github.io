@@ -56,4 +56,4 @@ unix网络编程中的图给出了他们之间的关系：
 
 ![image_1bl0edi351pei15d8vba25occg9.png-96.5kB][1]
 
-  [1]: http://static.zybuluo.com/zwh8800/3smuv4z4no4ddywavs5iegoq/image_1bl0edi351pei15d8vba25occg9.png
+  [1]: /images/810da11ecabcedf3261250743fae6981.png

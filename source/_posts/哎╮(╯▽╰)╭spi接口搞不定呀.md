@@ -11,4 +11,4 @@ tags:
 
 [](/notename/ "archive 20131119")
 
-  [1]: http://static.zybuluo.com/zwh8800/ofq3qioifzfi1k0bkmo56la5/image_1bl03ggst171l7ag18qp1l5r1vdn9.png
+  [1]: /images/3507ccd00e075194640aff1f09866247.png

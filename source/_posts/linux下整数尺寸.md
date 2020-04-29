@@ -22,4 +22,4 @@ LP64体系：long = pointer = 64
 
 ![image_1bl0ehvba19urh6r19i8df11mjc9.png-45.3kB][1]
 
-  [1]: http://static.zybuluo.com/zwh8800/br8l645t4yu1lqcvxyo5xksn/image_1bl0ehvba19urh6r19i8df11mjc9.png
+  [1]: /images/c078e202803909b2cf459f62c0d5485c.png

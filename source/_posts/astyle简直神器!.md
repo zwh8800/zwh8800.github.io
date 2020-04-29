@@ -22,5 +22,5 @@ astyle简直神器!
 
 老谭的代码 我不怕不怕啦!
 
-  [1]: http://static.zybuluo.com/zwh8800/ritdzjxrxmu4lhsc31bdw9ki/image_1bl0437ok6c31ombglc1r2d1abc9.png
-  [2]: http://static.zybuluo.com/zwh8800/w7ye9oh78jbkjd8alo8wudhr/image_1bl043r241sgd1ct16ge1sf10ujm.png
+  [1]: /images/11815fc5b0dc6015897dd833142053ba.png
+  [2]: /images/e5fa9a5c9dd1a45829d1f58f4eb6d2de.png

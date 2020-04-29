@@ -32,8 +32,8 @@ tags:
 
 ![image_1bl05sc9s1fq21a1m11i0ne71mjg1t.png-548.1kB][5]
 
-  [1]: http://static.zybuluo.com/zwh8800/re3vjmqlngko40taspij0x46/image_1bl05r33j97o1nro1ntq10ek1vl49.png
-  [2]: http://static.zybuluo.com/zwh8800/9maaiwefi39bphswv9j9rxps/image_1bl05rd8hlvrvqo1o03v60m11m.png
-  [3]: http://static.zybuluo.com/zwh8800/rz1g31b4flpn4t7y7mf91iaj/image_1bl05ron71fae1lo9lj01638in013.png
-  [4]: http://static.zybuluo.com/zwh8800/vts0tqsvf4vxcym6r9itzh1w/image_1bl05s2sa1m7kp8oevv1ouf1kv01g.png
-  [5]: http://static.zybuluo.com/zwh8800/zj534q1yth0gnyjym9angnc2/image_1bl05sc9s1fq21a1m11i0ne71mjg1t.png
+  [1]: /images/23713de8e412ff76b6f92fd2da03179c.png
+  [2]: /images/815749f74aebc8cdc39873b496747a44.png
+  [3]: /images/86a6f3390b14ad41fa97f067b3310ca4.png
+  [4]: /images/0aef725cb77144923f67af6fb45ace0a.png
+  [5]: /images/c6fc5f75bc0e0f2e4b699bd49153b1e0.png
