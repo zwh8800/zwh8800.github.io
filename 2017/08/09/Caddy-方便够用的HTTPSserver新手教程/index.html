@@ -95,7 +95,7 @@
 
 <p>caddy 官方给出了一个安装脚本，执行上面的命令就可以一键安装 caddy，等执行结束后，使用 <code>which caddy</code>，可以看到 caddy 已经被安装到了 /usr/local/bin/caddy</p>
 <h3 id="1-2-手动安装"><a href="#1-2-手动安装" class="headerlink" title="1.2 手动安装"></a>1.2 手动安装</h3><p><a href="https://caddyserver.com/download" target="_blank" rel="noopener">https://caddyserver.com/download</a> 点这个链接进入到 caddy 官网的下载界面，网页左侧可以选择平台和插件，如果在 Linux 服务器上使用的话，platform 选择 Linux 64-bit 就可以了，plugins 如果暂时不需要的话，可以不选。然后点击下面的 DOWNLOAD 按钮，就下载到 caddy 了。同理，解压之后用 cp 命令放到 <code>/usr/local/bin/caddy</code> 就完成了安装。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/i1yzmlylv9gyc0ouxhchgf18/image_1bn3mbk8jov2es3vu41l842ac9.png" alt="image_1bn3mbk8jov2es3vu41l842ac9.png-177.7kB"></p>
+<p><img src="/images/f3ac2345c6df862838743d2dd0c02830.png" alt="image_1bn3mbk8jov2es3vu41l842ac9.png-177.7kB"></p>
 <h3 id="1-3-源码安装"><a href="#1-3-源码安装" class="headerlink" title="1.3 源码安装"></a>1.3 源码安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get github.com/mholt/caddy/caddy</span><br></pre></td></tr></table></figure>
 
 <p>对于安装了 golang 编译器的同学，只需要执行 go get 就能到 $GOPATH/bin 里，是否 cp 到 <code>/usr/local/bin</code> 里就看心情了。使用源码安装可以安装到最新版本的 caddy，功能上一般是最新的，而且因为是本地编译，性能可能会稍微高一些，但是可能会存在不稳定的现象。</p>
