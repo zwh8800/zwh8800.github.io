@@ -99,7 +99,7 @@ IP 协议: 只包含 20 字节的 IP ">
 <h3 style="color: #080">1. 校验范围</h3>
 虽然每个协议里都有校验和字段, 但是每个校验和覆盖的范围都是不同的:
 
-<p>IP 协议: <code>只包含 20 字节的 IP 报头</code><br>ICMP 协议: <code>整个 ICMP 报文 (ICMP 报头 + ICMP 数据)</code><br>UDP 协议 / TCP 协议: <code>除了整个 UDP/TCP 报文以外</code>, <span style="color: red">前面再加上一个 12 字节的伪 IP 报头</span>. <code>对这个整体一起算校验和 (见下图)</code><br><img src="http://static.zybuluo.com/zwh8800/3jd3lz3cgr4pcagcvta67lbd/image_1bl0634aqgqv1tka1fej1j7a10pjp.png" alt="image_1bl0634aqgqv1tka1fej1j7a10pjp.png-56.4kB"></p>
+<p>IP 协议: <code>只包含 20 字节的 IP 报头</code><br>ICMP 协议: <code>整个 ICMP 报文 (ICMP 报头 + ICMP 数据)</code><br>UDP 协议 / TCP 协议: <code>除了整个 UDP/TCP 报文以外</code>, <span style="color: red">前面再加上一个 12 字节的伪 IP 报头</span>. <code>对这个整体一起算校验和 (见下图)</code><br><img src="/images/5d32396325fc40f864812808283a7581.png" alt="image_1bl0634aqgqv1tka1fej1j7a10pjp.png-56.4kB"></p>
 <p>图 from:TCP/IP 详解</p>
 <p>另外, 如果接收到的 UDP 校验和为 0, 则说明不要进行校验和计算</p>
 <h3 style="color: #080">2. 计算步骤</h3>

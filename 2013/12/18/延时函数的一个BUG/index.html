@@ -107,7 +107,7 @@
 <p>没想到, 当时以为改对了的, 还是有BUG.</p>
 <p>当时的想法是, 既然除以1000000之后把小数部分消去了, 那就先乘上time_us(当时也意识到了, 这样会比之前慢一些, 因为SYSCLK / 1000000会在编译时优化求值, 而先做乘法, 再做除法的话两个工作都会在运行时进行)</p>
 <p>如果当时的想法能向前再走一步的话就会找到这个BUG了. 既然要在运行时进行, 那么SYSCLK&gt;32768, 会被认为是为signed int, 然后乘以time_us, time_us是unsigned char类型. 所以提升成signed int, 可是在Delay_ms函数中调用的是Delay_us(100), 24500000 * 100 = 2’450’000’000而232 / 2 – 1 = 2’147’483’647, 比2’450’000’000要小!, signed int的最大值竟然比2’450’000’000还小…之后的事情大家知道了吧, 2’450’000’000会被截断成一个负数!(对, 就是负数…)</p>
-<p><img src="http://static.zybuluo.com/zwh8800/8qz85rwvubngw6a4i33hr5w8/image_1bl05485217g51fci1kl2i1g19809.png" alt="image_1bl05485217g51fci1kl2i1g19809.png-74.2kB"></p>
+<p><img src="/images/132ae9b227d5c8db1ebcfed996305a03.png" alt="image_1bl05485217g51fci1kl2i1g19809.png-74.2kB"></p>
 <p>原谅我才疏学浅, 这是第一次遇见超整数上限的事情(貌似原来写PSP程序的时候也遇见过一次, 取随机数超过signed int上限, psp平台的随机数最大是SIGNED_INT_MAX, 再进行加法的话就变成负的了)</p>
 <p>一定记住教训!</p>
 

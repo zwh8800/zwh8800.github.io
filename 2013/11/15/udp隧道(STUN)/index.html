@@ -95,7 +95,7 @@
 <p>不过nat的弊端也是明显的, nat一般只有少数个外网端口, 但却为多数个内网主机提供网络服务. 大家想想, 家里宽带是不是只有一个口接WAN, 其余四个都接LAN. 这就造成了内网主机无法直接与外网主机进行点对点通讯. 首先, 外部主机对内部主机是无知的, 无法对其发出tcp连接, 这还好说, 可以让内部主机主动对外部主机发出连接, 但假如两天主机都在nat内, 就很苦恼了. udp隧道是通过一个在公共互联网的主机作为服务器, 扮演一个中介的角色, 让两台处于nat内部的主机接上线.</p>
 <p>首先先要说一下nat的种类, 在stun的标准文档(<a href="https://tools.ietf.org/html/rfc3489" target="_blank" rel="noopener">RFC3489</a>)中定义了两大种nat类型: 1.对称型nat, 2.圆锥形nat, 对于第一种对称性nat, stun是无能为力的. 圆锥形又分三种, 完全圆锥型NAT、受限圆锥型NAT和端口受限圆锥型NAT, 这三种stun都可以穿过.</p>
 <h6 id="对称型nat"><a href="#对称型nat" class="headerlink" title="对称型nat."></a>对称型nat.</h6><p> 如下图所示:</p>
-<p><img src="http://static.zybuluo.com/zwh8800/yxzjw2003d933c3cqjw2booi/image_1bl02vap6ei5s7s112g1mbk14lc9.png" alt="image_1bl02vap6ei5s7s112g1mbk14lc9.png-27.2kB"></p>
+<p><img src="/images/e6e8878aa8fa4f4102f6388b9dd5f61a.png" alt="image_1bl02vap6ei5s7s112g1mbk14lc9.png-27.2kB"></p>
 <p>对称型nat在转发<strong>同一主机同一端口号</strong>(ip和port都相同)发出的的数据时, 如果对端服务器不是<strong>同一个</strong>, 则选用<strong>不同的端口号</strong>进行转发, 这将导致无法进行nat穿越.<br>如图所示</p>
 <ul>
 <li>在客户端: nat内主机192.168.1.100通过同一端口8000分别向5.6.7.8:56214和5.6.7.9:12540发出数据包. 地址对: { 192.168.1.100:8000 – 5.6.7.8:56214 }  { 192.168.1.100:8000 – 5.6.7.9:12540 }</li>
@@ -103,7 +103,7 @@
 <li>在服务器端: 两个服务器分别接收到不同的端口发来的数据</li>
 </ul>
 <h6 id="圆锥形nat"><a href="#圆锥形nat" class="headerlink" title="圆锥形nat."></a>圆锥形nat.</h6><p>如下如所示:</p>
-<p><img src="http://static.zybuluo.com/zwh8800/t3ix9lub7frb8uyvgm5swdxx/image_1bl03203113feqll1ha0nmr1mitm.png" alt="image_1bl03203113feqll1ha0nmr1mitm.png-27.4kB"></p>
+<p><img src="/images/dee9d44d274a4a5738d5763465258f0b.png" alt="image_1bl03203113feqll1ha0nmr1mitm.png-27.4kB"></p>
 <p>圆锥形nat在转发<strong>同一主机同一端口号</strong>(ip和port都相同)发出的的数据时, 选用<strong>同一端口号</strong>进行转发. 所以可以利用这一点进行nat穿越<br>如图所示:</p>
 <ul>
 <li>在客户端: nat内主机192.168.1.100通过同一端口8000分别向5.6.7.8:56214和5.6.7.9:12540发出数据包. 地址对: { 192.168.1.100:8000 – 5.6.7.8:56214 }  { 192.168.1.100:8000 – 5.6.7.9:12540 }</li>
@@ -117,7 +117,7 @@
 <li>端口受限圆锥型NAT : 同一主机同一端口号的数据都映射到nat路由器的同一端口, <strong>但必须内部主机192.168.1.100用8000向外部主机1.2.3.4的34594端口发送一个数据报之后才能接受外部主机发来的数据</strong></li>
 </ul>
 <p>nat原理明白了, 接下来就可以设计如何nat穿越了.</p>
-<p><img src="http://static.zybuluo.com/zwh8800/1tillp0vpj5q5oms8kh9liz0/image_1bl033glufm211471ra5f481eh413.png" alt="image_1bl033glufm211471ra5f481eh413.png-38.3kB"></p>
+<p><img src="/images/e47bde1b4ce8cf7f97094a8b94b890c8.png" alt="image_1bl033glufm211471ra5f481eh413.png-38.3kB"></p>
 <p>分三步</p>
 <ul>
 <li>内部主机分别向处于外网的一台公共STUN服务器发送login信息, 报告自己的ip和端口 (图中的黑色)</li>

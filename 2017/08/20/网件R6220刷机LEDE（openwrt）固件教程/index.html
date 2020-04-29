@@ -95,7 +95,7 @@
 </blockquote>
 <h2 id="1-开启路由器telnet"><a href="#1-开启路由器telnet" class="headerlink" title="1. 开启路由器telnet"></a>1. 开启路由器telnet</h2><p>在浏览器打开 <a href="http://192.168.1.1/setup.cgi?todo=debug" target="_blank" rel="noopener">http://192.168.1.1/setup.cgi?todo=debug</a> 这个网址，记着把 192.168.1.1 替换成你路由器的 ip 地址，成功后会显示 <code>Debug Enabled !</code> 说明已经成功。</p>
 <p>使用 Mac 或 Linux 的用户，打开终端，执行 <code>telnet 192.168.1.1</code> ，可以登录到路由器的管理shell里，使用 windows 的用户，可以<a href="https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe" target="_blank" rel="noopener">点这里</a>下载 putty，然后如下图，Host Name填路由器ip，port写23，connection type 选 telnet：</p>
-<p><img src="http://static.zybuluo.com/zwh8800/87dgejkt4rs7ov1wgy8ejzyx/image_1bnv9ksf91joebhc5uvi451l14p.png" alt="image_1bnv9ksf91joebhc5uvi451l14p.png-84.3kB"></p>
+<p><img src="/images/1a797a80091c5a2290a090407be0801f.png" alt="image_1bnv9ksf91joebhc5uvi451l14p.png-84.3kB"></p>
 <p>点击 open 之后，会出现一个黑屏窗口，显示 <code>R6220 login:</code> ，输入 <code>root</code> 按回车，会显示一个大的 logo 和一个 <code>#</code> 号（如下），此时说明已经登录成功了。</p>
 <figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Welcome to</span><br><span class="line">    _______  _______  ___     __  ____   _  _   ___</span><br><span class="line">    |<span class="string">  ___  \</span>|<span class="string">   __  </span>||<span class="string">   </span>|<span class="string">   </span>|<span class="string">__</span>||<span class="string">    \ </span>|<span class="string"> </span>||<span class="string"> </span>|<span class="string"> /  /</span></span><br><span class="line"><span class="string">    </span>|<span class="string"> </span>|<span class="string">___</span>|<span class="string"> </span>||<span class="string">  </span>|<span class="string">__</span>|<span class="string"> </span>||<span class="string">   </span>|<span class="string">__  __ </span>|<span class="string">     \</span>|<span class="string"> </span>||<span class="string"> </span>|<span class="string">/  /</span></span><br><span class="line"><span class="string">    </span>|<span class="string">   _   /</span>|<span class="string">   _   </span>||<span class="string">      </span>||<span class="string">  </span>||<span class="string"> </span>|<span class="string">\     </span>||<span class="string">     \</span></span><br><span class="line"><span class="string">    </span>|<span class="string">__</span>|<span class="string"> \__\</span>|<span class="string">__</span>|<span class="string"> </span>|<span class="string">__</span>||<span class="string">______</span>||<span class="string">__</span>||<span class="string">_</span>|<span class="string"> \____</span>||<span class="string">_</span>|<span class="string">\___\</span></span><br><span class="line"><span class="string">                     =System Architecture Department=</span></span><br><span class="line"><span class="string">#</span></span><br></pre></td></tr></table></figure>
 
@@ -121,14 +121,14 @@
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Unlocking Bootloader <span class="built_in">..</span>.</span><br><span class="line">Writing <span class="keyword">from</span> pb-boot-r6220.bin <span class="keyword">to</span> Bootloader <span class="built_in">..</span>.  [w]</span><br></pre></td></tr></table></figure>
 
 <p>接下来路由器关机，然后用针扎着reset键开机，开机后发现电源灯和wan口灯呼吸闪烁，说明进入了 bootloader，在浏览器中输入 192.168.1.1 会看到 pb-boot 的界面：</p>
-<p><img src="http://static.zybuluo.com/zwh8800/say5dhokusmabok0w2ix1d8x/image_1bnvblmm81d0t1hgfpfu1h0ft4116.png" alt="image_1bnvblmm81d0t1hgfpfu1h0ft4116.png-107.3kB"></p>
+<p><img src="/images/6f4b994612ac748b39bf5768d96db680.png" alt="image_1bnvblmm81d0t1hgfpfu1h0ft4116.png-107.3kB"></p>
 <p>现在说明不死 bootloader 已经刷好了，可以随意折腾路由器而不怕刷坏了，无论何时感觉刷坏了，都可以用针扎着reset键开机，来反复刷机重置系统。</p>
 <blockquote>
 <p>小知识：bootloader 是在操作系统运行之前先运行的一个小程序，类似电脑的 bios，折腾路由器时就算把系统搞坏了，只要 bootloader 没被破坏，都可以刷回出厂设置的。</p>
 </blockquote>
 <h3 id="3-1-mac-用户会遇到的坑"><a href="#3-1-mac-用户会遇到的坑" class="headerlink" title="3.1 mac 用户会遇到的坑"></a>3.1 mac 用户会遇到的坑</h3><p>使用 mac 的用户再刷写了 pb-boot 之后，会发现无法获取到 IP 地址，可以这样操作：</p>
 <p>在<strong>系统偏好设置</strong>中点网络，把网卡设置成下图所示：</p>
-<p><img src="http://static.zybuluo.com/zwh8800/s5ltalpg46voaket5azleek1/image_1bnvc6apsorr15en13he1l7s1mei1j.png" alt="image_1bnvc6apsorr15en13he1l7s1mei1j.png-107.3kB"></p>
+<p><img src="/images/3e9a5f6d55c07d805533d03e2d3b8a24.png" alt="image_1bnvc6apsorr15en13he1l7s1mei1j.png-107.3kB"></p>
 <p>打开<strong>终端</strong>反复执行如下命令：</p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">sudo</span> <span class="selector-tag">arp</span> <span class="selector-tag">-ad</span></span><br><span class="line"><span class="selector-tag">sudo</span> <span class="selector-tag">arp</span> <span class="selector-tag">-s</span> 192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.1</span> <span class="selector-tag">ff</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:ff</span></span><br></pre></td></tr></table></figure>
 
@@ -141,7 +141,7 @@
 </blockquote>
 <p>然后在 192.168.1.1 里，点击 browse 选择刚才下载的网友版固件，再点击 Firmware update，等 1 分钟就刷好了。</p>
 <p>再次刷新 192.168.1.1 网页，发现已经进入 lede 的界面了。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/noqu5zni5zwm6uazgqiy4i1o/image_1bnvcca3pf6dfb6177rr9b70o20.png" alt="image_1bnvcca3pf6dfb6177rr9b70o20.png-23.1kB"></p>
+<p><img src="/images/772ab39a5aa6a5091dc7111ab7983f0f.png" alt="image_1bnvcca3pf6dfb6177rr9b70o20.png-23.1kB"></p>
 <p>用户名填 root，密码输admin，进入到管理界面中。</p>
 <p>然后左侧点击<strong>网络</strong>、<strong>接口</strong>，把 WAN 口配置好，尝试一下能不能上去网。</p>
 <p>对于不想折腾的朋友到此为止就可以了，恩山网友版的固件足够好用，喜欢折腾的朋友继续看下面（如果发现Wi-Fi无法正常使用的请看<a href="#8-找不到-wi-fi或wi-fi信号很差">最下面</a>）。</p>
@@ -153,7 +153,7 @@
 <h2 id="5-配置官方固件"><a href="#5-配置官方固件" class="headerlink" title="5. 配置官方固件"></a>5. 配置官方固件</h2><p>官方固件默认不开启Wi-Fi，默认不安装web管理界面，所以我们需要先使用命令行进行配置。</p>
 <p>使用 <code>ssh root@192.168.1.1</code> 登陆，windows的朋友还使用 putty，但是 port 需填写 22，connection type 选 SSH。</p>
 <p>然后输入 root 回车，再输入 admin 回车。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/oyll40uphimhngb1t8pmfcql/image_1bnvd5mqeofhlp61sa51q0c11fm2d.png" alt="image_1bnvd5mqeofhlp61sa51q0c11fm2d.png-22.6kB"></p>
+<p><img src="/images/6450c2de39907259390b2e4f293b4ec4.png" alt="image_1bnvd5mqeofhlp61sa51q0c11fm2d.png-22.6kB"></p>
 <p>接着会看到一个 LEDE 的 logo，说明登陆成功了，下一步安装web管理界面。</p>
 <blockquote>
 <p>以下内容选作</p>
@@ -206,9 +206,9 @@
 
 <p>使用 windows 的用户可以下载一个 <a href="https://sourceforge.net/projects/winscp/files/WinSCP/5.9.6/WinSCP-5.9.6-Portable.zip/download" target="_blank" rel="noopener">WinScp</a> 来远程复制文件：</p>
 <p>File protocol 选择 scp，hostname输入路由器IP，port写22，username写root，password写密码。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/6krs6kpjj5jtaxxs4we8ma47/image_1bnvf7v6un84c0v11qm1vku1sd37.png" alt="image_1bnvf7v6un84c0v11qm1vku1sd37.png-39.8kB"></p>
+<p><img src="/images/b2fc85fcbac6955b1c2fc2c68fa01d89.png" alt="image_1bnvf7v6un84c0v11qm1vku1sd37.png-39.8kB"></p>
 <p>点击login，然后再右侧窗口双击一下 <code>..</code> ，然后再双击 tmp 文件夹。然后再左侧窗口找到刚才备份的 mtd10.bin 文件，直接拖到右侧窗口的空白区域。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/5lt2mgcipjm2xiucliey687v/image_1bnvfagtt1k5f105kcgr7r132a3k.png" alt="image_1bnvfagtt1k5f105kcgr7r132a3k.png-193.8kB"></p>
+<p><img src="/images/38b4a52764c74bf82b95b87032f00a2f.png" alt="image_1bnvfagtt1k5f105kcgr7r132a3k.png-193.8kB"></p>
 <h3 id="8-2-还原-eeprom"><a href="#8-2-还原-eeprom" class="headerlink" title="8.2 还原 eeprom"></a>8.2 还原 eeprom</h3><p>使用 putty 或 ssh 登陆路由器，然后执行下面命令：</p>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mtd -r <span class="keyword">write</span> <span class="regexp">/tmp/m</span>td10.bin factory</span><br></pre></td></tr></table></figure>
 

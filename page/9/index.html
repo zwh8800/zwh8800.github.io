@@ -102,7 +102,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">execve</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">char</span> *<span class="keyword">const</span> argv[],</span></span></span><br><span class="line"><span class="function"><span class="params">           <span class="keyword">char</span> *<span class="keyword">const</span> envp[])</span></span>;</span><br></pre></td></tr></table></figure>
 
 <p>unix网络编程中的图给出了他们之间的关系：</p>
-<p><img src="http://static.zybuluo.com/zwh8800/3smuv4z4no4ddywavs5iegoq/image_1bl0edi351pei15d8vba25occg9.png" alt="image_1bl0edi351pei15d8vba25occg9.png-96.5kB"></p>
+<p><img src="/images/810da11ecabcedf3261250743fae6981.png" alt="image_1bl0edi351pei15d8vba25occg9.png-96.5kB"></p>
 
       
     </div>
@@ -234,8 +234,8 @@
         <p>select函数当被检测的文件描述符可读或可写或异常时返回. 可是究竟什么可以称作可读什么叫可写什么叫异常? 到达EOF算是哪一种? </p>
 <p><a href="/notename/" title="archive 20140110"></a></p>
 <p>unix网络编程中给出了详细解释:</p>
-<p><img src="http://static.zybuluo.com/zwh8800/xvnf7dr7n0o9sykpcmglpgnp/image_1bl0e2qg7f8r1he3n4p1lh510ec9.png" alt="image_1bl0e2qg7f8r1he3n4p1lh510ec9.png-406.5kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/ym29f11vmo4t5l8dpc6eepda/image_1bl0e35vmqrg1oie1bohovt16qdm.png" alt="image_1bl0e35vmqrg1oie1bohovt16qdm.png-158.1kB"></p>
+<p><img src="/images/cde5a02a26e5290df06952242382d83f.png" alt="image_1bl0e2qg7f8r1he3n4p1lh510ec9.png-406.5kB"></p>
+<p><img src="/images/2eaf22fffc2f1de1ae608463fa17086b.png" alt="image_1bl0e35vmqrg1oie1bohovt16qdm.png-158.1kB"></p>
 <p>简言之, 描述符可读就是以下情况:</p>
 <ul>
 <li><strong>有数据传过来</strong></li>
@@ -332,10 +332,10 @@
 <p>《unix网络编程》上的定义:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> &#123;</span></span><br><span class="line">  <span class="keyword">in_addr_t</span> s_addr;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> &#123;</span></span><br><span class="line">  <span class="keyword">uint8_t</span> sin_len;</span><br><span class="line">  <span class="keyword">sa_family_t</span> sin_family;</span><br><span class="line">  <span class="keyword">in_port_t</span> sin_port;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> <span class="title">sin_addr</span>;</span></span><br><span class="line">  <span class="keyword">char</span> sin_zero[<span class="number">8</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<h4 id="2-POSIX规范定义的类型"><a href="#2-POSIX规范定义的类型" class="headerlink" title="2)POSIX规范定义的类型:"></a>2)POSIX规范定义的类型:</h4><p><img src="http://static.zybuluo.com/zwh8800/no486kcpx7qwh2xcpizxm9ft/image_1bl0dmjqfum819j74jn19na1ecv9.png" alt="image_1bl0dmjqfum819j74jn19na1ecv9.png-77.2kB"></p>
+<h4 id="2-POSIX规范定义的类型"><a href="#2-POSIX规范定义的类型" class="headerlink" title="2)POSIX规范定义的类型:"></a>2)POSIX规范定义的类型:</h4><p><img src="/images/4ea58ed2d79ce2287587598283256931.png" alt="image_1bl0dmjqfum819j74jn19na1ecv9.png-77.2kB"></p>
 <h4 id="3-通用的套接字地址"><a href="#3-通用的套接字地址" class="headerlink" title="3)通用的套接字地址:"></a>3)通用的套接字地址:</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> &#123;</span></span><br><span class="line">  uint_8 sa_len;</span><br><span class="line">  <span class="keyword">sa_family_t</span> sa_family;</span><br><span class="line">  <span class="keyword">char</span> sa_data[<span class="number">14</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<h4 id="4-各种套接字地址结构体"><a href="#4-各种套接字地址结构体" class="headerlink" title="4)各种套接字地址结构体:"></a>4)各种套接字地址结构体:</h4><p><img src="http://static.zybuluo.com/zwh8800/0izqzgecyfprgyoinf0c13vy/image_1bl0dnjs71238jhiqo21omc17s5m.png" alt="image_1bl0dnjs71238jhiqo21omc17s5m.png-187.3kB"></p>
+<h4 id="4-各种套接字地址结构体"><a href="#4-各种套接字地址结构体" class="headerlink" title="4)各种套接字地址结构体:"></a>4)各种套接字地址结构体:</h4><p><img src="/images/b096dbb637e71cfe09740ba797dfbdcd.png" alt="image_1bl0dnjs71238jhiqo21omc17s5m.png-187.3kB"></p>
 <h4 id="5-字节序函数"><a href="#5-字节序函数" class="headerlink" title="5)字节序函数:"></a>5)字节序函数:</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">uint32_t</span> <span class="title">htonl</span><span class="params">(<span class="keyword">uint32_t</span> hostlong)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">uint16_t</span> <span class="title">htons</span><span class="params">(<span class="keyword">uint16_t</span> hostshort)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">uint32_t</span> <span class="title">ntohl</span><span class="params">(<span class="keyword">uint32_t</span> netlong)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">uint16_t</span> <span class="title">ntohs</span><span class="params">(<span class="keyword">uint16_t</span> netshort)</span></span>;</span><br></pre></td></tr></table></figure>
 
 <h4 id="6-ip地址转换函数"><a href="#6-ip地址转换函数" class="headerlink" title="6)ip地址转换函数:"></a>6)ip地址转换函数:</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">inet_pton</span><span class="params">(<span class="keyword">int</span> af, <span class="keyword">const</span> <span class="keyword">char</span> *src, <span class="keyword">void</span> *dst)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">const</span> <span class="keyword">char</span> *<span class="title">inet_ntop</span><span class="params">(<span class="keyword">int</span> af, <span class="keyword">const</span> <span class="keyword">void</span> *src, <span class="keyword">char</span> *dst, <span class="keyword">socklen_t</span> cnt)</span></span>;</span><br></pre></td></tr></table></figure>
@@ -442,7 +442,7 @@
 <p>word 中,选择 审阅-&gt;批注 可以增添批注;</p>
 <p>审阅他人文档时,采用修订的方法可以既修改也让他人看到修改了哪些内容 :切换到审阅选项卡,单击修订,修改部分会以红色显示;</p>
 <p>批量下载qq相册中的相片:批量下载器;</p>
-<p><img src="http://static.zybuluo.com/zwh8800/qobbndeljix43rqkm925zkw2/image_1bl0d7dpn1akd1um2g5l146315sm9.png" alt="image_1bl0d7dpn1akd1um2g5l146315sm9.png-52.6kB"></p>
+<p><img src="/images/b96610542193d9d157bcb3feee0a57f1.png" alt="image_1bl0d7dpn1akd1um2g5l146315sm9.png-52.6kB"></p>
 
       
     </div>
@@ -507,18 +507,18 @@
         <p>Quartus II开发工具的基本操作</p>
 <p><a href="/notename/" title="archive 20140105"></a></p>
 <p>1 新建工程 New project wizard</p>
-<p>2 file-new 编写源码,保存源文件.选择Processing-&gt;start-&gt;start analysis&amp;synthesis 或者单击对应图标<img src="http://static.zybuluo.com/zwh8800/3uecudnb738kr99yyjs5ft6r/image_1bl0cvqbj1cp8m9miju13lffdg9.png" alt="image_1bl0cvqbj1cp8m9miju13lffdg9.png-0.3kB"></p>
+<p>2 file-new 编写源码,保存源文件.选择Processing-&gt;start-&gt;start analysis&amp;synthesis 或者单击对应图标<img src="/images/7eaf49a4ca86aed1594b17f2e50c99e9.png" alt="image_1bl0cvqbj1cp8m9miju13lffdg9.png-0.3kB"></p>
 <p>3 Tools-Netlist Viewers – RTL Viewer 查看生成综合后的电路结构图</p>
 <p>4功能仿真: Processing-&gt;Generate Functional Simulation Netlist产生功能网络表;</p>
 <p>File-&gt;new 新建VWF向量波形文件. 右击 Insert -&gt;Insert Node or Bus 加入结点或总线,进行结点或总线信号的查找,选择</p>
 <p>需要仿真观察的信号,进行信号设置;</p>
 <p>保存文件;</p>
-<p>单击菜单选项<img src="http://static.zybuluo.com/zwh8800/e9um0n29wpd3zvha1ycy30i9/image_1bl0d0ep0v0r1tfg1ddhh5ev2m.png" alt="image_1bl0d0ep0v0r1tfg1ddhh5ev2m.png-0.2kB">进行仿真设置,如</p>
-<p><img src="http://static.zybuluo.com/zwh8800/chryl7k40ypf5wz7836ck9dy/image_1bl0d0r7u1nb31f0v1kl719vgic213.png" alt="image_1bl0d0r7u1nb31f0v1kl719vgic213.png-27kB"></p>
-<p>单击工具按钮<img src="http://static.zybuluo.com/zwh8800/2ou97rycqb1i5hsbx1tsup40/image_1bl0d1p0hbqh11anq6k9u717io2g.png" alt="image_1bl0d1p0hbqh11anq6k9u717io2g.png-0.3kB">进行功能仿真.</p>
-<p>5时序仿真  需要对整个工程进行全编译,<img src="http://static.zybuluo.com/zwh8800/azlmr3jwxsfqh4alr7z7hjiu/image_1bl0d28ne1pp711i3gj2toc10ba2t.png" alt="image_1bl0d28ne1pp711i3gj2toc10ba2t.png-0.3kB">,编译无误后</p>
-<p>修改<img src="http://static.zybuluo.com/zwh8800/r7xo8urwrnmlgk13sly1yd39/image_1bl0d2o351ca6qcp1b7hkkq41e3a.png" alt="image_1bl0d2o351ca6qcp1b7hkkq41e3a.png-26.9kB">为timing模式</p>
-<p>单击<img src="http://static.zybuluo.com/zwh8800/7rr32o2udef3yi5s0lwwqn6q/image_1bl0d33qb1upr1836mr01br11umg3n.png" alt="image_1bl0d33qb1upr1836mr01br11umg3n.png-0.3kB">,进行时序仿真.</p>
+<p>单击菜单选项<img src="/images/398b4b18f9458e2b73a3a076650f8935.png" alt="image_1bl0d0ep0v0r1tfg1ddhh5ev2m.png-0.2kB">进行仿真设置,如</p>
+<p><img src="/images/f29e7afe9d3c69600e51e369ae8bf3a3.png" alt="image_1bl0d0r7u1nb31f0v1kl719vgic213.png-27kB"></p>
+<p>单击工具按钮<img src="/images/fe67cb460aa38c4a9ecb6fc17b2b79a8.png" alt="image_1bl0d1p0hbqh11anq6k9u717io2g.png-0.3kB">进行功能仿真.</p>
+<p>5时序仿真  需要对整个工程进行全编译,<img src="/images/de4269738854f31936d4a83eb5683771.png" alt="image_1bl0d28ne1pp711i3gj2toc10ba2t.png-0.3kB">,编译无误后</p>
+<p>修改<img src="/images/80a945aa2bb2664e98bde7f55469f709.png" alt="image_1bl0d2o351ca6qcp1b7hkkq41e3a.png-26.9kB">为timing模式</p>
+<p>单击<img src="/images/280fdedb63e565f594ad7ade46e0fbd3.png" alt="image_1bl0d33qb1upr1836mr01br11umg3n.png-0.3kB">,进行时序仿真.</p>
 <p>Quartus II 与ModelSim联合开发</p>
 <p>源文件 测试文件编写完毕;</p>
 <p>单击<a href="https://hzzz.lengzzz.com/blog/wp-content/uploads/2014/01/QQ%E6%88%AA%E5%9B%BE20140105164431.png![image_1bl0d44n11p6r1aob1guvj9gp44.png-0.2kB][8],选择EDA" target="_blank" rel="noopener">https://hzzz.lengzzz.com/blog/wp-content/uploads/2014/01/QQ%E6%88%AA%E5%9B%BE20140105164431.png![image_1bl0d44n11p6r1aob1guvj9gp44.png-0.2kB][8],选择EDA</a> Tools Setting -&gt; Simulation进行相关仿真设置.</p>
@@ -587,15 +587,15 @@
         <p>看到很好用的如何焊接贴片IC, 果断收藏之供蛋蛋和我下次使用</p>
 <p><a href="/notename/" title="archive 20140104"></a></p>
 <p>1 先在PCB上固定IC的一个脚</p>
-<p><img src="http://static.zybuluo.com/zwh8800/re3vjmqlngko40taspij0x46/image_1bl05r33j97o1nro1ntq10ek1vl49.png" alt="image_1bl05r33j97o1nro1ntq10ek1vl49.png-568.4kB"></p>
+<p><img src="/images/23713de8e412ff76b6f92fd2da03179c.png" alt="image_1bl05r33j97o1nro1ntq10ek1vl49.png-568.4kB"></p>
 <p>2 堆满脚如图</p>
-<p><img src="http://static.zybuluo.com/zwh8800/9maaiwefi39bphswv9j9rxps/image_1bl05rd8hlvrvqo1o03v60m11m.png" alt="image_1bl05rd8hlvrvqo1o03v60m11m.png-508.1kB"></p>
+<p><img src="/images/815749f74aebc8cdc39873b496747a44.png" alt="image_1bl05rd8hlvrvqo1o03v60m11m.png-508.1kB"></p>
 <p>3 找细铜丝和松香</p>
-<p><img src="http://static.zybuluo.com/zwh8800/rz1g31b4flpn4t7y7mf91iaj/image_1bl05ron71fae1lo9lj01638in013.png" alt="image_1bl05ron71fae1lo9lj01638in013.png-295.9kB"></p>
+<p><img src="/images/86a6f3390b14ad41fa97f067b3310ca4.png" alt="image_1bl05ron71fae1lo9lj01638in013.png-295.9kB"></p>
 <p>4 放在IC脚上,用铜丝吸锡</p>
-<p><img src="http://static.zybuluo.com/zwh8800/vts0tqsvf4vxcym6r9itzh1w/image_1bl05s2sa1m7kp8oevv1ouf1kv01g.png" alt="image_1bl05s2sa1m7kp8oevv1ouf1kv01g.png-543.9kB"></p>
+<p><img src="/images/0aef725cb77144923f67af6fb45ace0a.png" alt="image_1bl05s2sa1m7kp8oevv1ouf1kv01g.png-543.9kB"></p>
 <p>5 用酒精清洗(用棉签)</p>
-<p><img src="http://static.zybuluo.com/zwh8800/zj534q1yth0gnyjym9angnc2/image_1bl05sc9s1fq21a1m11i0ne71mjg1t.png" alt="image_1bl05sc9s1fq21a1m11i0ne71mjg1t.png-548.1kB"></p>
+<p><img src="/images/c6fc5f75bc0e0f2e4b699bd49153b1e0.png" alt="image_1bl05sc9s1fq21a1m11i0ne71mjg1t.png-548.1kB"></p>
 
       
     </div>
@@ -725,20 +725,20 @@
 <p><a href="/notename/" title="archive 20140101"></a></p>
 <h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h2><p>ppp协议分为几个部分：LCP（链路控制协议）、NCP（网络控制协议）、认证协议（包括PAP协议和CHAP协议）、另外还有CCP（压缩控制协议）。</p>
 <p>如下图所示：</p>
-<p><img src="http://static.zybuluo.com/zwh8800/a6hlyfbtpz4boecszdsyxzx3/image_1bl05ebacvgpurr6fpo7neq79.png" alt="image_1bl05ebacvgpurr6fpo7neq79.png-186.3kB"></p>
+<p><img src="/images/3dc070a6f0c827a9ed80b5c778dab22c.png" alt="image_1bl05ebacvgpurr6fpo7neq79.png-186.3kB"></p>
 <p>ppp是一个分层结构。在底层，它能使用同步媒介（如ISDNH或同步DDN专线），也能使用异步媒介（如基于Modem拨号的PSTN网络）。</p>
 <p>在数据链路层，PPP在链路层建立方面提供了丰富的服务，这些服务以LCP协商选项的形式提供。</p>
 <p>在上层，PPP通过NCPs提供对多种网络层协议的支持。PPP对于每一种网络层协议都有一种封装格式来区别它们的报文。</p>
 <p>2.帧结构</p>
 <p>基本的ppp帧如下：</p>
-<p><img src="http://static.zybuluo.com/zwh8800/r3biqwsowcpafr5ecs8neoeq/image_1bl05fa3u39duuo146u5bl194em.png" alt="image_1bl05fa3u39duuo146u5bl194em.png-27.9kB"></p>
+<p><img src="/images/1a21f812dfa6fdfedc42c59ebcd46001.png" alt="image_1bl05fa3u39duuo146u5bl194em.png-27.9kB"></p>
 <p>标记用于标记一个ppp帧的开始和结束。</p>
 <p>地址域和控制域为固定值（0xff，0x03）</p>
 <p>协议的可选值如下：</p>
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">协议代码          对应协议</span><br><span class="line"></span><br><span class="line"><span class="number">0XC021</span>            LCP协议</span><br><span class="line"></span><br><span class="line"><span class="number">0XC023</span>            PAP协议</span><br><span class="line"></span><br><span class="line"><span class="number">0XC223</span>            CHAP协议</span><br><span class="line"></span><br><span class="line"><span class="number">0X8021</span>            IPCP协议</span><br><span class="line"></span><br><span class="line"><span class="number">0X0021</span>            IP协议</span><br></pre></td></tr></table></figure>
 
 <p>3.建立连接<br>PPP协商过程分为几个阶段:Dead阶段,Establish阶段,Authenticate阶段,Network阶段和Termintate阶段,在不同的阶段进行不同协议的协商.只有前面的协商出现结果后,才能转到下一个阶段,进行下一个协议的协商.</p>
-<p><img src="http://static.zybuluo.com/zwh8800/7wzboy6euy4kf8va6pprg1u1/image_1bl05h1551vu94i197egm118ie13.png" alt="image_1bl05h1551vu94i197egm118ie13.png-196.8kB"></p>
+<p><img src="/images/a63555aa4d314fa7fa1b837ce3a9e9d1.png" alt="image_1bl05h1551vu94i197egm118ie13.png-196.8kB"></p>
 <ol>
 <li>当物理层不可用时,PPP链路处于dead阶段,链路必须从这个阶段开始和结束.当物理层可用时,PPP在建立链路之前首先进行LCP协商,协商内容包括工作方式是SP还是MP,验证方式和最大传输单元等.</li>
 <li>LCP协商过后就进入Establish阶段,此时LCP状态为Opened,表示链路已经建立.</li>
@@ -755,16 +755,16 @@
 <p>传输IP报文时，没有编码和ID字段，在协议字段之后直接就是IP报文。</p>
 <p>4.验证</p>
 <p>PAP验证，没啥好说的，客户端向服务器发送明文用户名和密码，服务器发回Acknowledge或Not Acknowledge</p>
-<p><img src="http://static.zybuluo.com/zwh8800/gwucrscztqpdjg9s762gdu14/image_1bl05jtp3qs1148f13051c0d18491g.png" alt="image_1bl05jtp3qs1148f13051c0d18491g.png-187.3kB"></p>
+<p><img src="/images/2beeaa2f453bfb081b05aff37e0f47b6.png" alt="image_1bl05jtp3qs1148f13051c0d18491g.png-187.3kB"></p>
 <p>CHAP验证，比PAP验证安全，不明文发送密码。具体流程是这样：</p>
 <ol>
 <li>服务器向客户端发送一个随机生成的质询字符串（challenge string）和自己的主机名。</li>
 <li>客户端用自己的密码作为秘钥，通过单向加密算法（HASH）对服务器发来的质询字符串进行加密，之后将自己的用户名（明文）和加密后的质询字符串发送到服务器。</li>
 <li>服务器通过收到的用户名查询该用户的密码，用这个密码作为秘钥，也对刚刚的质询字符串进行单向加密，如果和用户发来的加密质询字符串一致的话，返回ACK，否则返回NAK。</li>
 </ol>
-<p><img src="http://static.zybuluo.com/zwh8800/xnl0u041txsy909p91bwigvd/image_1bl05kjrq19ln1tdg9fb1k4h159a1t.png" alt="image_1bl05kjrq19ln1tdg9fb1k4h159a1t.png-205.7kB"></p>
+<p><img src="/images/c55642822978f4b456742be1a5ae4aea.png" alt="image_1bl05kjrq19ln1tdg9fb1k4h159a1t.png-205.7kB"></p>
 <p>更明了的图如下：</p>
-<p><img src="http://static.zybuluo.com/zwh8800/3a6w8fs79dilcdzuberagmpt/image_1bl05krd67doh1ujmh5kkga72a.png" alt="image_1bl05krd67doh1ujmh5kkga72a.png-131.7kB"></p>
+<p><img src="/images/6d96e129603fcad51dcdbc37bec4942a.png" alt="image_1bl05krd67doh1ujmh5kkga72a.png-131.7kB"></p>
 
       
     </div>
@@ -828,7 +828,7 @@
       
         <p>小板子的电路图</p>
 <p><a href="/notename/" title="archive 20131230"></a></p>
-<p><img src="http://static.zybuluo.com/zwh8800/apiqvc77ebdiof4xqtqcti6i/image_1bl05am9h1r5era8b3r1n7aepl9.png" alt="image_1bl05am9h1r5era8b3r1n7aepl9.png-56kB"></p>
+<p><img src="/images/0b7c394cb434dc891c86e0df832ece46.png" alt="image_1bl05am9h1r5era8b3r1n7aepl9.png-56kB"></p>
 
       
     </div>

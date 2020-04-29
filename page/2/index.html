@@ -463,7 +463,7 @@
 <h3 id="4-数据层-1"><a href="#4-数据层-1" class="headerlink" title="4. 数据层"></a>4. 数据层</h3><p>数据库层做可伸缩的话常用的技术就是分库、分表。</p>
 <p>书中也介绍了一些开源的技术如 Cobar 之类的，不过我没有去深入研究。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>网上找了张图，总结的不错。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/ti6tmxx2iwifi0ptko2eq4e9/%E9%AB%98%E5%8F%AF%E7%94%A8%E5%8F%AF%E4%BC%B8%E7%BC%A9.png" alt="高可用可伸缩.png-27.5kB"></p>
+<p><img src="/images/56d5977b5a4140ed3f59db7c5aed710c.png" alt="高可用可伸缩.png-27.5kB"></p>
 
       
     </div>
@@ -623,7 +623,7 @@
         <p>最近无痛升级了 ubuntu 16.04 ，软件包和数据一点没丢。比上次 12.04 升级 14.04 舒服多了，直接 ssh 就搞定升级了。不得不说 ubuntu 已经成熟很多了。升级后我才发现多了个 <code>apt</code> 命令，用起来很符合我的审美，不过这个东西好像也存在比较久的一段时间了，实在是后知后觉了。</p>
 <p><a href="/notename/" title="it is time to replace apt-get with apt"></a></p>
 <p>apt 这个命令行工具在功能上基本涵盖了以前 apt-get 和 apt-cache 的功能，在他们之上提供了一个 high-level 的命令行界面，而且也更有交互性。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/j8b5ircljx0gzxv76c6w9wiv/image_1ajqh3qkm1kf81vb81kmtjldlipg.png" alt="image_1ajqh3qkm1kf81vb81kmtjldlipg.png-416.8kB"></p>
+<p><img src="/images/78febf75a690a0a0b38c17a8c046defe.png" alt="image_1ajqh3qkm1kf81vb81kmtjldlipg.png-416.8kB"></p>
 <p>在命令行下敲击 apt 后会打印出一些常见命令：</p>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">zzz@ubuntu-server ~ $ apt</span><br><span class="line">apt 1.2.10 (amd64)</span><br><span class="line">用法： apt [选项] 命令</span><br><span class="line"></span><br><span class="line">命令行软件包管理器 apt 提供软件包搜索，管理和信息查询等功能。</span><br><span class="line">它提供的功能与其他 APT 工具相同（像 apt-<span class="builtin-name">get</span> 和 apt-cache），</span><br><span class="line">但是默认情况下被设置得更适合交互。</span><br><span class="line"></span><br><span class="line">常用命令：</span><br><span class="line">  list - 根据名称列出软件包</span><br><span class="line">  search - 搜索软件包描述</span><br><span class="line">  show - 显示软件包细节</span><br><span class="line">  install - 安装软件包</span><br><span class="line">  <span class="builtin-name">remove</span> - 移除软件包</span><br><span class="line">  autoremove - 卸载所有自动安装且不再使用的软件包</span><br><span class="line">  update - 更新可用软件包列表</span><br><span class="line"> <span class="built_in"> upgrade </span>- 通过 安装/升级 软件来更新系统</span><br><span class="line">  full-upgrade - 通过 卸载/安装/升级 来更新系统</span><br><span class="line">  edit-sources - 编辑软件源信息文件</span><br><span class="line"></span><br><span class="line">参见 apt(8) 以获取更多关于可用命令的信息。</span><br><span class="line">程序配置选项及语法都已经在 apt.conf(5) 中阐明。</span><br><span class="line">欲知如何配置软件源，请参阅 sources.list(5)。</span><br><span class="line">软件包及其版本偏好可以通过 apt_preferences(5) 来设置。</span><br><span class="line">关于安全方面的细节可以参考 apt-secure(8).</span><br><span class="line">                                         本 APT 具有超级牛力。</span><br></pre></td></tr></table></figure>
 
@@ -702,7 +702,7 @@
 <p>| 数据库 | elasticsearch |<br>|  |  |<br>| Databases | 索引（Indices） |<br>| Tables | 类型（Types） |<br>| Rows | 文档（Documents） |<br>| Columns | 字段（Fields） |<br>| schema | Mapping |</p>
 <p>在 elasticsearch 中保存的每条记录叫一个 <code>document</code> ，它可以是一个包含很多字段的对象，默认情况下每个字段都能被搜索。</p>
 <h3 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h3><p>使用 curl 就可以对 elasticsearch 进行操作，但是我还是推荐一个 chrome 应用 <a href="https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop" target="_blank" rel="noopener" title="postman 的下载链接"><code>postman</code></a> ，有 JSON 语法高亮和检测，还可以保存历史记录。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/ohw9r0kvh69o6stu45td81sj/90.pic_hd.jpg" alt="90.pic_hd.jpg-1070kB"></p>
+<p><img src="/images/e1cb8a757d384d5cc83ac6945bdeef0e.jpg" alt="90.pic_hd.jpg-1070kB"></p>
 <h4 id="索引一条记录"><a href="#索引一条记录" class="headerlink" title="索引一条记录"></a>索引一条记录</h4><p>在 elasticsearch 中存储数据的行为叫做 <code>索引（index）</code> 。使用 HTTP 协议的 PUT 动词可以存储数据。</p>
 <figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PUT <span class="symbol">http:</span>/<span class="regexp">/localhost:9200/mdblog</span><span class="regexp">/note/</span><span class="number">23432</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"id"</span>: <span class="number">23</span>,</span><br><span class="line">    <span class="string">"notename"</span>: <span class="string">"golang-china-download-mirror"</span>,</span><br><span class="line">    <span class="string">"title"</span>: <span class="string">"做了个 golang 安装包的镜像"</span>,</span><br><span class="line">    <span class="string">"content"</span>: <span class="string">"做了个 golang 安装包的镜像 闲扯 golang\n        \n        2016-05-25 16:04 PM\n    鉴于国情，国内下载 golang 安装包还是挺蛋疼的，就算使用代理速度也比较感人。虽然现在 docker 镜像是个比较好的选择，但还是有很多场景需要原始的 golang 环境的。所以抽空做了个 mirror ，定时拉取 golang 官网的安装包到我的服务器上。地址在这里：https://lengzzz.com/download/golang/包含了 golang 1.5 之后的所有版本，所有平台的安装包和源码包都放在里面，自行 control + f 搜一下吧。新版本的 golang release 之后，应该在一两天内可以拉取过来。欢迎使用。"</span>,</span><br><span class="line">    <span class="string">"timestamp"</span>: <span class="string">"2016-05-25T08:04:53Z"</span>,</span><br><span class="line">    <span class="string">"lastModified"</span>: <span class="string">"2016-05-25T09:01:42.923822162Z"</span>,</span><br><span class="line">    <span class="string">"tagList"</span>: [</span><br><span class="line">      <span class="string">"golang"</span>,</span><br><span class="line">      <span class="string">"闲扯"</span></span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 
@@ -812,7 +812,7 @@
 <p>地址在这里：<a href="https://lengzzz.com/download/golang/">https://lengzzz.com/download/golang/</a></p>
 <p>包含了 golang 1.5 之后的所有版本，所有平台的安装包和源码包都放在里面，自行 <code>control + f</code> 搜一下吧。新版本的 golang release 之后，应该在一两天内可以拉取过来。</p>
 <p>欢迎使用。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/irj91ef52ump2v4ap7b2bti2/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-05-25%20%E4%B8%8B%E5%8D%884.06.56.png" alt="屏幕快照 2016-05-25 下午4.06.56.png-311.7kB"></p>
+<p><img src="/images/1f5556f01de37fc838e02d1c4d7a6682.png" alt="屏幕快照 2016-05-25 下午4.06.56.png-311.7kB"></p>
 
       
     </div>
@@ -1024,14 +1024,14 @@
       
         <p><a href="https://lengzzz.com">lengzzz.com</a> 这个域名我已经用了6年了，当年年少无知用了 oray 的服务，就为了一个花生壳的功能（tplink自带花生壳）。现在越发感觉 oray 的服务质量不很好。各省解析速度不一，国外就更慢了。尤其是不支持 <code>let&#39;s encrypt</code> 让我好生郁闷。所以赶紧换上了 CloudXNS 。</p>
 <p>CloudXNS 的页面就看着比较顺眼。据说 DNSPod 也不错，但是我感觉网页太丑了，就没有使用它，哈哈，所以证明一句话 <strong>你的颜值决定了别人会不会去发现你的内心</strong> 。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/gmz55dfpsc6k07y0ctrcf80y/QQ20160501-0@2x.png" alt="QQ20160501-0@2x.png-321.5kB"></p>
+<p><img src="/images/f9e146686ecd27ddbd7424e8c6a6169b.png" alt="QQ20160501-0@2x.png-321.5kB"></p>
 <p>注册了之后发现使用超级方便，只给你显示了一个超大的输入框，让你输入自己的域名。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/cpgnk0wkgntpg08az7heqecr/QQ20160501-1@2x.png" alt="QQ20160501-1@2x.png-43.7kB"></p>
+<p><img src="/images/0e13753a1874c7bf2b348f4aca064f45.png" alt="QQ20160501-1@2x.png-43.7kB"></p>
 <p>输入之后，就进入了控制台节目了，好像你的域名已经托管在 CloudXNS 上了一样，当你设置好解析之后，只需要把之前域名的 NS 地址设置到 CloudXNS 上就好了。整个用户体验相当舒服。</p>
 <p>设置好之后，控制台上会实时显示接管状态。不过5分钟，就可以用了。立即用 let’s encrypt 更新一下 ssl 证书。果然可以用了。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/a3cvhjcpf7v0d965cnxeceqo/QQ20160501-2@2x.png" alt="QQ20160501-2@2x.png-70.3kB"></p>
+<p><img src="/images/24d97e9041fe854f0a0a90461e921a72.png" alt="QQ20160501-2@2x.png-70.3kB"></p>
 <p>最后来张测速图吧。</p>
-<p><img src="http://static.zybuluo.com/zwh8800/nh72858jdjk7fwt42x1us6rp/QQ20160501-3@2x.png" alt="QQ20160501-3@2x.png-138.9kB"></p>
+<p><img src="/images/7d9691daa44d1454cc69023bfa78d502.png" alt="QQ20160501-3@2x.png-138.9kB"></p>
 
       
     </div>

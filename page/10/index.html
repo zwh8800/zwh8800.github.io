@@ -87,10 +87,10 @@
 <p><a href="/notename/" title="archive 20131228"></a></p>
 <p>然后呢，用万用表测测是不是板子没焊好吧，没有呀，都焊的牢牢实实的，把代码中乱七八糟的东西删了，只输出8位数字到595，用万用表也测不出电压，所有引脚都是0。怒了，一天都没过好！第二天，重整心情，还以为是那块595有问题(唉芯片一般不坏的，怎么就脑子抽了)然后用最后一块595又做了一块板子，竟然还是一样的效果！唉，无语了，突然想到，做个led板专门用来测试电平吧，做好之后竟然发现，两个板子都没坏，595输出的很好！最后终于发现，原来又是代码中的bug，原来串行输出应该MSB优先T^T唉，白费了两天功夫。不过做了个LED测试板还挺有用呢</p>
 <p>怎么都今天了我还没发出这篇文章 前几天就写了一直在草稿箱里</p>
-<p><img src="http://static.zybuluo.com/zwh8800/r16pcjhvpjiiibydo369eadf/image_1bl057qaa12411tafrfdjaj2f89.png" alt="image_1bl057qaa12411tafrfdjaj2f89.png-272.2kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/o4peou451tbmdri150tubekm/image_1bl0581l565iv9l2ji7q1jkvm.png" alt="image_1bl0581l565iv9l2ji7q1jkvm.png-733.7kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/wvn4djt6ry5opxl5diykry65/image_1bl058eg41cq2mcp11oeeoo6bo13.png" alt="image_1bl058eg41cq2mcp11oeeoo6bo13.png-756.2kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/jfa74776rwtlprpjhojjymae/image_1bl058llt13a8p9ed521bi14bm1g.png" alt="image_1bl058llt13a8p9ed521bi14bm1g.png-732.7kB"></p>
+<p><img src="/images/83daa1412d02da30f384bfd292e10e31.png" alt="image_1bl057qaa12411tafrfdjaj2f89.png-272.2kB"></p>
+<p><img src="/images/abb8a460de6bcfea09b62a86e8130b4c.png" alt="image_1bl0581l565iv9l2ji7q1jkvm.png-733.7kB"></p>
+<p><img src="/images/52ac67df2c3f17531a30c94b4ad623c6.png" alt="image_1bl058eg41cq2mcp11oeeoo6bo13.png-756.2kB"></p>
+<p><img src="/images/4bcf89328f0feff1894a7e30850a376a.png" alt="image_1bl058llt13a8p9ed521bi14bm1g.png-732.7kB"></p>
 
       
     </div>
@@ -170,7 +170,7 @@
 <p>没想到, 当时以为改对了的, 还是有BUG.</p>
 <p>当时的想法是, 既然除以1000000之后把小数部分消去了, 那就先乘上time_us(当时也意识到了, 这样会比之前慢一些, 因为SYSCLK / 1000000会在编译时优化求值, 而先做乘法, 再做除法的话两个工作都会在运行时进行)</p>
 <p>如果当时的想法能向前再走一步的话就会找到这个BUG了. 既然要在运行时进行, 那么SYSCLK&gt;32768, 会被认为是为signed int, 然后乘以time_us, time_us是unsigned char类型. 所以提升成signed int, 可是在Delay_ms函数中调用的是Delay_us(100), 24500000 * 100 = 2’450’000’000而232 / 2 – 1 = 2’147’483’647, 比2’450’000’000要小!, signed int的最大值竟然比2’450’000’000还小…之后的事情大家知道了吧, 2’450’000’000会被截断成一个负数!(对, 就是负数…)</p>
-<p><img src="http://static.zybuluo.com/zwh8800/8qz85rwvubngw6a4i33hr5w8/image_1bl05485217g51fci1kl2i1g19809.png" alt="image_1bl05485217g51fci1kl2i1g19809.png-74.2kB"></p>
+<p><img src="/images/132ae9b227d5c8db1ebcfed996305a03.png" alt="image_1bl05485217g51fci1kl2i1g19809.png-74.2kB"></p>
 <p>原谅我才疏学浅, 这是第一次遇见超整数上限的事情(貌似原来写PSP程序的时候也遇见过一次, 取随机数超过signed int上限, psp平台的随机数最大是SIGNED_INT_MAX, 再进行加法的话就变成负的了)</p>
 <p>一定记住教训!</p>
 
@@ -236,8 +236,8 @@
       
         <p>算是最小系统啦</p>
 <p><a href="/notename/" title="archive 20131215"></a></p>
-<p><img src="http://static.zybuluo.com/zwh8800/tcyexggex57wj8lmbi0ztum8/image_1bl051gmh1hm91ms71eovp14mb09.png" alt="image_1bl051gmh1hm91ms71eovp14mb09.png-216.9kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/2p75h1i8okehqmugzybtudsv/image_1bl051lr0a8ausd1buv1t1s1k4nm.png" alt="image_1bl051lr0a8ausd1buv1t1s1k4nm.png-221.8kB"></p>
+<p><img src="/images/0b7a6e79d3a822542a9bef929a7acf77.png" alt="image_1bl051gmh1hm91ms71eovp14mb09.png-216.9kB"></p>
+<p><img src="/images/5350611a587b1c4155b3f7162f957905.png" alt="image_1bl051lr0a8ausd1buv1t1s1k4nm.png-221.8kB"></p>
 
       
     </div>
@@ -301,9 +301,9 @@
       
         <p>超级无敌NB计数器</p>
 <p><a href="/notename/" title="archive 20131214"></a></p>
-<p><img src="http://static.zybuluo.com/zwh8800/idbzm9nj847q2an1s6mz4ufd/image_1bl04vco31pjf1p4m1gi68r426p9.png" alt="image_1bl04vco31pjf1p4m1gi68r426p9.png-790.1kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/akvs4uw9yck13f55at6rx5id/image_1bl04vip92gc1jfm375o8f63cm.png" alt="image_1bl04vip92gc1jfm375o8f63cm.png-759.6kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/kdt4ni0n1ieycizgp7nks1ru/image_1bl04vqlrkun4ep62f46r9ma13.png" alt="image_1bl04vqlrkun4ep62f46r9ma13.png-761.1kB"></p>
+<p><img src="/images/7d278f59dbd4aeba7a7080aa2add7d5a.png" alt="image_1bl04vco31pjf1p4m1gi68r426p9.png-790.1kB"></p>
+<p><img src="/images/5426c3942423ff50c225b233a1399263.png" alt="image_1bl04vip92gc1jfm375o8f63cm.png-759.6kB"></p>
+<p><img src="/images/bfc0eb6713354831ccde983cb8f62843.png" alt="image_1bl04vqlrkun4ep62f46r9ma13.png-761.1kB"></p>
 
       
     </div>
@@ -367,16 +367,16 @@
       
         <p>感觉好有艺术感 (一定要戳大图!)</p>
 <p><a href="/notename/" title="archive 20131208"></a></p>
-<p><img src="http://static.zybuluo.com/zwh8800/qbcdsijq5ovtovjxaii2ftzg/image_1bl04f6221q671uvp1oblqg6s4r9.png" alt="image_1bl04f6221q671uvp1oblqg6s4r9.png-753.5kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/pli3cwo59kx04lv9mr1xiqsk/image_1bl04fk4ut86lr5iso8qr9v6m.png" alt="image_1bl04fk4ut86lr5iso8qr9v6m.png-741.3kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/plr2qy30morvihii50pkbun8/image_1bl04fsqtfqe15e01qfa19tthvu13.png" alt="image_1bl04fsqtfqe15e01qfa19tthvu13.png-812.6kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/rqwos01xi14lmoud5p393ikg/image_1bl04qj1b18741hpstjod6e98s1g.png" alt="image_1bl04qj1b18741hpstjod6e98s1g.png-890.3kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/f0xar0imf5hlqda5xiorw3c0/image_1bl04qtvr2se12v1nfvp9j1ans1t.png" alt="image_1bl04qtvr2se12v1nfvp9j1ans1t.png-800.7kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/fb7xp5ogu5idtoi77bsus79v/image_1bl04rahcig8ud7ike1vjrlea2a.png" alt="image_1bl04rahcig8ud7ike1vjrlea2a.png-798.8kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/51bvmvc0s0jo11xt0w24tf5b/image_1bl04rirttf211j62lg1n4p1q8r2n.png" alt="image_1bl04rirttf211j62lg1n4p1q8r2n.png-737.5kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/k96d7wnq3xgpdj70ep21xbaj/image_1bl04rqma1c561km7sk81pmqcss34.png" alt="image_1bl04rqma1c561km7sk81pmqcss34.png-859.5kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/hea0nfelfj6j60ymuowrqoj3/image_1bl04s55c1qon1ifb130l9kj1qtj3h.png" alt="image_1bl04s55c1qon1ifb130l9kj1qtj3h.png-879kB"></p>
-<p><img src="http://static.zybuluo.com/zwh8800/wlyuvwlaswxt34wiood9wu5q/image_1bl04sh89iba3r5jso3fqsqi3u.png" alt="image_1bl04sh89iba3r5jso3fqsqi3u.png-838.8kB"></p>
+<p><img src="/images/366a663eec4a5c863780ab3ff6ba7cd1.png" alt="image_1bl04f6221q671uvp1oblqg6s4r9.png-753.5kB"></p>
+<p><img src="/images/ef39de5db56d5becfa8dba58dff1ace0.png" alt="image_1bl04fk4ut86lr5iso8qr9v6m.png-741.3kB"></p>
+<p><img src="/images/d30dfc2598bb816080a6df7b657a8d89.png" alt="image_1bl04fsqtfqe15e01qfa19tthvu13.png-812.6kB"></p>
+<p><img src="/images/17c6b9720682e406797ca9dc7ae9441b.png" alt="image_1bl04qj1b18741hpstjod6e98s1g.png-890.3kB"></p>
+<p><img src="/images/f11c32fb7dec828a00662aa3a58e21f2.png" alt="image_1bl04qtvr2se12v1nfvp9j1ans1t.png-800.7kB"></p>
+<p><img src="/images/0b37ed5f811b5451ea2887bb726650a5.png" alt="image_1bl04rahcig8ud7ike1vjrlea2a.png-798.8kB"></p>
+<p><img src="/images/ef8e05c740dfad44c2e802887d503180.png" alt="image_1bl04rirttf211j62lg1n4p1q8r2n.png-737.5kB"></p>
+<p><img src="/images/86e89162cb0375f665680bacbb205b2a.png" alt="image_1bl04rqma1c561km7sk81pmqcss34.png-859.5kB"></p>
+<p><img src="/images/1f44b7e348d0b6dd7ac67f3255ddcd9b.png" alt="image_1bl04s55c1qon1ifb130l9kj1qtj3h.png-879kB"></p>
+<p><img src="/images/dde52ac6594d34fe28db43ebb2308011.png" alt="image_1bl04sh89iba3r5jso3fqsqi3u.png-838.8kB"></p>
 
       
     </div>
@@ -440,9 +440,9 @@
       
         <p>体感LED制作中…</p>
 <p><a href="/notename/" title="archive 20131205"></a></p>
-<p><img src="http://static.zybuluo.com/zwh8800/768qcafw3bc3lmbnf2ugcrlb/image_1bl04caee2u59911vbac1g6ior.png" alt="image_1bl04caee2u59911vbac1g6ior.png-669.9kB"></p>
+<p><img src="/images/9766285504d1c937e837356b513fa689.png" alt="image_1bl04caee2u59911vbac1g6ior.png-669.9kB"></p>
 <p>焊了一个小灯和电阻 结果焊锡不够啦</p>
-<p><img src="http://static.zybuluo.com/zwh8800/ut20c8t2ujlripcbzu10oesb/image_1bl04dd781lljp1e8a31e2p1muh1o.png" alt="image_1bl04dd781lljp1e8a31e2p1muh1o.png-842.5kB"></p>
+<p><img src="/images/a02775d3010d0cc58e4f1e3863194a50.png" alt="image_1bl04dd781lljp1e8a31e2p1muh1o.png-842.5kB"></p>
 <p>灯座板焊好了 不过发现致命问题 电流不够  哎 再加三极管驱动吧</p>
 
       
@@ -507,7 +507,7 @@
       
         <p>高端收音机</p>
 <p><a href="/notename/" title="archive 20131130"></a></p>
-<p><img src="http://static.zybuluo.com/zwh8800/etlw3yte6pjrun4o1xe00zeu/image_1bl047o0r1g5614npsfu15sjsk59.png" alt="image_1bl047o0r1g5614npsfu15sjsk59.png-6197.1kB"></p>
+<p><img src="/images/3620a27d636efeb6417dad593edf1452.png" alt="image_1bl047o0r1g5614npsfu15sjsk59.png-6197.1kB"></p>
 
       
     </div>
@@ -571,7 +571,7 @@
       
         <p>成功在51单片机上实现web服务器 好高兴</p>
 <p><a href="/notename/" title="archive 20131127"></a></p>
-<p><img src="http://static.zybuluo.com/zwh8800/1a4d4dev8p6pwl7qkzheyy18/image_1bl0468548leamrde1h49jbn9.png" alt="image_1bl0468548leamrde1h49jbn9.png-128.1kB"></p>
+<p><img src="/images/3d0659bdf1dfb2cf95909be08f41a54b.png" alt="image_1bl0468548leamrde1h49jbn9.png-128.1kB"></p>
 
       
     </div>
@@ -635,9 +635,9 @@
       
         <p>astyle简直神器!</p>
 <p><a href="/notename/" title="archive 20131125"></a></p>
-<p><img src="http://static.zybuluo.com/zwh8800/ritdzjxrxmu4lhsc31bdw9ki/image_1bl0437ok6c31ombglc1r2d1abc9.png" alt="image_1bl0437ok6c31ombglc1r2d1abc9.png-32.4kB"></p>
+<p><img src="/images/11815fc5b0dc6015897dd833142053ba.png" alt="image_1bl0437ok6c31ombglc1r2d1abc9.png-32.4kB"></p>
 <p>翔一般的代码风格</p>
-<p><img src="http://static.zybuluo.com/zwh8800/w7ye9oh78jbkjd8alo8wudhr/image_1bl043r241sgd1ct16ge1sf10ujm.png" alt="image_1bl043r241sgd1ct16ge1sf10ujm.png-32.7kB"></p>
+<p><img src="/images/e5fa9a5c9dd1a45829d1f58f4eb6d2de.png" alt="image_1bl043r241sgd1ct16ge1sf10ujm.png-32.7kB"></p>
 <p>一秒修复!</p>
 <p>老谭的代码 我不怕不怕啦!</p>
 
@@ -703,7 +703,7 @@
       
         <p>已实现发送数据报，发了个arp请求测试</p>
 <p><a href="/notename/" title="archive 20131124"></a></p>
-<p><img src="http://static.zybuluo.com/zwh8800/l2iif053s8aahjc3r5rtls33/image_1bl040ifl1mh5ge8tj21f1kvamm.png" alt="image_1bl040ifl1mh5ge8tj21f1kvamm.png-190.4kB"></p>
+<p><img src="/images/dd6baf3c7f7c77e10c540dece3b38e53.png" alt="image_1bl040ifl1mh5ge8tj21f1kvamm.png-190.4kB"></p>
 
       
     </div>

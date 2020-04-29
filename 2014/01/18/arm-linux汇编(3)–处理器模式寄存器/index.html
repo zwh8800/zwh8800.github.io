@@ -96,7 +96,7 @@ c">
 <p><a href="/notename/" title="archive 20140118"></a></p>
 <p>上一篇中给出了在arm体系架构中[用户态]的寄存器, 共有16个通用寄存器r0-r15和一个通用程序状态寄存器(cpsr).</p>
 <h6 id="1-这次接着说通用程序状态寄存器"><a href="#1-这次接着说通用程序状态寄存器" class="headerlink" title="1.这次接着说通用程序状态寄存器"></a>1.这次接着说通用程序状态寄存器</h6><p>先看图:</p>
-<p><img src="http://static.zybuluo.com/zwh8800/z5m5jxx45x7iy1qvaksufyf8/image_1bl0ld0ga1lkn16khh2rvg1j3a9.png" alt="image_1bl0ld0ga1lkn16khh2rvg1j3a9.png-116.9kB"></p>
+<p><img src="/images/28991ebc5db7944a343f3ed4838bf94b.png" alt="image_1bl0ld0ga1lkn16khh2rvg1j3a9.png-116.9kB"></p>
 <p>cpsr分为4个域, 每个域8位, 分别是<strong>标志域</strong>, <strong>状态域</strong>, <strong>扩展域</strong>和<strong>控制域</strong>.(图上画的有点错误, 扩展域画大了, mode和I,F,T都是控制域的)</p>
 <p>其中标志域表示运算结果的标志. 控制域中, I为1表示屏蔽掉普通中断, F为1表示屏蔽掉快速中断, T为1表示当前为thumb模式.</p>
 <p>Mode域表示了当前CPU的处理器模式.</p>
@@ -125,7 +125,7 @@ c">
 <p>当执行的指令未定义时进入Undefined模式.</p>
 <p>是否为特权模式决定了那些寄存器是可用的, 以及cpsr本身的访问权限. 对于特权模式, 对cpsr有完全的访问权限(MSR和MRS指令), 对以非特权模式, 只能读控制域但可读写条件标志域.</p>
 <h6 id="3-寄存器"><a href="#3-寄存器" class="headerlink" title="3.寄存器"></a>3.寄存器</h6><p>arm架构共有37个寄存器但在不同时刻有20个寄存器是隐藏的(图中阴影部分), 只有当寄存器处于某种特定模式时, 才能访问特定的寄存器(如在abort模式才能访问r13_abt), 另外, 在不同的模式访问cpsr都是同一个, 而spsr_mode用来保存进入特权模式之前的cpsr以便保存异常之前的现场.</p>
-<p><img src="http://static.zybuluo.com/zwh8800/ksx9ajg9g1bzznq9qd8doqu7/image_1bl0lfomu104c13dd161112p81p89m.png" alt="image_1bl0lfomu104c13dd161112p81p89m.png-178.8kB"></p>
+<p><img src="/images/c60cfa84042bad9d13e432b0b7436873.png" alt="image_1bl0lfomu104c13dd161112p81p89m.png-178.8kB"></p>
 <table class="wikitable">
 <caption>Registers across CPU modes</caption>
 <tbody>
