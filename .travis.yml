@@ -7,6 +7,7 @@ branches:
   only:
     - build # build build branch only
 script:
+  - ln theme.config.yml themes/Hacker/_config.yml
   - hexo generate # generate static files
 deploy:
   provider: pages
