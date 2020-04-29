@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>select就绪条件 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="select函数当被检测的文件描述符可读或可写或异常时返回. 可是究竟什么可以称作可读什么叫可写什么叫异常? 到达EOF算是哪一种? 
+
+unix网络编程中给出了详细解释:
+
+
+简言之, 描述符可读就是以下情况:
+
+有数据传过来
+对端关闭连接(到达EOF)
+监听套接字收到连接请求
+发生套接字错误
+
+">
+  
+
+  
+  
+  <meta name="keywords" content="系统编程,网络编程,unix">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="select就绪条件"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>select就绪条件</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/10/select就绪条件/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-10T00:00:00.000Z">
+          2014-01-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>select函数当被检测的文件描述符可读或可写或异常时返回. 可是究竟什么可以称作可读什么叫可写什么叫异常? 到达EOF算是哪一种? </p>
+<p><a href="/notename/" title="archive 20140110"></a></p>
+<p>unix网络编程中给出了详细解释:</p>
+<p><img src="http://static.zybuluo.com/zwh8800/xvnf7dr7n0o9sykpcmglpgnp/image_1bl0e2qg7f8r1he3n4p1lh510ec9.png" alt="image_1bl0e2qg7f8r1he3n4p1lh510ec9.png-406.5kB"></p>
+<p><img src="http://static.zybuluo.com/zwh8800/ym29f11vmo4t5l8dpc6eepda/image_1bl0e35vmqrg1oie1bohovt16qdm.png" alt="image_1bl0e35vmqrg1oie1bohovt16qdm.png-158.1kB"></p>
+<p>简言之, 描述符可读就是以下情况:</p>
+<ul>
+<li><strong>有数据传过来</strong></li>
+<li><strong>对端关闭连接(到达EOF)</strong></li>
+<li><strong>监听套接字收到连接请求</strong></li>
+<li><strong>发生套接字错误</strong></li>
+</ul>
+<p>描述符可写是以下情况</p>
+<ul>
+<li><strong>缓冲区空闲可写</strong></li>
+<li><strong>写半部关闭</strong></li>
+<li><strong>connect建立连接完成</strong></li>
+<li><strong>发生套接字错误</strong></li>
+</ul>
+<p>描述符异常只有一种情况: <strong>有带外数据到达</strong>.</p>
+<p>表格6.7更加清晰</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/系统编程/">系统编程</a><a href="/tags/网络编程/">网络编程</a><a href="/tags/unix/">unix</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

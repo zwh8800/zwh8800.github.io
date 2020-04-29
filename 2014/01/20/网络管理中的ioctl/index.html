@@ -1,0 +1,221 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>网络管理中的ioctl | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="ioctl函数传统上用于哪些不适合归入其他精细定义类别的特性的系统接口. 虽然POSIX一直在致力于创造特殊函数来取代ioctl函数, 但目前来说大多数网络编程相关的特性还需要用ioctl来实现. 特别是用于网络管理方面的相当之多(如设置ip, 获取接口, 访问路由表, 访问arp).
+
+原型:
+1">
+  
+
+  
+  
+  <meta name="keywords" content="Linux,网络编程,unix">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="网络管理中的ioctl"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>网络管理中的ioctl</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/20/网络管理中的ioctl/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-20T00:00:00.000Z">
+          2014-01-20
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>ioctl函数传统上用于哪些不适合归入其他精细定义类别的特性的系统接口. 虽然POSIX一直在致力于创造特殊函数来取代ioctl函数, 但目前来说大多数网络编程相关的特性还需要用ioctl来实现. 特别是用于网络管理方面的相当之多(如设置ip, 获取接口, 访问路由表, 访问arp).</p>
+<p><a href="/notename/" title="archive 20140120"></a></p>
+<p>原型:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ioctl</span><span class="params">(<span class="keyword">int</span> d, <span class="keyword">int</span> request, ... <span class="comment">/* void *arg */</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>ioctl的具体用法就不说了, 熟悉linux编程的都或多或少用过. 现在具体说下在网络编程下request的可选值和对应arg指向的的数据类型(在网络编程中arg是一个指针, 下面给出的数据类型都是这个指针要指向的类型).</p>
+<p><img src="http://static.zybuluo.com/zwh8800/fu1zcw4n9u9mpcec1o2h65q1/image_1bl0lpcf75ua1ea638dn4f1oo89.png" alt="image_1bl0lpcf75ua1ea638dn4f1oo89.png-184kB"></p>
+<p>总结一下的话就是:</p>
+<ul>
+<li>除了文件相关的请求, 其他网络相关的都是<strong>SIOC为前缀</strong>(貌似是socket io control?).</li>
+<li>设置的请求在前缀后面跟一个<strong>S</strong>, 获取的请求在后面跟一个<strong>G</strong>.</li>
+<li>接口请求在SIOC[G/S]后面都跟一个<strong>IF</strong>(interface).</li>
+<li>接口请求除了SIOCGIFCONF(获取接口列表)的参数是<strong>struct ifconf</strong>以外, 其他所有的都是<strong>struct ifreq</strong>.</li>
+<li>arp请求的参数都是<strong>struct arpreq</strong>.</li>
+<li>路由的请求都是<strong>struct rtentry</strong> (route entry).</li>
+</ul>
+<p>下面重点学习一下接口请求:</p>
+<p>接口请求除了上面图上的, 还有很多. 具体的可以去参考ioctl_list(2)中. 文章最下面也有一个表, 有所有的接口相关的request.</p>
+<p>一般情况下, 进行网络配置时, 都会先获取所有网络接口列表, 从内核获取接口列表使用SIOCGIFCONF请求完成. 它会用到struct ifconf结构, 而ifconf结构又会用到ifreq结构:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* --&lt;net/if.h&gt;-- */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ifreq</span></span></span><br><span class="line"><span class="class">  &#123;</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> IFHWADDRLEN	6</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> IFNAMSIZ	IF_NAMESIZE</span></span><br><span class="line">    <span class="keyword">union</span></span><br><span class="line">      &#123;</span><br><span class="line">	<span class="keyword">char</span> ifrn_name[IFNAMSIZ];	<span class="comment">/* Interface name, e.g. "en0".  */</span></span><br><span class="line">      &#125; ifr_ifrn;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">union</span></span><br><span class="line">      &#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> <span class="title">ifru_addr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> <span class="title">ifru_dstaddr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> <span class="title">ifru_broadaddr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> <span class="title">ifru_netmask</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> <span class="title">ifru_hwaddr</span>;</span></span><br><span class="line">	short <span class="keyword">int</span> ifru_flags;</span><br><span class="line">	<span class="keyword">int</span> ifru_ivalue;</span><br><span class="line">	<span class="keyword">int</span> ifru_mtu;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifmap</span> <span class="title">ifru_map</span>;</span></span><br><span class="line">	<span class="keyword">char</span> ifru_slave[IFNAMSIZ];	<span class="comment">/* Just fits the size */</span></span><br><span class="line">	<span class="keyword">char</span> ifru_newname[IFNAMSIZ];</span><br><span class="line">	<span class="keyword">__caddr_t</span> ifru_data;</span><br><span class="line">      &#125; ifr_ifru;</span><br><span class="line">  &#125;;</span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_name	ifr_ifrn.ifrn_name	<span class="comment">/* interface name 	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_hwaddr	ifr_ifru.ifru_hwaddr	<span class="comment">/* MAC address 		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_addr	ifr_ifru.ifru_addr	<span class="comment">/* address		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_dstaddr	ifr_ifru.ifru_dstaddr	<span class="comment">/* other end of p-p lnk	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_broadaddr	ifr_ifru.ifru_broadaddr	<span class="comment">/* broadcast address	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_netmask	ifr_ifru.ifru_netmask	<span class="comment">/* interface net mask	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_flags	ifr_ifru.ifru_flags	<span class="comment">/* flags		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_metric	ifr_ifru.ifru_ivalue	<span class="comment">/* metric		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_mtu	ifr_ifru.ifru_mtu	<span class="comment">/* mtu			*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_map	ifr_ifru.ifru_map	<span class="comment">/* device map		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_slave	ifr_ifru.ifru_slave	<span class="comment">/* slave device		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_data	ifr_ifru.ifru_data	<span class="comment">/* for use by interface	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_ifindex	ifr_ifru.ifru_ivalue    <span class="comment">/* interface index      */</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_bandwidth	ifr_ifru.ifru_ivalue	<span class="comment">/* link bandwidth	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_qlen	ifr_ifru.ifru_ivalue	<span class="comment">/* queue length		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_newname	ifr_ifru.ifru_newname	<span class="comment">/* New name		*/</span></span></span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ifconf</span></span></span><br><span class="line"><span class="class">  &#123;</span></span><br><span class="line">    <span class="keyword">int</span>	ifc_len;			<span class="comment">/* Size of buffer.  */</span></span><br><span class="line">    <span class="keyword">union</span></span><br><span class="line">      &#123;</span><br><span class="line">	<span class="keyword">__caddr_t</span> ifcu_buf;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifreq</span> *<span class="title">ifcu_req</span>;</span></span><br><span class="line">      &#125; ifc_ifcu;</span><br><span class="line">  &#125;;</span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifc_buf	ifc_ifcu.ifcu_buf	<span class="comment">/* Buffer address.  */</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifc_req	ifc_ifcu.ifcu_req	<span class="comment">/* Array of structures.  */</span></span></span><br></pre></td></tr></table></figure>
+
+<p>另外给一个《unix网络编程》上的图:</p>
+<p><img src="http://static.zybuluo.com/zwh8800/e4t46c0hrrdj4htwbj3uva6h/image_1bl0ltenadtdr9f1ks21kiiiuqm.png" alt="image_1bl0ltenadtdr9f1ks21kiiiuqm.png-118.5kB"></p>
+<p>看起来很复杂, 实际上分开看就不很复杂.</p>
+<p>先看ifconf结构, 其实只有<strong>两个成员</strong>, 一个是<strong>ifc_len</strong>, 一个是<strong>ifc_ifcu</strong>, 这是一个联合所以名字以u结尾, 但是我们不会直接用ifc_ifcu, 直接用的话会很长很麻烦, 而是用下面定义的两个宏, <strong>ifc_buf和ifc_req</strong>. 当想使用联合的ifcu_buf时, 只需要写ifc.ifc_buf即可, 否则需要写ifc.ifc_ifcu.ifcu_buf. 同理, ifreq也是这样设计的.</p>
+<p>为什么要这样设计呢? 因为这个ifreq结构体需要供多个request使用, 当你请求获取ip地址时, 需要存在ifr_addr中, 当你获取子网掩码时需要存在ifr_netmask中, 但是因为需要保存在同一个结构中, 所以用联合比较方便(而且节省空间).</p>
+<p>现在继续看ifconf结构, 可以看到, 两个成员<strong>成员一</strong>ifc_len为缓冲区长度, <strong>成员二</strong>ifc_buf(既ifc_req)是一个指针, 当调用ioctl(sock, SIOCGIFCONF, &amp;ifc)之前, 需要把成员二当成ifc_buf, 既把它当成一个缓冲区, 所以我们需要自己申请出缓冲区空间, 并且把缓冲区的大小保存在ifc_len中. 当调用之后, 内核会把所有的接口信息保存在我们刚刚申请的ifc_buf缓冲区中. 此时, 缓冲区中的数据是有意义的了, 所以我们应当把成员二当成ifc_req(既当成一个指向struct ifreq的指针), 它指向一个ifreq结构数组, 保存着所有的接口信息. 同时, ifc_len也被更新, 保存着更改之后ifc_req的大小.</p>
+<p>上代码:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;net/if.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUF_SIZE 1024</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sock;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifconf</span> <span class="title">ifc</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifreq</span>* <span class="title">pifr</span>;</span></span><br><span class="line">	<span class="keyword">int</span> n, i;</span><br><span class="line">	<span class="keyword">if</span> ((sock = socket(AF_INET, SOCK_DGRAM, <span class="number">0</span>)) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"socket"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	bzero(&amp;ifc, <span class="keyword">sizeof</span>(ifc));</span><br><span class="line">	<span class="keyword">if</span> ((ifc.ifc_buf = <span class="built_in">malloc</span>(BUF_SIZE)) == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"malloc"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line">	ifc.ifc_len = BUF_SIZE;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> (ioctl(sock, SIOCGIFCONF, &amp;ifc) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"ioctl"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line">	n = ifc.ifc_len / <span class="keyword">sizeof</span>(struct ifreq);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d interfaces on your computer\n"</span>, n);</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>, pifr = ifc.ifc_req; i &lt; n; ++i, ++pifr)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\tinterface %d : %s\n"</span>, i, pifr-&gt;ifr_name);</span><br><span class="line">	<span class="built_in">free</span>(ifc.ifc_buf);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不用解释了吧, 先申请ifc.ifc_buf的空间, 调用ioctl之后, ifc.ifc_buf被填充, 然后把它当做ifc_req来读取.</p>
+<p>看图会更清晰:</p>
+<p>ioctl前: <img src="http://static.zybuluo.com/zwh8800/fg8xnfk3k89ko14f3ilt9kvk/image_1bl0lvsc41v0a13lv6un1pt810eo13.png" alt="image_1bl0lvsc41v0a13lv6un1pt810eo13.png-21.1kB"></p>
+<p>ioctl后: <img src="http://static.zybuluo.com/zwh8800/9oavqmtde9l8d9b187taivrz/image_1bl0m0e19ragkr17lcv8dt9s1g.png" alt="image_1bl0m0e19ragkr17lcv8dt9s1g.png-90.1kB"></p>
+<p>剩下的使用ifreq的用法就简单了, 直接上代码吧:</p>
+<p>这个是获取接口ip地址的函数, 可以和上面那个配合使用(在循环中输出接口ip)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">char</span>* <span class="title">getifaddr</span><span class="params">(<span class="keyword">int</span> sock, <span class="keyword">const</span> <span class="keyword">char</span>* ifname, <span class="keyword">char</span>* addr, <span class="keyword">size_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifreq</span> <span class="title">ifr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> *<span class="title">paddr</span>;</span></span><br><span class="line"> </span><br><span class="line">	bzero(&amp;ifr, <span class="keyword">sizeof</span>(ifr));</span><br><span class="line">	<span class="built_in">strncpy</span>(ifr.ifr_name, ifname, IFNAMSIZ);</span><br><span class="line">	<span class="keyword">if</span> (ioctl(sock, SIOCGIFADDR, &amp;ifr) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"ioctl"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	paddr = (struct sockaddr_in*)&amp;ifr.ifr_addr;</span><br><span class="line">	<span class="keyword">if</span> (inet_ntop(AF_INET, &amp;paddr-&gt;sin_addr, addr, n) == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"inet_ntop"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> addr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个是设置ip的实用程序(需要root)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* file: setip.c */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;net/if.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUF_SIZE 1024</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sock;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifreq</span> <span class="title">ifr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> *<span class="title">sin</span>;</span></span><br><span class="line">	<span class="keyword">if</span> (argc != <span class="number">3</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	bzero(&amp;ifr, <span class="keyword">sizeof</span>(ifr));</span><br><span class="line">	<span class="built_in">strncpy</span>(ifr.ifr_name, argv[<span class="number">1</span>], IFNAMSIZ);</span><br><span class="line"> </span><br><span class="line">	<span class="built_in">sin</span> = (struct sockaddr_in*)&amp;ifr.ifr_addr;</span><br><span class="line">	<span class="built_in">sin</span>-&gt;sin_family = AF_INET;</span><br><span class="line">	<span class="keyword">if</span> (inet_pton(AF_INET, argv[<span class="number">2</span>], &amp;<span class="built_in">sin</span>-&gt;sin_addr) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"inet_pton"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> ((sock = socket(AF_INET, SOCK_DGRAM, <span class="number">0</span>)) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"socket"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> (ioctl(sock, SIOCSIFADDR, &amp;ifr) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"ioctl"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>附:所有接口相关request</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x00008910</span>  SIOCGIFNAME                 <span class="keyword">char</span> []</span><br><span class="line"><span class="number">0x00008911</span>  SIOCSIFLINK                 <span class="keyword">void</span></span><br><span class="line"><span class="number">0x00008912</span>  SIOCGIFCONF                 <span class="class"><span class="keyword">struct</span> <span class="title">ifconf</span> *         // <span class="title">MORE</span> // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008913</span>  <span class="title">SIOCGIFFLAGS</span>                <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008914</span>  <span class="title">SIOCSIFFLAGS</span>                <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008915</span>  <span class="title">SIOCGIFADDR</span>                 <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008916</span>  <span class="title">SIOCSIFADDR</span>                 <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008917</span>  <span class="title">SIOCGIFDSTADDR</span>              <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008918</span>  <span class="title">SIOCSIFDSTADDR</span>              <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008919</span>  <span class="title">SIOCGIFBRDADDR</span>              <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x0000891A</span>  <span class="title">SIOCSIFBRDADDR</span>              <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x0000891B</span>  <span class="title">SIOCGIFNETMASK</span>              <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x0000891C</span>  <span class="title">SIOCSIFNETMASK</span>              <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x0000891D</span>  <span class="title">SIOCGIFMETRIC</span>               <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x0000891E</span>  <span class="title">SIOCSIFMETRIC</span>               <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x0000891F</span>  <span class="title">SIOCGIFMEM</span>                  <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008920</span>  <span class="title">SIOCSIFMEM</span>                  <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008921</span>  <span class="title">SIOCGIFMTU</span>                  <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008922</span>  <span class="title">SIOCSIFMTU</span>                  <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008923</span>  <span class="title">OLD_SIOCGIFHWADDR</span>           <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008924</span>  <span class="title">SIOCSIFHWADDR</span>               <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *            // <span class="title">MORE</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008925</span>  <span class="title">SIOCGIFENCAP</span>                <span class="title">int</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008926</span>  <span class="title">SIOCSIFENCAP</span>                <span class="title">const</span> <span class="title">int</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008927</span>  <span class="title">SIOCGIFHWADDR</span>               <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008929</span>  <span class="title">SIOCGIFSLAVE</span>                <span class="title">void</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008930</span>  <span class="title">SIOCSIFSLAVE</span>                <span class="title">void</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008970</span>  <span class="title">SIOCGIFMAP</span>                  <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008971</span>  <span class="title">SIOCSIFMAP</span>                  <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Linux/">Linux</a><a href="/tags/网络编程/">网络编程</a><a href="/tags/unix/">unix</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

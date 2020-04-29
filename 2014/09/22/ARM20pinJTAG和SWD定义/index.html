@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>ARM 20pin JTAG 和 SWD 定义 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="ARM 的引脚定义
+
+二、标准 JTAG 20　PIN 信号定义123456789101112131415161718191. VCC                        3. VCC3. TRST                       4. GND5. TDI           ">
+  
+
+  
+  
+  <meta name="keywords" content="ARM">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="ARM 20pin JTAG 和 SWD 定义"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>ARM 20pin JTAG 和 SWD 定义</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/09/22/ARM20pinJTAG和SWD定义/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-09-22T00:00:00.000Z">
+          2014-09-22
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>ARM 的引脚定义</p>
+<p><a href="/notename/" title="archive 20140922"></a></p>
+<h2 id="二、标准-JTAG-20-PIN-信号定义"><a href="#二、标准-JTAG-20-PIN-信号定义" class="headerlink" title="二、标准 JTAG 20　PIN 信号定义"></a><p style="color: #008080;">二、标准 JTAG 20　PIN 信号定义</p></h2><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> VCC                        <span class="number">3.</span> VCC</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span> TRST                       <span class="number">4.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">5.</span> TDI                          <span class="number">6.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">7.</span> TMS                       <span class="number">8.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">9.</span> TCLK                      <span class="number">10.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">11.</span> RTCK                      <span class="number">12.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">13.</span> TDO                       <span class="number">14.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">15.</span>RESET                    <span class="number">16.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">17.</span> NC                         <span class="number">18.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">19.</span>NC                          <span class="number">20.</span> GND</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、标准-SWD-20-PIN-信号定义"><a href="#三、标准-SWD-20-PIN-信号定义" class="headerlink" title="三、标准 SWD 20 PIN 信号定义"></a><p style="color: #008080;">三、标准 SWD 20 PIN 信号定义</p></h2><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> VCC                        <span class="number">3.</span> VCC</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span> NC                           <span class="number">4.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">5.</span> NC                           <span class="number">6.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">7.</span> SWDIO                       <span class="number">8.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">9.</span> SWCLK                      <span class="number">10.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">11.</span> NC                      <span class="number">12.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">13.</span> SWO                      <span class="number">14.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">15.</span> RESET                   <span class="number">16.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">17.</span> NC                         <span class="number">18.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">19.</span>NC                          <span class="number">20.</span> GND</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/ARM/">ARM</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

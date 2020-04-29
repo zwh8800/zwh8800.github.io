@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>UDP, ICMP, IP 协议校验和的计算 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="UDP, ICMP, IP 协议校验和的计算
+
+最近在实现一个简单的 udp 协议栈, 几乎每一层的协议都要计算校验和. 总结一下校验和计算的过程, 也希望对他人有用.
+1. 校验范围
+虽然每个协议里都有校验和字段, 但是每个校验和覆盖的范围都是不同的:
+
+IP 协议: 只包含 20 字节的 IP ">
+  
+
+  
+  
+  <meta name="keywords" content="网络协议">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="UDP, ICMP, IP 协议校验和的计算"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>UDP, ICMP, IP 协议校验和的计算</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/04/15/UDP,ICMP,IP协议校验和的计算/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-04-15T00:00:00.000Z">
+          2014-04-15
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>UDP, ICMP, IP 协议校验和的计算</p>
+<p><a href="/notename/" title="archive 20140415"></a></p>
+<p>最近在实现一个简单的 udp 协议栈, 几乎每一层的协议都要计算校验和. 总结一下校验和计算的过程, 也希望对他人有用.</p>
+<h3 style="color: #080">1. 校验范围</h3>
+虽然每个协议里都有校验和字段, 但是每个校验和覆盖的范围都是不同的:
+
+<p>IP 协议: <code>只包含 20 字节的 IP 报头</code><br>ICMP 协议: <code>整个 ICMP 报文 (ICMP 报头 + ICMP 数据)</code><br>UDP 协议 / TCP 协议: <code>除了整个 UDP/TCP 报文以外</code>, <span style="color: red">前面再加上一个 12 字节的伪 IP 报头</span>. <code>对这个整体一起算校验和 (见下图)</code><br><img src="http://static.zybuluo.com/zwh8800/3jd3lz3cgr4pcagcvta67lbd/image_1bl0634aqgqv1tka1fej1j7a10pjp.png" alt="image_1bl0634aqgqv1tka1fej1j7a10pjp.png-56.4kB"></p>
+<p>图 from:TCP/IP 详解</p>
+<p>另外, 如果接收到的 UDP 校验和为 0, 则说明不要进行校验和计算</p>
+<h3 style="color: #080">2. 计算步骤</h3>
+发送时:
+
+<p>将校验和字段置零<br>对校验范围<code>逐 16bit 做反码和</code><br>得到的和即为校验和<br>接收时:</p>
+<p>对校验范围<code>逐 16bit 做反码和</code><br>若校验和为 0 则正确, 否则错误</p>
+<h3 style="color: #080">3. 如何计算</h3>
+反码: 这里的反码指的是对原来的数所有位二进制取反, 既: unsigned int A 的反码为~ A
+
+<p>对每个数求反码然后相加, <code>如果最高位有进位则加到最低位 (循环进位)</code></p>
+<p>如果是<code>奇数</code>个字节, 将最后一个字节 (设为 Z) 扩展成: [Z, 0x00]</p>
+<p>由上面简单的解释, 我们可以写出一个最直观的算法, 本人自己写了一个, 感觉太烂了就不放出来了.</p>
+<h3 style="color: #080">4. 优化</h3>
+事实上, 我们一直没提到二进制反码和的优点, 在 RFC1071 中详细的提到了反码和具有的数学上的优点, 利用这些, 可以有效加快校验和的计算:
+
+<p>在计算时先求反再相加和先相加再求反结果一致<br>延迟进位 (在 32 比特加法器中进行 16 比特求和，这样溢出就被放到了高 16 位中。这种方法可以避免使用进位敏感指令但需要两倍于在 32 比特寄存器相加的加法运算。速度提高取决于具体的硬件体系。)<br>字节顺序无关<br>第二点对于 32 位机很好, 但是在 8 位单片机上就有点…</p>
+<p>然后, 在 RFC1071 中还给出了一个利用了这些优化的 C 示例:</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">unsigned</span> short <span class="title">checksum</span><span class="params">(<span class="keyword">unsigned</span> short* data, <span class="keyword">int</span> <span class="built_in">size</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">register</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">while</span>( <span class="built_in">size</span> &gt; <span class="number">1</span> )  </span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">/*  This is the inner loop */</span></span><br><span class="line">		sum += *data++;</span><br><span class="line">		<span class="built_in">size</span> -= <span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">/*  Add left-over byte, if any */</span></span><br><span class="line">	<span class="keyword">if</span>( <span class="built_in">size</span> &gt; <span class="number">0</span> )</span><br><span class="line">		sum += * (<span class="keyword">unsigned</span> <span class="keyword">char</span> *) data;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">/*  Fold 32-bit sum to 16 bits */</span></span><br><span class="line">	<span class="keyword">while</span> (sum &gt;&gt; <span class="number">16</span>)</span><br><span class="line">		sum = (sum &amp; <span class="number">0xffff</span>) + (sum &gt;&gt; <span class="number">16</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> ~sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>作者使用一个 32 位的 sum 来保存计算结果. 11 行是处理奇数个数据的. 最后一个循环是把进位加到低位上.</p>
+<p>看到这么好的实现, 我也放弃用我自己写的了, 干脆用这个. 另外, stm32 中有一个硬件实现的 CRC 模块. 下次移植到 stm32 上的时候用用它试试.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/网络协议/">网络协议</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

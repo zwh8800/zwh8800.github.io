@@ -1,0 +1,210 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>女朋友都能看懂的 git 速查 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="为女朋友总结了一些常用的 git 操作。这个速查默认：以 master 为主分支，开发新功能创建新分支。
+
+
+1. 开发一个功能123456789101112131415161718192021222324252627282930313233# 首先确保自己在 master 且代码是最新的git c">
+  
+
+  
+  
+  <meta name="keywords" content="git,速查">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="女朋友都能看懂的 git 速查"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>女朋友都能看懂的 git 速查</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/08/11/女朋友都能看懂的git速查/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-08-11T06:19:56.000Z">
+          2016-08-11
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>为女朋友总结了一些常用的 git 操作。这个速查默认：以 master 为主分支，开发新功能创建新分支。</p>
+<p><a href="/notename/" title="girlfriend readable git quick"></a></p>
+<p><img src="http://static.zybuluo.com/zwh8800/p9gv31npuv5lqfnblpih4h8e/atlassian-getting-git-right.jpg" alt="atlassian-getting-git-right.jpg-94.4kB"></p>
+<h2 id="1-开发一个功能"><a href="#1-开发一个功能" class="headerlink" title="1. 开发一个功能"></a>1. 开发一个功能</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先确保自己在 master 且代码是最新的</span></span><br><span class="line">git checkout master</span><br><span class="line">git pull</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在最新的代码上建一个分支</span></span><br><span class="line">git checkout -b xxx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在本地进行开发</span></span><br><span class="line"><span class="keyword">do</span> something</span><br><span class="line">git commit -m <span class="string">"zzz"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">do</span> something</span><br><span class="line">git commit -m <span class="string">"yyy"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">do</span> something</span><br><span class="line">git commit -m <span class="string">"www"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开发完成，push开发分支</span></span><br><span class="line">git push -u origin xxx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在代码审核工具上创建 pull request</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据别人的审核意见，修改代码</span></span><br><span class="line"><span class="keyword">do</span> something</span><br><span class="line">git commit -m <span class="string">"yyy"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">do</span> something</span><br><span class="line">git commit -m <span class="string">"bbb"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将修改后的代码push</span></span><br><span class="line">git push</span><br><span class="line"></span><br><span class="line"><span class="comment"># 审核通过，按按钮合并 pr</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-审核过了之后有冲突"><a href="#2-审核过了之后有冲突" class="headerlink" title="2. 审核过了之后有冲突"></a>2. 审核过了之后有冲突</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先把 master 上的代码更新一下</span></span><br><span class="line">git checkout master</span><br><span class="line">git pull</span><br><span class="line"></span><br><span class="line"><span class="comment"># 然后把开发分支的代码 rebase 到最新的代码之上</span></span><br><span class="line">git checkout xxx</span><br><span class="line">git rebase master</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这时，会出现冲突，打开文件，手动把文件修改正确</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 然后执行这个：</span></span><br><span class="line">git add .</span><br><span class="line">git rebase --<span class="built_in">continue</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这时，开发分支 xxx 已经和 master 没有冲突了，push 上去</span></span><br><span class="line">git push</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在代码审核工具上，按按钮合并</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-开发了一半的功能，不想-commit-也不想丢掉"><a href="#3-开发了一半的功能，不想-commit-也不想丢掉" class="headerlink" title="3. 开发了一半的功能，不想 commit 也不想丢掉"></a>3. 开发了一半的功能，不想 commit 也不想丢掉</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 把修改暂存起来</span></span><br><span class="line">git add .</span><br><span class="line">git stash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以查看刚刚暂存的信息</span></span><br><span class="line">git stash list</span><br><span class="line"></span><br><span class="line"><span class="comment"># 现在需要继续开发，把暂存的东西 pop 出来</span></span><br><span class="line">git stash pop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 现在再看暂存列表，已经清空了</span></span><br><span class="line">git stash list</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-只提交某几个文件，其他几个文件暂存起来"><a href="#4-只提交某几个文件，其他几个文件暂存起来" class="headerlink" title="4. 只提交某几个文件，其他几个文件暂存起来"></a>4. 只提交某几个文件，其他几个文件暂存起来</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 只提交这几个文件</span></span><br><span class="line">git add 1.go 2.go 3.go</span><br><span class="line">git commit -m <span class="string">"zzz"</span></span><br><span class="line"><span class="comment"># 看一下，剩下的文件确实未提交</span></span><br><span class="line">git status</span><br><span class="line"><span class="comment"># 暂存</span></span><br><span class="line">git add .</span><br><span class="line">git stash</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-只提交某几行，其余行暂存"><a href="#5-只提交某几行，其余行暂存" class="headerlink" title="5. 只提交某几行，其余行暂存"></a>5. 只提交某几行，其余行暂存</h2><p>打开 sourcetree </p>
+<p><img src="http://static.zybuluo.com/zwh8800/r4u5jiql8a1vxy09rkct22ef/image_1aps6uir211qg14423s41qjq85g9.png" alt="image_1aps6uir211qg14423s41qjq85g9.png-47.5kB"></p>
+<p>选中像提交的行，点按钮暂存行</p>
+<p>然后：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 只提交某几行</span></span><br><span class="line">git commit -m <span class="string">"zzz"</span></span><br><span class="line"><span class="comment"># 看一下，剩下的行确实没提交</span></span><br><span class="line">git status</span><br><span class="line"><span class="comment"># 暂存</span></span><br><span class="line">git add .</span><br><span class="line">git stash</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>已暂存的修改，叫做 <code>stashed changes</code> </p>
+</blockquote>
+<h2 id="6-已经-git-add-的文件，想变回未-add-的状态"><a href="#6-已经-git-add-的文件，想变回未-add-的状态" class="headerlink" title="6. 已经 git add 的文件，想变回未 add 的状态"></a>6. 已经 git add 的文件，想变回未 add 的状态</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git reset HEAD 1.go</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果想把所有文件都未 add 的状态</span></span><br><span class="line">git reset HEAD .</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>已经被 add 的修改，叫做 <code>staged changes</code>；未 add 的叫做 <code>unstaged changes</code> </p>
+</blockquote>
+<h2 id="7-已经修改，但未-add-的文件，想变回未修改的状态"><a href="#7-已经修改，但未-add-的文件，想变回未修改的状态" class="headerlink" title="7. 已经修改，但未 add 的文件，想变回未修改的状态"></a>7. 已经修改，但未 add 的文件，想变回未修改的状态</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git checkout -- 1.go</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果想把所有文件都变回未修改的状态</span></span><br><span class="line">git checkout -- .</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-已经-commit-了，但是不想要了，想回到上一个-commit-重新写"><a href="#8-已经-commit-了，但是不想要了，想回到上一个-commit-重新写" class="headerlink" title="8. 已经 commit 了，但是不想要了，想回到上一个 commit 重新写"></a>8. 已经 commit 了，但是不想要了，想回到上一个 commit 重新写</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 回到上一个 commit，把这个 commit 的修改变成 unstaged changes</span></span><br><span class="line">git reset HEAD^</span><br><span class="line"><span class="comment"># 把 unstaged changes 变回未修改的状态</span></span><br><span class="line">git checkout -- .</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新写</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="9-已经-commit，并且-push-了，但是不想要了，想回到上一个-commit-重新写"><a href="#9-已经-commit，并且-push-了，但是不想要了，想回到上一个-commit-重新写" class="headerlink" title="9. 已经 commit，并且 push 了，但是不想要了，想回到上一个 commit 重新写"></a>9. 已经 commit，并且 push 了，但是不想要了，想回到上一个 commit 重新写</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 同上，但是最后再push的时候需要加 -f</span></span><br><span class="line"></span><br><span class="line">git push -f</span><br></pre></td></tr></table></figure>
+
+<h2 id="9-上个方法太暴力了"><a href="#9-上个方法太暴力了" class="headerlink" title="9. 上个方法太暴力了"></a>9. 上个方法太暴力了</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个和上个提交完全相反的提交</span></span><br><span class="line">git revert HEAD</span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/git/">git</a><a href="/tags/速查/">速查</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

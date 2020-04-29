@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>把你的 Linux 服务器打造成 AirPlay 音乐播放器 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="AirPlay 是苹果设备上最方便的播放技术，可以很方便的把音频、视频串流到你的电视或音箱上。现在大部分智能电视都支持 AirPlay 投屏了，但是支持 AirPlay 的音响设备还是比较少见（and 贵）。那么，有没有比较廉价的搭建 AirPlay 音乐播放器的方式呢？那就是今天的主角 shair">
+  
+
+  
+  
+  <meta name="keywords" content="linux,AirPlay,">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="把你的 Linux 服务器打造成 AirPlay 音乐播放器"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>把你的 Linux 服务器打造成 AirPlay 音乐播放器</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/11/18/把你的Linux服务器打造成AirPlay音乐播放器/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-11-18T07:57:43.000Z">
+          2016-11-18
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>AirPlay 是苹果设备上最方便的播放技术，可以很方便的把音频、视频串流到你的电视或音箱上。现在大部分智能电视都支持 AirPlay 投屏了，但是支持 AirPlay 的音响设备还是比较少见（and 贵）。那么，有没有比较廉价的搭建 AirPlay 音乐播放器的方式呢？那就是今天的主角 shairport-sync。</p>
+<p><a href="/notename/" title="make your linux server a airplay player"></a></p>
+<p>shairport 是一个音频 AirPlay receiver 服务器。但是不幸的是 shairport 的作者两年前停止更新了，就有了另一个开发者 fork 了 shairport 做出了 shairport-sync。</p>
+<p>shairport-sync 基于 shairport，在此基础上还改进了音视频的同步的问题，这样使用 shairport-sync 播放视频时不会出现影音不同步的问题了。</p>
+<h2 id="在-ubuntu-16-04-上安装-shairport-sync"><a href="#在-ubuntu-16-04-上安装-shairport-sync" class="headerlink" title="在 ubuntu 16.04 上安装 shairport-sync"></a>在 ubuntu 16.04 上安装 shairport-sync</h2><p>ubuntu 16.04 的软件仓库里已经集成了 shairport-sync，这样只需要执行 <code>apt install</code> 就可以安装了。</p>
+<p>但是 shairport 还需要 avahi-daemon 这个服务，avahi-daemon 是开源的，它实现了苹果的 mDNS 协议（在苹果的设备上对应的服务是 Banjour）。shairport 需要在 avahi 上注册自己。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install avahi-daemon</span><br><span class="line">sudo apt install shairport-sync</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置-shairport-sync"><a href="#配置-shairport-sync" class="headerlink" title="配置 shairport-sync"></a>配置 shairport-sync</h2><p>shairport-sync 的配置非常简单，它的配置文件放在 <code>/etc/shairport-sync.conf</code> ，打开它之后会发现里面有很多配置项，我们只需要简单的配置下 name 就可以了，其他的选项不用动。</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">//</span> General Settings</span><br><span class="line">general =</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">//</span>	<span class="string">...</span></span><br><span class="line">    name = <span class="string">"客厅的服务器"</span>;</span><br><span class="line">    <span class="string">//</span>	<span class="string">...</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>改完配置之后记得重启一下服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl restart shairport-sync.service</span><br></pre></td></tr></table></figure>
+
+<h2 id="不出声音的故障"><a href="#不出声音的故障" class="headerlink" title="不出声音的故障"></a>不出声音的故障</h2><p>安装之后有可能会不出声音，这是因为 shairport 的用户不在 audio 组了，这样的话 shairport 没有音频设备的权限，执行下面语句可以解决。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -aG audio shairport-sync</span><br></pre></td></tr></table></figure>
+
+<h2 id="最后来一张效果图"><a href="#最后来一张效果图" class="headerlink" title="最后来一张效果图"></a>最后来一张效果图</h2><p><img src="http://static.zybuluo.com/zwh8800/uw62xa700g4emr8karlhey0x/IMG_1197.PNG" alt="IMG_1197.PNG-394.9kB"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/AirPlay/">AirPlay</a><a href="/tags//"></a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

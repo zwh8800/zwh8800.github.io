@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hello world | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="我把wordpress抛弃啦，旧的数据一会搞一个归档，url应该还不会变。扔掉旧系统真是一身轻松啊！
+
+老数据的链接：https://hzzz.lengzzz.com/blog/i
+新的博客系统堪称相当轻量，花1天时间用golang写了个爬虫＋简单的博客系统。主要功能就是从cmd markdown上">
+  
+
+  
+  
+  <meta name="keywords" content="闲扯">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Hello world"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>Hello world</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/01/Helloworld/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-01T05:59:00.000Z">
+          2016-04-01
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>我把wordpress抛弃啦，旧的数据一会搞一个归档，url应该还不会变。扔掉旧系统真是一身轻松啊！</p>
+<p><a href="/notename/" title="helloworld"></a></p>
+<p>老数据的链接：<a href="https://hzzz.lengzzz.com/blog/i" target="_blank" rel="noopener">https://hzzz.lengzzz.com/blog/i</a></p>
+<p>新的博客系统堪称相当轻量，花1天时间用golang写了个爬虫＋简单的博客系统。主要功能就是从cmd markdown上把我公开的文章爬过来存到本地。如果cmd markdown的作者能早日<a href="https://github.com/ghosert/cmd-editor/issues/795" target="_blank" rel="noopener">开放API</a>就好了。</p>
+<p>另外话说cmd markdown真是宇宙最好的markdown编辑器，用着太舒服了，再次给作者点赞。</p>
+<p>最后，这个爬虫我开源了，可能还会有希望基于markdown做博客系统的人。可以尝试一下。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">go get -u -v github.com/zwh8800/md-blog-gen</span><br><span class="line">md-blog-gen -log_dir <span class="built_in">log</span>/ [-config &lt;config.gcfg&gt;]</span><br><span class="line">open http://localhost:3336/</span><br></pre></td></tr></table></figure>
+
+<p>配置文件可以这么写</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[dbConf]</span></span><br><span class="line"><span class="attr">driver</span>=<span class="string">"mysql"</span></span><br><span class="line"><span class="attr">dsn</span>=<span class="string">"username:password@tcp(mysql:3306)/mdblog?charset=utf8mb4&amp;parseTime=true"</span></span><br><span class="line"></span><br><span class="line"><span class="section">[env]</span></span><br><span class="line"><span class="attr">prod</span>=<span class="literal">true</span> <span class="comment"># 区分生产环境和测试环境</span></span><br><span class="line"><span class="attr">serverPort</span>=<span class="number">3336</span></span><br><span class="line"></span><br><span class="line"><span class="section">[spider]</span></span><br><span class="line"><span class="attr">startUrl</span>=<span class="string">"https://www.zybuluo.com/zwh8800/note/332154"</span> <span class="comment"># 你的随便一篇发布在cmd markdown的文章</span></span><br><span class="line"><span class="attr">spiderTag</span>=<span class="string">"blog"</span> <span class="comment"># 你要抓取的tag</span></span><br><span class="line"></span><br><span class="line"><span class="section">[urlPush]</span></span><br><span class="line"><span class="attr">baidu</span>=<span class="string">"http://data.zz.baidu.com/urls?site=lengzzz.com&amp;token=xxxxxxx"</span> <span class="comment"># 向百度搜索推送url收录的url</span></span><br><span class="line"></span><br><span class="line"><span class="section">[site]</span></span><br><span class="line"><span class="attr">name</span>=<span class="string">"水能载舟 亦可赛艇"</span> <span class="comment"># 网站名称</span></span><br><span class="line"><span class="attr">baseUrl</span>=<span class="string">"https://lengzzz.com/"</span> <span class="comment"># 网站首页</span></span><br><span class="line"><span class="attr">noteUrl</span>=<span class="string">"note"</span> <span class="comment"># 文字的url</span></span><br><span class="line"><span class="attr">tagUrl</span>=<span class="string">"tag"</span> <span class="comment"># tag的url</span></span><br><span class="line"><span class="attr">pageUrl</span>=<span class="string">"page"</span> <span class="comment"># page的url</span></span><br><span class="line"><span class="attr">staticUrl</span>=<span class="string">"static"</span> <span class="comment"># 静态文件的url</span></span><br></pre></td></tr></table></figure>
+<p>记着把注释删掉哦</p>
+<p>另外最近用docker比较多，我正在把我所有用到的东西向docker上迁。所以这个爬虫也写了Dockerfile。你用docker的话可以这样部署。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/zwh8800/md-blog-gen</span><br><span class="line"><span class="built_in">cd</span> md-blog-gen/</span><br><span class="line">CGO_ENABLED=0 go build</span><br><span class="line">docker build -t zwh8800/md-blog-gen .</span><br><span class="line">docker run -d -v <span class="built_in">log</span>:/app/<span class="built_in">log</span> -v config:/app/config --name blog zwh8800/md-blog-gen</span><br></pre></td></tr></table></figure>
+<p>图省事可以从docker hub上拉</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker pull zwh8800/md-blog-gen/ </span><br><span class="line"><span class="comment"># 国内可以拉这个 速度快一些</span></span><br><span class="line">docker pull registry.aliyuncs.com/zwh8800/md-blog-gen</span><br><span class="line">docker run -d -v <span class="built_in">log</span>:/app/<span class="built_in">log</span> -v config:/app/config --name blog zwh8800/md-blog-gen</span><br></pre></td></tr></table></figure>
+
+<p>服务启停使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker start blog</span><br><span class="line">docker stop blog</span><br><span class="line">docker restart blog</span><br></pre></td></tr></table></figure>
+
+<p>另外，最近换上了http2和let’s encrypt的https证书。一个字，爽。<br>基本参照一位<a href="https://imququ.com/" target="_blank" rel="noopener">大神的博客</a>搞得。另外这个博客里干货很多，值得一看。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/闲扯/">闲扯</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

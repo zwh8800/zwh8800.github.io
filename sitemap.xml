@@ -4,7 +4,896 @@
   <url>
     <loc>https://lengzzz.com/2020/04/29/hello-world/</loc>
     
-    <lastmod>2020-04-29T15:12:52.588Z</lastmod>
+    <lastmod>2020-04-29T18:44:54.187Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2017/08/09/Caddy-%E6%96%B9%E4%BE%BF%E5%A4%9F%E7%94%A8%E7%9A%84HTTPSserver%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/</loc>
+    
+    <lastmod>2020-04-29T15:46:45.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/06/22/golang%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6/</loc>
+    
+    <lastmod>2019-07-20T09:14:32.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/07/08/%E5%B9%B6%E5%8F%91%E9%9A%BE|%E6%B1%A0%E9%87%8C%E7%A9%B6%E7%AB%9F%E8%AF%A5%E6%94%BE%E5%A4%9A%E5%B0%91%E7%BA%BF%E7%A8%8B%EF%BC%9F/</loc>
+    
+    <lastmod>2018-02-01T01:28:12.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2017/08/20/%E7%BD%91%E4%BB%B6R6220%E5%88%B7%E6%9C%BALEDE%EF%BC%88openwrt%EF%BC%89%E5%9B%BA%E4%BB%B6%E6%95%99%E7%A8%8B/</loc>
+    
+    <lastmod>2017-09-18T08:41:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/20/await&async%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%90/</loc>
+    
+    <lastmod>2017-08-20T07:21:49.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/05/25/%E7%94%A8elasticsearch%E7%BB%99%E5%8D%9A%E5%AE%A2%E5%8A%A0%E4%B8%8A%E4%BA%86%E6%90%9C%E7%B4%A2/</loc>
+    
+    <lastmod>2017-08-20T07:21:20.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/16/%E4%BD%BF%E7%94%A8lua%E7%BC%96%E5%86%99socks5%E4%BB%A3%E7%90%86/</loc>
+    
+    <lastmod>2017-08-03T05:58:27.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/27/%E5%9C%A8OSX%E7%9A%84%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86/</loc>
+    
+    <lastmod>2017-08-03T05:57:18.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2017/01/12/%E6%90%9E%E4%BA%86%E4%B8%AAgolang%E7%9A%84%E6%96%87%E6%A1%A3%E7%AB%99/</loc>
+    
+    <lastmod>2017-07-20T17:31:18.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2017/05/30/%E7%A7%BB%E6%A4%8DLuaCoco/</loc>
+    
+    <lastmod>2017-07-13T09:11:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/08/11/%E5%A5%B3%E6%9C%8B%E5%8F%8B%E9%83%BD%E8%83%BD%E7%9C%8B%E6%87%82%E7%9A%84git%E9%80%9F%E6%9F%A5/</loc>
+    
+    <lastmod>2017-06-27T08:41:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2017/01/04/%E5%B0%8F%E8%9A%81%E6%91%84%E5%83%8F%E5%A4%B4%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E8%A7%86%E9%A2%91%E5%88%B0%E7%BE%A4%E6%99%96nas%EF%BC%882%EF%BC%89%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8rtsp%E5%8D%8F%E8%AE%AE%E5%90%8C%E6%AD%A5/</loc>
+    
+    <lastmod>2017-01-04T08:13:37.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2017/01/02/%E5%B0%8F%E8%9A%81%E6%91%84%E5%83%8F%E6%9C%BA%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E8%A7%86%E9%A2%91%E5%88%B0%E7%BE%A4%E6%99%96nas/</loc>
+    
+    <lastmod>2017-01-04T07:33:01.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/11/18/%E6%8A%8A%E4%BD%A0%E7%9A%84Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%93%E9%80%A0%E6%88%90AirPlay%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/</loc>
+    
+    <lastmod>2017-01-02T14:31:29.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/07/18/%E6%80%BB%E7%BB%93golang%E5%AF%B9%E4%BA%8Estream%E7%9A%84%E6%8A%BD%E8%B1%A1/</loc>
+    
+    <lastmod>2016-08-10T06:24:10.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/06/21/%E9%AB%98%E5%8F%AF%E7%94%A8%E5%8F%AF%E4%BC%B8%E7%BC%A9%E6%9E%B6%E6%9E%84/</loc>
+    
+    <lastmod>2016-06-21T10:19:49.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/06/13/%E8%B7%A8%E6%BA%90HTTP%E8%AF%B7%E6%B1%82%EF%BC%88CORS%EF%BC%89/</loc>
+    
+    <lastmod>2016-06-13T07:12:16.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/14/%E7%9F%AD%E9%93%BE%E6%8E%A5%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95/</loc>
+    
+    <lastmod>2016-06-01T16:02:28.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/05/28/%E6%98%AF%E6%97%B6%E5%80%99%E7%94%A8apt%E4%BB%A3%E6%9B%BFapt-get%E4%BA%86%EF%BC%81/</loc>
+    
+    <lastmod>2016-05-28T02:18:59.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/05/25/%E5%81%9A%E4%BA%86%E4%B8%AAgolang%E5%AE%89%E8%A3%85%E5%8C%85%E7%9A%84%E9%95%9C%E5%83%8F/</loc>
+    
+    <lastmod>2016-05-25T08:07:30.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/05/24/LinuxShell%E7%BC%96%E7%A8%8B%E4%B8%AD%E7%9A%84trap%E7%9A%84%E5%B0%8F%E5%9D%91/</loc>
+    
+    <lastmod>2016-05-24T11:25:19.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/05/14/CloudXNS-DDNS%E5%8A%A8%E6%80%81%E5%9F%9F%E5%90%8D%E5%AE%A2%E6%88%B7%E7%AB%AFdocker%E9%95%9C%E5%83%8F/</loc>
+    
+    <lastmod>2016-05-14T07:50:23.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/16/%E8%BF%85%E9%9B%B7%E8%BF%9C%E7%A8%8B%E4%B8%8B%E8%BD%BDxware-docker%E9%95%9C%E5%83%8F/</loc>
+    
+    <lastmod>2016-05-13T15:08:31.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/05/%E8%89%B2%E5%BD%A9%E5%8C%96%E4%BD%A0Mac%E4%B8%8B%E7%9A%84bash/</loc>
+    
+    <lastmod>2016-05-10T03:08:18.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/05/01/%E6%8A%8A%E5%9F%9F%E5%90%8D%E6%89%98%E7%AE%A1%E5%88%B0CloudXNS%E4%BA%86%EF%BC%8C%E5%AE%8C%E7%BE%8E%E6%94%AF%E6%8C%81let'sencrypt/</loc>
+    
+    <lastmod>2016-05-01T09:07:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/03/%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E7%9A%84%E5%AE%9E%E7%8E%B0/</loc>
+    
+    <lastmod>2016-04-29T17:33:21.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/29/%E6%9C%80%E8%BF%91%E8%AF%BB%E7%9A%84%E5%87%A0%E6%9C%AC%E4%B9%A6/</loc>
+    
+    <lastmod>2016-04-29T13:22:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/02/docker%E5%88%9D%E5%BF%83%E8%80%85%E6%95%99%E7%A8%8B/</loc>
+    
+    <lastmod>2016-04-26T05:40:17.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/15/%E4%B8%8B%E8%BD%BD%E7%AB%99%E6%88%91%E5%8F%88%E9%87%8D%E6%96%B0%E6%89%93%E5%BC%80%E4%BA%86/</loc>
+    
+    <lastmod>2016-04-24T14:12:43.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/01/Helloworld/</loc>
+    
+    <lastmod>2016-04-23T12:26:59.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/02/linux%E5%85%B1%E4%BA%AB%E5%BA%93%E6%90%9C%E7%B4%A2%E8%B7%AF%E5%BE%84/</loc>
+    
+    <lastmod>2016-04-23T12:26:39.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/07/docker%E4%B8%AD%E8%AE%BE%E7%BD%AE%E6%97%B6%E5%8C%BA/</loc>
+    
+    <lastmod>2016-04-23T12:19:46.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/07/golangtemplate%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
+    
+    <lastmod>2016-04-23T12:19:17.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/10/%E5%9C%A8Linux%E4%B8%8B%E8%AE%BE%E7%BD%AEswap/</loc>
+    
+    <lastmod>2016-04-23T12:18:17.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2016/04/12/%E9%94%AE%E6%AD%A5%E5%A6%82%E9%A3%9E%EF%BC%81%E9%AB%98%E6%95%88bash%E5%BF%AB%E6%8D%B7%E9%94%AE/</loc>
+    
+    <lastmod>2016-04-23T12:17:14.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2015/10/15/%E6%9C%80%E8%BF%91%E5%81%9A%E4%BA%86%E4%B8%AA%E5%B0%8F%E7%8E%A9%E6%84%8F/</loc>
+    
+    <lastmod>2015-10-15T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2015/08/14/%E6%9C%80%E8%BF%91%E4%B8%80%E7%9B%B4%E5%9C%A8%E5%81%9A%E5%89%8D%E7%AB%AF%EF%BC%8C%E5%BE%88%E5%A4%9A%E6%83%B3%E6%B3%95%E9%83%BD%E6%94%B9%E5%8F%98%E4%BA%86%E3%80%82/</loc>
+    
+    <lastmod>2015-08-14T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2015/05/26/%E5%AF%92%E5%81%87%E5%86%99%E4%BA%86%E4%B8%AAJSON%E8%A7%A3%E6%9E%90%E5%99%A8/</loc>
+    
+    <lastmod>2015-05-26T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/12/26/[%E8%BD%AC]%E4%B8%80%E4%B8%AACSS3%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89%E6%BB%9A%E5%8A%A8%E6%9D%A1/</loc>
+    
+    <lastmod>2014-12-26T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/09/22/ARM20pinJTAG%E5%92%8CSWD%E5%AE%9A%E4%B9%89/</loc>
+    
+    <lastmod>2014-09-22T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/07/28/%E5%80%BC%E8%AF%AD%E4%B9%89%E5%92%8C%E5%AF%B9%E8%B1%A1%E8%AF%AD%E4%B9%89/</loc>
+    
+    <lastmod>2014-07-28T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/06/30/%E7%94%A8thttpd+lua+cgi+jQuerymobile%E6%90%AD%E5%BB%BA%E8%87%AA%E5%8A%A8%E5%85%B3%E6%9C%BA%E6%9C%8D%E5%8A%A1%E5%99%A8/</loc>
+    
+    <lastmod>2014-06-30T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/06/23/%E4%B8%BAopenwrt%E7%BC%96%E8%AF%91htop/</loc>
+    
+    <lastmod>2014-06-23T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/05/23/%E8%87%AA%E5%B7%B1%E9%80%A0%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F(2)%E2%80%93zOS-0.2%E7%89%88%E6%9C%AC%E5%8F%91%E5%B8%83!/</loc>
+    
+    <lastmod>2014-05-23T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/04/27/Win7%E5%BC%80%E5%90%AF%E8%B7%AF%E7%94%B1%E8%BD%AC%E5%8F%91%E5%8A%9F%E8%83%BD/</loc>
+    
+    <lastmod>2014-04-27T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/04/26/enc28j60%E9%A9%B1%E5%8A%A8%E5%92%8Cudp%E5%8D%8F%E8%AE%AE%E6%A0%88%E7%A7%BB%E6%A4%8D%E5%88%B0stm32%E6%88%90%E5%8A%9F/</loc>
+    
+    <lastmod>2014-04-26T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/04/25/cortex-m3%E7%B3%BB%E7%BB%9F%E5%BC%82%E5%B8%B8%E7%9B%B8%E5%85%B3%E5%AF%84%E5%AD%98%E5%99%A8/</loc>
+    
+    <lastmod>2014-04-25T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/04/18/%E8%87%AA%E9%80%A0UDP%E5%8D%8F%E8%AE%AE%E6%A0%88/</loc>
+    
+    <lastmod>2014-04-18T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/04/16/%E5%AD%A6%E6%88%90%E5%BD%92%E6%9D%A5!/</loc>
+    
+    <lastmod>2014-04-16T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/04/15/UDP,ICMP,IP%E5%8D%8F%E8%AE%AE%E6%A0%A1%E9%AA%8C%E5%92%8C%E7%9A%84%E8%AE%A1%E7%AE%97/</loc>
+    
+    <lastmod>2014-04-15T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/04/14/%E4%B8%80%E4%B8%AA%E6%96%B9%E4%BE%BF%E7%9A%84Image_slider%E7%9A%84jQuery%E4%BB%A3%E7%A0%81/</loc>
+    
+    <lastmod>2014-04-14T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/04/10/%E8%87%AA%E5%B7%B1%E9%80%A0%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F(1)%E2%80%93%E5%BC%80%E7%AF%87,zOS/</loc>
+    
+    <lastmod>2014-04-10T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/03/22/%E5%9C%A8keil%E4%B8%AD%E4%BD%BF%E7%94%A8jlink/</loc>
+    
+    <lastmod>2014-03-22T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/03/21/CodeVisionAVRC%E7%BC%96%E8%AF%91%E5%99%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</loc>
+    
+    <lastmod>2014-03-21T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/03/12/arm-linux%E6%B1%87%E7%BC%96(4)%E2%80%93%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E8%A7%84%E5%88%99/</loc>
+    
+    <lastmod>2014-03-12T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/03/06/%E7%9C%9F%E6%98%AF%E5%A5%BD%E4%B8%8D%E5%AE%B9%E6%98%93%E6%89%8D%E6%89%BE%E5%88%B0RK3066%E7%9A%84%E6%89%8B%E5%86%8C%E5%95%8A%E8%B5%B6%E5%BF%AB%E4%BC%A0%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E5%A4%87%E4%BB%BD/</loc>
+    
+    <lastmod>2014-03-06T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/03/06/%E8%BF%99%E5%BC%A0%E5%9B%BE%E6%8A%8Aunix%E6%97%B6%E9%97%B4%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0%E5%85%A8%E9%83%A8%E8%AF%B4%E6%98%8E%E4%BA%86/</loc>
+    
+    <lastmod>2014-03-06T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/03/05/ARM%E6%A0%B8%E5%92%8CARM%E6%8C%87%E4%BB%A4%E9%9B%86%E5%A4%A7%E8%87%B4%E6%98%AF%E8%BF%99%E6%A0%B7%E5%AF%B9%E5%BA%94/</loc>
+    
+    <lastmod>2014-03-05T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/03/04/linux%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F(6)%E2%80%93%E9%98%BB%E5%A1%9E%E5%9E%8Bio%E3%80%81poll/</loc>
+    
+    <lastmod>2014-03-04T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/03/03/linux%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F(5)%E2%80%93%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E4%BE%8B%E5%AD%90/</loc>
+    
+    <lastmod>2014-03-03T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/03/01/c%E6%A0%87%E5%87%86%E5%BA%93%E5%AD%97%E7%AC%A6%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/</loc>
+    
+    <lastmod>2014-03-01T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/02/18/%E6%8B%A5%E6%9C%89%E9%94%81%E7%9A%84%E6%97%B6%E5%80%99%E6%9C%80%E5%A5%BD%E4%B8%8D%E8%A6%81%E8%BF%9B%E8%A1%8C%E4%BC%91%E7%9C%A0/</loc>
+    
+    <lastmod>2014-02-18T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/02/17/linux%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F(4)%E2%80%93%E5%B9%B6%E5%8F%91/</loc>
+    
+    <lastmod>2014-02-17T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/02/09/linux%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%87%BD%E6%95%B0/</loc>
+    
+    <lastmod>2014-02-09T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/02/08/[%E8%BD%AC]LinuxNetcat%E5%91%BD%E4%BB%A4%EF%BC%9A%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%E4%B8%AD%E7%9A%84%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80/</loc>
+    
+    <lastmod>2014-02-08T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/29/linux%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F(3)%E2%80%93%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8(%E8%AE%BE%E5%A4%87%E5%8F%B7%E6%B3%A8%E5%86%8C%E8%AE%BE%E5%A4%87)/</loc>
+    
+    <lastmod>2014-01-29T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/28/linux%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F(2)%E2%80%93%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC%E5%AF%BC%E5%87%BA%E7%AC%A6%E5%8F%B7%E6%A8%A1%E5%9D%97%E5%8F%82%E6%95%B0/</loc>
+    
+    <lastmod>2014-01-28T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/27/%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E7%9A%84%E5%B0%8F%E6%8F%92%E6%9B%B2minimad/</loc>
+    
+    <lastmod>2014-01-27T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/26/linux%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F(1)%E2%80%93helloworld/</loc>
+    
+    <lastmod>2014-01-26T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/25/%E5%88%B0%E6%AD%A4%E5%88%BB%E4%B8%BA%E6%AD%A2,ztun%E7%BB%88%E4%BA%8E%E5%8B%89%E5%BC%BA%E8%83%BD%E7%94%A8%E4%BA%86!/</loc>
+    
+    <lastmod>2014-01-25T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/22/%E5%9F%BA%E6%9C%AC%E4%B8%8A%E6%89%BE%E5%88%B0%E9%97%AE%E9%A2%98%E4%BA%86Connectionrefused/</loc>
+    
+    <lastmod>2014-01-22T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/20/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%AD%E7%9A%84ioctl/</loc>
+    
+    <lastmod>2014-01-20T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/19/%E4%B8%A4%E6%9D%A1%E5%91%BD%E4%BB%A4%E6%9F%A5%E6%89%BE%E7%A8%8B%E5%BA%8F%E5%9C%A8%E5%93%AA%E4%B8%AA%E8%BD%AF%E4%BB%B6%E5%8C%85/</loc>
+    
+    <lastmod>2014-01-19T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/18/arm-linux%E6%B1%87%E7%BC%96(3)%E2%80%93%E5%A4%84%E7%90%86%E5%99%A8%E6%A8%A1%E5%BC%8F%E5%AF%84%E5%AD%98%E5%99%A8/</loc>
+    
+    <lastmod>2014-01-18T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/17/setuid%E5%92%8Cseteuid/</loc>
+    
+    <lastmod>2014-01-17T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/16/arm-linux%E6%B1%87%E7%BC%96(2)%E2%80%93%E8%B0%83%E7%94%A8c%E5%87%BD%E6%95%B0/</loc>
+    
+    <lastmod>2014-01-16T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/15/arm-linux%E6%B1%87%E7%BC%96(1)%E2%80%93Helloworld/</loc>
+    
+    <lastmod>2014-01-15T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/14/linux%E4%B8%8B%E6%95%B4%E6%95%B0%E5%B0%BA%E5%AF%B8/</loc>
+    
+    <lastmod>2014-01-14T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/13/netstat%E5%91%BD%E4%BB%A4help%E7%BF%BB%E8%AF%91/</loc>
+    
+    <lastmod>2014-01-13T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/12/exec%E7%B3%BB%E5%88%97%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/</loc>
+    
+    <lastmod>2014-01-12T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/11/%E7%AE%97%E6%98%AF%E8%AF%BE%E5%90%8E%E4%BD%9C%E4%B8%9A%E5%90%A7%E2%80%A6/</loc>
+    
+    <lastmod>2014-01-11T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/10/select%E5%B0%B1%E7%BB%AA%E6%9D%A1%E4%BB%B6/</loc>
+    
+    <lastmod>2014-01-10T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/09/unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%AD%E5%B8%B8%E7%94%A8%E5%A4%B4%E6%96%87%E4%BB%B6%E3%80%81%E7%BB%93%E6%9E%84%E4%BD%93%E3%80%81%E5%87%BD%E6%95%B0/</loc>
+    
+    <lastmod>2014-01-09T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/08/%E7%94%B5%E8%84%91%E5%BA%94%E7%94%A8low%E6%8A%80%E5%B7%A7/</loc>
+    
+    <lastmod>2014-01-08T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/05/QuartusII%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/</loc>
+    
+    <lastmod>2014-01-05T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/04/%E5%A6%82%E4%BD%95%E7%84%8A%E6%8E%A5%E8%B4%B4%E7%89%87IC/</loc>
+    
+    <lastmod>2014-01-04T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/03/[%E8%BD%AC]LinuxPPP%E5%AE%9E%E7%8E%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
+    
+    <lastmod>2014-01-03T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2014/01/01/ppp%E5%8D%8F%E8%AE%AE/</loc>
+    
+    <lastmod>2014-01-01T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/12/30/%E5%B0%8F%E6%9D%BF%E5%AD%90%E7%9A%84%E7%94%B5%E8%B7%AF%E5%9B%BE/</loc>
+    
+    <lastmod>2013-12-30T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/12/28/%E5%B1%8F%E5%B9%95%E7%BB%88%E4%BA%8E%E6%98%BE%E7%A4%BA%E4%BA%86%E2%80%A6/</loc>
+    
+    <lastmod>2013-12-28T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/12/18/%E5%BB%B6%E6%97%B6%E5%87%BD%E6%95%B0%E7%9A%84%E4%B8%80%E4%B8%AABUG/</loc>
+    
+    <lastmod>2013-12-18T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/12/15/%E8%87%AA%E5%B7%B1%E5%81%9A%E7%9A%84%E5%B0%8F%E6%9D%BF%E5%AD%90/</loc>
+    
+    <lastmod>2013-12-15T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/12/14/%E8%B6%85%E7%BA%A7%E6%97%A0%E6%95%8CNB%E8%AE%A1%E6%95%B0%E5%99%A8/</loc>
+    
+    <lastmod>2013-12-14T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/12/08/%E6%84%9F%E8%A7%89%E5%A5%BD%E6%9C%89%E8%89%BA%E6%9C%AF%E6%84%9F(%E4%B8%80%E5%AE%9A%E8%A6%81%E6%88%B3%E5%A4%A7%E5%9B%BE!)/</loc>
+    
+    <lastmod>2013-12-08T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/12/05/%E4%BD%93%E6%84%9FLED%E5%88%B6%E4%BD%9C%E4%B8%AD%E2%80%A6/</loc>
+    
+    <lastmod>2013-12-05T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/30/%E9%AB%98%E7%AB%AF%E6%94%B6%E9%9F%B3%E6%9C%BA/</loc>
+    
+    <lastmod>2013-11-30T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/27/%E7%A7%BB%E6%A4%8DuIP%E6%88%90%E5%8A%9F!/</loc>
+    
+    <lastmod>2013-11-27T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/25/astyle%E7%AE%80%E7%9B%B4%E7%A5%9E%E5%99%A8!/</loc>
+    
+    <lastmod>2013-11-25T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/24/%E6%88%90%E5%8A%9F%E5%95%A6%E6%88%90%E5%8A%9F%E5%95%A6/</loc>
+    
+    <lastmod>2013-11-24T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/23/%E9%9A%8F%E7%AC%94/</loc>
+    
+    <lastmod>2013-11-23T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/22/%E7%BB%88%E4%BA%8E%E8%AF%BB%E5%87%BA%E6%9D%A5%E5%95%A6/</loc>
+    
+    <lastmod>2013-11-22T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/21/keilprintf/</loc>
+    
+    <lastmod>2013-11-21T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/20/keilC51%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%AD%98%E5%82%A8%E5%99%A8%E7%B1%BB%E5%9E%8B/</loc>
+    
+    <lastmod>2013-11-20T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/19/%E5%93%8E%E2%95%AE(%E2%95%AF%E2%96%BD%E2%95%B0)%E2%95%ADspi%E6%8E%A5%E5%8F%A3%E6%90%9E%E4%B8%8D%E5%AE%9A%E5%91%80/</loc>
+    
+    <lastmod>2013-11-19T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/18/Verilog:(1)%E4%B8%8A%E5%8D%87%E6%B2%BF%E5%92%8C%E4%B8%8B%E9%99%8D%E6%B2%BF/</loc>
+    
+    <lastmod>2013-11-18T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/17/%E4%BB%8A%E5%A4%A9%E5%BC%80%E5%A7%8B%E5%AD%A6uIP!/</loc>
+    
+    <lastmod>2013-11-17T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/16/%E7%8E%B0%E5%9C%A8nat%E7%A9%BF%E8%B6%8A%E5%92%8Ctun%E9%83%BD%E6%87%82%E5%95%A6,%E5%8F%AF%E4%BB%A5%E8%87%AA%E5%B7%B1%E5%81%9A%E4%B8%AAhamachi%E5%95%A6/</loc>
+    
+    <lastmod>2013-11-16T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/15/udp%E9%9A%A7%E9%81%93(STUN)/</loc>
+    
+    <lastmod>2013-11-15T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/13/%E5%8F%91%E7%8E%B0%E4%B8%80%E4%B8%AA%E5%A5%BD%E7%8E%A9%E7%9A%84linuxonandroid/</loc>
+    
+    <lastmod>2013-11-13T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/12/ubuntuserver12.04%E6%90%AD%E5%BB%BApptp%E6%9C%8D%E5%8A%A1%E5%99%A8/</loc>
+    
+    <lastmod>2013-11-12T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/11/[%E8%BD%AC]linux%E4%B8%8BIPTABLES%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3/</loc>
+    
+    <lastmod>2013-11-11T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/10/netstat-r%E6%9F%A5%E7%9C%8B%E8%B7%AF%E7%94%B1%E8%A1%A8%E6%97%B6Flags%E7%9A%84%E5%90%AB%E4%B9%89/</loc>
+    
+    <lastmod>2013-11-10T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/11/07/%E5%87%A0%E6%9D%A1%E5%91%BD%E4%BB%A4/</loc>
+    
+    <lastmod>2013-11-07T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/10/25/%E4%B8%8A%E6%AC%A1%E7%94%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%BB%BA%E7%AB%8BNAT%E6%9B%B2%E7%BA%BF%E5%85%B1%E4%BA%AB%E4%B8%8A%E7%BD%91%E7%9A%84%E7%BB%8F%E5%8E%86%E5%BF%98%E4%BA%86%E8%AE%B0%E5%BD%95%E4%BA%86/</loc>
+    
+    <lastmod>2013-10-25T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/10/12/[%E8%BD%AC]Linuxtcpdump%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/</loc>
+    
+    <lastmod>2013-10-12T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/10/11/%E9%87%8D%E8%A3%85%E4%BA%86MK808%E7%9A%84%E7%B3%BB%E7%BB%9F%E7%B2%BE%E7%AE%80%E4%BA%86%E5%BE%88%E5%A4%9A%E4%B8%9C%E8%A5%BF%E8%AE%B0%E5%BD%95%E4%B8%80%E4%B8%8B/</loc>
+    
+    <lastmod>2013-10-11T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/10/10/%E8%BF%81%E7%A7%BB%E6%88%90%E5%8A%9F!/</loc>
+    
+    <lastmod>2013-10-10T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/10/04/usb%E4%B9%8B%E7%81%BE/</loc>
+    
+    <lastmod>2013-10-04T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/10/03/[%E8%BD%AC]minecraft%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%90%AD%E5%BB%BA(%E5%8C%85%E5%90%ABoracle-jdk%E7%9A%84%E5%AE%89%E8%A3%85)/</loc>
+    
+    <lastmod>2013-10-03T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/10/01/%E6%97%B6%E9%97%B4%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B0%8F%E4%BE%8B%E5%AD%90/</loc>
+    
+    <lastmod>2013-10-01T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/09/24/%E4%B8%80%E4%B8%AA%E5%85%AB%E7%9A%87%E5%90%8E%E8%A7%A3%E6%B3%95/</loc>
+    
+    <lastmod>2013-09-24T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/09/20/[%E8%BD%AC].htaccess%E8%AF%A6%E8%A7%A3/</loc>
+    
+    <lastmod>2013-09-20T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/09/19/[%E8%BD%AC]%E9%85%8D%E7%BD%AE.htaccess301%E9%87%8D%E5%AE%9A%E5%90%91/</loc>
+    
+    <lastmod>2013-09-19T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/09/17/tar%E8%A7%A3%E5%8E%8B%E4%B8%8D%E5%90%8C%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6/</loc>
+    
+    <lastmod>2013-09-17T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/09/16/[%E8%BD%AC]WP-Syntax%E6%94%AF%E6%8C%81%E7%9A%84%E8%AF%AD%E8%A8%80%E5%92%8C%E7%94%A8%E6%B3%95/</loc>
+    
+    <lastmod>2013-09-16T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/09/15/%E4%B8%80%E4%B8%AA%E6%9C%89%E7%94%A8%E7%9A%84%E5%B0%8F%E8%84%9A%E6%9C%AC/</loc>
+    
+    <lastmod>2013-09-15T00:00:00.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lengzzz.com/2013/09/14/%E6%80%BB%E6%98%AF%E5%BF%98%E6%80%BB%E6%98%AF%E5%BF%98/</loc>
+    
+    <lastmod>2013-09-14T00:00:00.000Z</lastmod>
     
   </url>
   

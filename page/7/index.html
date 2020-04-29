@@ -1,0 +1,1180 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第 7 页 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/03/03/linux设备驱动程序(5)–字符设备驱动例子/"><span>linux 设备驱动程序 (5) – 字符设备驱动例子</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/03/linux设备驱动程序(5)–字符设备驱动例子/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-03T00:00:00.000Z">
+          2014-03-03
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p> linux 设备驱动程序 (5) – 字符设备驱动例子</p>
+<p><a href="/notename/" title="archive 20140303"></a></p>
+<p>这次给出一个例子, 比 (3) 中的例子稍微复杂一些. 在 (3) 中, 给出了一个字符设备的例子, 会保存最后一个写入的字节. 这次的例子使用一个链表保存写入的数据, 读取时从链表中移出数据:<br>![image_1bl0atutt1kn7iv5t3b18q8fr49.png-5.9kB][1]</p>
+<p>因此这个驱动和 FIFO 和管道非常相似, 当用户写入数据时, write point 后移, 并且写入数据 (如果当前链表 node 空间用尽则创建新 node). 当用户读取数据时, read pointer 也后移 (如果 read pointer 指向后一个 node 则删除前一个 node)</p>
+<p>所以首先写一个简单的单向链表:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BYTE_PER_NODE 4096	<span class="comment">/* 每个节点的数据size */</span></span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">linked_node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">char</span> *data;	<span class="comment">/* 指向一个数组, 数据保存在这里 */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">linked_node</span>* <span class="title">next</span>;</span>	<span class="comment">/* 指向下一个节点 */</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">/* 创建一个新node */</span></span><br><span class="line"><span class="function">struct linked_node* <span class="title">create_node</span><span class="params">(<span class="keyword">void</span>)</span>	</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">linked_node</span>* <span class="title">ret</span>;</span></span><br><span class="line">	<span class="keyword">if</span> ((ret = kmalloc(<span class="keyword">sizeof</span>(struct linked_node), GFP_KERNEL)) == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		DEBUG_LOG(KERN_WARNING, <span class="string">"no memory\n"</span>);</span><br><span class="line">		<span class="keyword">goto</span> err;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> ((ret-&gt;data = kmalloc(BYTE_PER_NODE, GFP_KERNEL)) == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		DEBUG_LOG(KERN_WARNING, <span class="string">"no memory\n"</span>);</span><br><span class="line">		<span class="keyword">goto</span> err1;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line"> </span><br><span class="line">err1:</span><br><span class="line">	kfree(ret);</span><br><span class="line">err:</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 删除一个node */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">free_node</span><span class="params">(struct linked_node* node)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	kfree(node-&gt;data);</span><br><span class="line">	kfree(node);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为我们的读写指针 (read pointer/write pointer) 需要保存指向哪个节点, 以及在节点中的哪个位置. 所以用一个结构体来保存这个指针:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pos_pointer</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">linked_node</span>* <span class="title">node</span>;</span></span><br><span class="line">	<span class="keyword">size_t</span> pos;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">chr_dev</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">pos_pointer</span> <span class="title">read_ptr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">pos_pointer</span> <span class="title">write_ptr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">semaphore</span> <span class="title">sem</span>;</span></span><br><span class="line">	<span class="keyword">wait_queue_head_t</span> <span class="built_in">queue</span>;</span><br><span class="line"> </span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">cdev</span> <span class="title">cdev</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在我们的设备结构体中使用 pos_pointer 保存读写指针.</p>
+<p>另外发现多了一个 sem 成员, 这个是上篇中学习的信号量. queue 成员是一个” 等待队列头”, 用于当无数据可读时进行休眠 [下一篇讲述].</p>
+<p>在 chr_init() 函数中应该设置我们的读写指针和信号量设施:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* in function chr_init() */</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">/* 设置私有数据 */</span></span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"setup private data\n"</span>)</span>;</span><br><span class="line"><span class="keyword">if</span> ((node = create<span class="constructor">_node()</span>)<span class="operator"> == </span>NULL)</span><br><span class="line">&#123;</span><br><span class="line">	goto err2;</span><br><span class="line">&#125;</span><br><span class="line">chr_dev-&gt;read_ptr.node = node;</span><br><span class="line">chr_dev-&gt;read_ptr.pos = <span class="number">0</span>;</span><br><span class="line">chr_dev-&gt;write_ptr.node = node;</span><br><span class="line">chr_dev-&gt;write_ptr.pos = <span class="number">0</span>;</span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"success\n"</span>)</span>;</span><br><span class="line"><span class="comment">/* 初始化信号量 */</span></span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"initialize semaphore\n"</span>)</span>;</span><br><span class="line">sema<span class="constructor">_init(&amp;<span class="params">chr_dev</span>-&gt;<span class="params">sem</span>, 1)</span>;</span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"success\n"</span>)</span>;</span><br><span class="line"><span class="comment">/* 初始化等待队列 */</span></span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"initialize wait queue\n"</span>)</span>;</span><br><span class="line">init<span class="constructor">_waitqueue_head(&amp;<span class="params">chr_dev</span>-&gt;<span class="params">queue</span>)</span>;</span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"success\n"</span>)</span>;</span><br></pre></td></tr></table></figure>
+<p>在 chr_exit() 中也应该释放资源:</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">p = chr_dev-&gt;read_ptr.<span class="keyword">node</span><span class="title">;</span></span><br><span class="line"><span class="title">chr_dev-</span>&gt;read_ptr.<span class="keyword">node</span> <span class="title">= NULL</span>;</span><br><span class="line">chr_dev-&gt;write_ptr.<span class="keyword">node</span> <span class="title">= NULL</span>;</span><br><span class="line">while (p)</span><br><span class="line">&#123;</span><br><span class="line">	q = p-&gt;next;</span><br><span class="line">	free_node(p);</span><br><span class="line">	p = q;</span><br><span class="line">&#125;</span><br><span class="line">cdev_del(&amp;chr_dev-&gt;cdev);</span><br></pre></td></tr></table></figure>
+<p>写入函数:</p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">ssize_t write(struct file *filp, const char __user *buf, size_t count, loff_t *fpos)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="title">struct</span> chr_dev *dev = filp-&gt;</span>private_data;</span><br><span class="line">	size_t this_write, total_write = <span class="number">0</span>;</span><br><span class="line">	char* p;</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">if</span> (down_interruptible(&amp;dev-&gt;</span>sem) != <span class="number">0</span>)</span><br><span class="line">		return -ERESTARTSYS;</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"write from user,pid=%d [%s]\n"</span>, </span><br><span class="line">		<span class="function"><span class="title">current</span>-&gt;</span><span class="function"><span class="title">pid</span>, current-&gt;</span>comm);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">while</span> (count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="function"><span class="title">this_write</span> = MIN(BYTE_PER_NODE - dev-&gt;</span>write_ptr.pos,</span><br><span class="line">						count);</span><br><span class="line">		<span class="function"><span class="title">p</span> = &amp;dev-&gt;</span><span class="function"><span class="title">write_ptr</span>.node-&gt;</span><span class="function"><span class="title">data</span>[dev-&gt;</span>write_ptr.pos];</span><br><span class="line">		<span class="keyword">if</span> (copy_from_user(p, buf, this_write) != <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			DEBUG_LOG(KERN_WARNING, <span class="string">"copy_from_user error\n"</span>);</span><br><span class="line">			goto err;</span><br><span class="line">		&#125;</span><br><span class="line">		count -= this_write;</span><br><span class="line">		total_write += this_write;</span><br><span class="line">		buf += this_write;</span><br><span class="line">		<span class="function"><span class="title">dev</span>-&gt;</span>write_ptr.pos += this_write;</span><br><span class="line">		<span class="function"><span class="title">if</span> (dev-&gt;</span>write_ptr.pos == BYTE_PER_NODE)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span><span class="function"><span class="title">write_ptr</span>.node-&gt;</span>next = create_node();</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span><span class="function"><span class="title">write_ptr</span>.node = dev-&gt;</span><span class="function"><span class="title">write_ptr</span>.node-&gt;</span>next;</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span>write_ptr.pos = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"write success total_write=%d,pos=%d\n"</span>, </span><br><span class="line">		<span class="function"><span class="title">total_write</span>, dev-&gt;</span>write_ptr.pos);</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">up</span>(&amp;dev-&gt;</span>sem);</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">wake_up_interruptible</span>(&amp;dev-&gt;</span>queue);</span><br><span class="line">	return total_write;</span><br><span class="line"> </span><br><span class="line">err:</span><br><span class="line">	<span class="function"><span class="title">up</span>(&amp;dev-&gt;</span>sem);</span><br><span class="line">	return -EFAULT; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们使用循环将数据写入, 每次循环开始时检测当前 node 剩余空间 (BYTE_PER_NODE – dev-&gt;write_ptr.pos) 和用户要求写入的 count 谁更小, 取较小作为 this_write(这一次写入的数据). 写入 node 之后, 令 count-=this_write 和并且令写指针 +=this_write. 之后检测写指针是否到 node 的末尾, 如果是的话, create 一个新 node.</p>
+<p>读取函数和写入很类似:</p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">ssize_t read(struct file *filp, char __user *buf, size_t count, loff_t *fpos)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="title">struct</span> chr_dev *dev = filp-&gt;</span>private_data;</span><br><span class="line">	size_t this_read, total_read = <span class="number">0</span>;</span><br><span class="line">	char* p;</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">if</span> (down_interruptible(&amp;dev-&gt;</span>sem) != <span class="number">0</span>)</span><br><span class="line">		return -ERESTARTSYS;</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"read from user,pid=%d [%s]\n"</span>, </span><br><span class="line">		<span class="function"><span class="title">current</span>-&gt;</span><span class="function"><span class="title">pid</span>, current-&gt;</span>comm);</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">while</span> (dev-&gt;</span><span class="function"><span class="title">read_ptr</span>.node == dev-&gt;</span>write_ptr.node &amp;&amp;</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span><span class="function"><span class="title">read_ptr</span>.pos == dev-&gt;</span>write_ptr.pos)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="function"><span class="title">up</span>(&amp;dev-&gt;</span>sem);</span><br><span class="line">		<span class="function"><span class="title">if</span> (filp-&gt;</span>f_flags &amp; O_NONBLOCK)</span><br><span class="line">			return -EAGAIN;</span><br><span class="line"> </span><br><span class="line">		DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"[%s] going to sleep\n"</span>, <span class="function"><span class="title">current</span>-&gt;</span>comm);</span><br><span class="line"> </span><br><span class="line">		<span class="function"><span class="title">if</span> (wait_event_interruptible(dev-&gt;</span><span class="function"><span class="title">queue</span>, (dev-&gt;</span><span class="function"><span class="title">read_ptr</span>.node != dev-&gt;</span>write_ptr.node ||</span><br><span class="line">				<span class="function"><span class="title">dev</span>-&gt;</span><span class="function"><span class="title">read_ptr</span>.pos != dev-&gt;</span>write_ptr.pos) ) != <span class="number">0</span>)</span><br><span class="line">			return -ERESTARTSYS;</span><br><span class="line"> </span><br><span class="line">		<span class="function"><span class="title">if</span> (down_interruptible(&amp;dev-&gt;</span>sem) != <span class="number">0</span>)</span><br><span class="line">			return -ERESTARTSYS;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">while</span> (count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="function"><span class="title">if</span> (dev-&gt;</span><span class="function"><span class="title">read_ptr</span>.node == dev-&gt;</span>write_ptr.node)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="function"><span class="title">this_read</span> = MIN(dev-&gt;</span><span class="function"><span class="title">write_ptr</span>.pos - dev-&gt;</span>read_ptr.pos,</span><br><span class="line">						count);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="function"><span class="title">this_read</span> = MIN(BYTE_PER_NODE - dev-&gt;</span>read_ptr.pos,</span><br><span class="line">						count);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (this_read == <span class="number">0</span>)</span><br><span class="line">			break;</span><br><span class="line"> </span><br><span class="line">		<span class="function"><span class="title">p</span> = &amp;dev-&gt;</span><span class="function"><span class="title">read_ptr</span>.node-&gt;</span><span class="function"><span class="title">data</span>[dev-&gt;</span>read_ptr.pos];</span><br><span class="line">		<span class="keyword">if</span> (copy_to_user(buf, p, this_read) != <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			DEBUG_LOG(KERN_WARNING, <span class="string">"copy_to_user error\n"</span>);</span><br><span class="line">			goto err;</span><br><span class="line">		&#125;</span><br><span class="line">		count -= this_read;</span><br><span class="line">		total_read += this_read;</span><br><span class="line">		buf += this_read;</span><br><span class="line">		<span class="function"><span class="title">dev</span>-&gt;</span>read_ptr.pos += this_read;</span><br><span class="line">		<span class="function"><span class="title">if</span> (dev-&gt;</span>read_ptr.pos == BYTE_PER_NODE)</span><br><span class="line">		&#123;</span><br><span class="line">			struct linked_node* node;</span><br><span class="line">			<span class="function"><span class="title">node</span> = dev-&gt;</span>read_ptr.node;</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span><span class="function"><span class="title">read_ptr</span>.node = dev-&gt;</span><span class="function"><span class="title">read_ptr</span>.node-&gt;</span>next;</span><br><span class="line">			free_node(node);</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span>read_ptr.pos = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"read success total_read=%d,pos=%d\n"</span>, </span><br><span class="line">		<span class="function"><span class="title">total_read</span>, dev-&gt;</span>read_ptr.pos);</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">up</span>(&amp;dev-&gt;</span>sem);</span><br><span class="line">	return total_read;</span><br><span class="line"> </span><br><span class="line">err:</span><br><span class="line">	<span class="function"><span class="title">up</span>(&amp;dev-&gt;</span>sem);</span><br><span class="line">	return -EFAULT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>[EOF]<br>  [1]: <a href="http://static.zybuluo.com/zwh8800/ftvt6tioo62u69zyo3m8r7z8/image_1bl0atutt1kn7iv5t3b18q8fr49.png" target="_blank" rel="noopener">http://static.zybuluo.com/zwh8800/ftvt6tioo62u69zyo3m8r7z8/image_1bl0atutt1kn7iv5t3b18q8fr49.png</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/驱动开发/">驱动开发</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/03/03/linux设备驱动程序(5)–字符设备驱动例子/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/03/01/c标准库字符输入输出/"><span>c 标准库字符输入输出</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/01/c标准库字符输入输出/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-01T00:00:00.000Z">
+          2014-03-01
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>c 标准库字符输入输出</p>
+<p><a href="/notename/" title="archive 20140301"></a></p>
+<h2 id="按功能分类"><a href="#按功能分类" class="headerlink" title="按功能分类"></a>按功能分类</h2><h3 style="color: #080">读取一个字符</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/getchar/" target="_blank" rel="noopener" data-slimstat="5">getchar</a></b></td>
+<td>Get character from stdin&nbsp;(function)</td>
+</tr>
+<tr>
+<td><a href="https://www.cplusplus.com/reference/cstdio/getc/" target="_blank" rel="noopener" data-slimstat="5"><b>getc</b></a></td>
+<td>Get character from stream&nbsp;(function)</td>
+</tr>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/fgetc/" target="_blank" rel="noopener" data-slimstat="5">fgetc</a></b></td>
+<td>Get character from stream&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getchar</span> <span class="params">( <span class="keyword">void</span> )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getc</span> <span class="params">( FILE * stream )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fgetc</span> <span class="params">( FILE * stream )</span></span>;</span><br></pre></td></tr></table></figure>
+第一个是从 stdin 中读取, 后两个都是从 FILE * 中读取但是 getc 可能被实现为宏, 返回值都为 int.
+
+<p>当成功时, 返回被读取的字符 (会被提升为 int); <code>当读取失败时返回 EOF, 需检测 feof 和 ferror 函数来检测是读到文件尾或是发生错误</code>.</p>
+<h3 style="color: #080">写入一个字符</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/putchar/" target="_blank" rel="noopener" data-slimstat="5">putchar</a></b></td>
+<td>Write character to stdout&nbsp;(function)</td>
+</tr>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/putc/" target="_blank" rel="noopener" data-slimstat="5">putc</a></b></td>
+<td>Write character to stream&nbsp;(function)</td>
+</tr>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/fputc/" target="_blank" rel="noopener" data-slimstat="5">fputc</a></b></td>
+<td>Write character to stream&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> putchar ( <span class="built_in">int</span> <span class="keyword">character</span> );</span><br><span class="line"><span class="built_in">int</span> putc ( <span class="built_in">int</span> <span class="keyword">character</span>, <span class="keyword">FILE</span> * stream );</span><br><span class="line"><span class="built_in">int</span> fputc ( <span class="built_in">int</span> <span class="keyword">character</span>, <span class="keyword">FILE</span> * stream );</span><br></pre></td></tr></table></figure>
+当写入时 character 会被强制为 unsigned int.
+
+<p>成功时返回写入的字符, <code>失败时返回 EOF, 应检测 ferror.</code></p>
+<h3 style="color: #080">读取一行</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/gets/" target="_blank" rel="noopener" data-slimstat="5">gets</a></b></td>
+<td>Get string from stdin&nbsp;(function)</td>
+</tr>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/fgets/" target="_blank" rel="noopener" data-slimstat="5">fgets</a></b></td>
+<td>Get string from stream&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">gets</span> <span class="params">( <span class="keyword">char</span> * str )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">fgets</span> <span class="params">( <span class="keyword">char</span> * str, <span class="keyword">int</span> num, FILE * stream )</span></span>;</span><br></pre></td></tr></table></figure>
+分别从 stdin 和 stream 中读取一行字符保存到 str 中, 使用 gets 比较危险可能会造成缓冲区溢出. `当使用 fgets 时最多会读取 num 个字符`.
+
+<p>当成功读取时, 返回参数 str. <code>当第一个字符就为 EOF 时, 返回 NULL. 当遇到错误时返回 NULL. 所以应检测 feof 和 ferror.</code></p>
+<h3 style="color: #080">写入一行</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/puts/" target="_blank" rel="noopener" data-slimstat="5">puts</a></b></td>
+<td>Write string to stdout&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">puts</span> <span class="params">( <span class="keyword">const</span> <span class="keyword">char</span> * str )</span></span>;</span><br></pre></td></tr></table></figure>
+将 str 写到 stdout, 并且在后面加一个 \ n
+
+<p>成功时返回<code>非零值, 出错时返回 EOF</code>.</p>
+<h3 style="color: #080">写入字符串</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/fputs/" target="_blank" rel="noopener" data-slimstat="5">fputs</a></b></td>
+<td>Write string to stream&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fputs</span> <span class="params">( <span class="keyword">const</span> <span class="keyword">char</span> * str, FILE * stream )</span></span>;</span><br></pre></td></tr></table></figure>
+和 puts 不同, 这个不在 str 后添加 \ n 字符
+
+<p>成功时返回非零值, <code>出错时返回 EOF</code>.</p>
+<h3 style="color: #080">读回</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/ungetc/" target="_blank" rel="noopener" data-slimstat="5">ungetc</a></b></td>
+<td>Unget character from stream&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> ungetc ( <span class="built_in">int</span> <span class="keyword">character</span>, <span class="keyword">FILE</span> * stream );</span><br></pre></td></tr></table></figure>
+
+<p>将 character 写回 stream 中</p>
+<p>成功时返回 character, <code>失败时返回 EOF</code></p>
+<p>[EOF]</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/C/">C</a><a href="/tags/标准库/">标准库</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/03/01/c标准库字符输入输出/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/02/18/拥有锁的时候最好不要进行休眠/"><span>拥有锁的时候最好不要进行休眠</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/02/18/拥有锁的时候最好不要进行休眠/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-02-18T00:00:00.000Z">
+          2014-02-18
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>拥有锁的时候最好不要进行休眠</p>
+<p><a href="/notename/" title="archive 20140218"></a></p>
+<p>当拥有一个自旋锁，seqlock 和 RCU 锁时禁止休眠。<br>关闭中断时禁止休眠<br>原因是，当拥有这些锁的时候必须确保程序处于一个原子的上下文中。具体可见驱动 4</p>
+<p>拥有一个信号量的时候尽量使休眠的短一些。原因很简单，你拿着一个锁不用，却去睡觉了，不是相当于占着茅坑不拉屎吗？结果导致其他等待信号量的线程也要休眠。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/错题本/">错题本</a><a href="/tags/坑/">坑</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/02/18/拥有锁的时候最好不要进行休眠/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/02/17/linux设备驱动程序(4)–并发/"><span>linux 设备驱动程序 (4) – 并发</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/02/17/linux设备驱动程序(4)–并发/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-02-17T00:00:00.000Z">
+          2014-02-17
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux 设备驱动程序 (4) – 并发</p>
+<p><a href="/notename/" title="archive 20140217"></a></p>
+<p>进行 linux 驱动开发不得不考虑的问题就是并发问题. 因为在内核态, 代码是可抢占的, 你不知道什么时候内核会抢占你对 CPU 的使用权来执行另一段代码 (这段代码可能会修改掉你的数据). 而且现在大多使用 SMP(对称多处理器), 代码甚至可以同时执行. 性能得到了很大提升但是编程的复杂程度也高了很多. 特别是在如何防止数据被其他执行线程修改上. 幸运的是, linux 已经提供了很多设施来完成这个功能.</p>
+<h3 id="1-信号量-amp-互斥体"><a href="#1-信号量-amp-互斥体" class="headerlink" title="1. 信号量 &amp; 互斥体"></a>1. 信号量 &amp; 互斥体</h3><p>这个在多线程编程中太常见了, 就不赘述了. 另外记一下 semaphore 这个单词, 总是拼错.</p>
+<p>列一下函数原型:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#<span class="keyword">include</span> &lt;linux/semaphore.h&gt; <span class="comment">/* 不像书中所写</span></span><br><span class="line"><span class="comment">				并没有&lt;asm/semaphore.h&gt; */</span></span><br><span class="line">void sema<span class="constructor">_init(<span class="params">struct</span> <span class="params">semaphore</span> <span class="operator">*</span><span class="params">sem</span>, <span class="params">int</span> <span class="params">val</span>)</span>;</span><br><span class="line">void down(<span class="keyword">struct</span> semaphore *sem);</span><br><span class="line"><span class="built_in">int</span> down<span class="constructor">_interruptible(<span class="params">struct</span> <span class="params">semaphore</span> <span class="operator">*</span><span class="params">sem</span>)</span>;</span><br><span class="line"><span class="built_in">int</span> down<span class="constructor">_trylock(<span class="params">struct</span> <span class="params">semaphore</span> <span class="operator">*</span><span class="params">sem</span>)</span>;</span><br><span class="line">void up(<span class="keyword">struct</span> semaphore *sem);</span><br><span class="line"> </span><br><span class="line">void init<span class="constructor">_rwsem(<span class="params">struct</span> <span class="params">rw_semaphore</span> <span class="operator">*</span><span class="params">sem</span>)</span>;</span><br><span class="line">void down<span class="constructor">_read(<span class="params">struct</span> <span class="params">rw_semaphore</span> <span class="operator">*</span><span class="params">sem</span>)</span>;</span><br><span class="line"><span class="built_in">int</span> down<span class="constructor">_read_trylock(<span class="params">struct</span> <span class="params">rw_semaphore</span> <span class="operator">*</span><span class="params">sem</span>)</span>;</span><br><span class="line">void up<span class="constructor">_read(<span class="params">struct</span> <span class="params">rw_semaphore</span> <span class="operator">*</span><span class="params">sem</span>)</span>;</span><br><span class="line">void down<span class="constructor">_write(<span class="params">struct</span> <span class="params">rw_semaphore</span> <span class="operator">*</span><span class="params">sem</span>)</span>;</span><br><span class="line"><span class="built_in">int</span> down<span class="constructor">_write_trylock(<span class="params">struct</span> <span class="params">rw_semaphore</span> <span class="operator">*</span><span class="params">sem</span>)</span>;</span><br><span class="line">void up<span class="constructor">_write(<span class="params">struct</span> <span class="params">rw_semaphore</span> <span class="operator">*</span><span class="params">sem</span>)</span>;</span><br><span class="line">void downgrade<span class="constructor">_write(<span class="params">struct</span> <span class="params">rw_semaphore</span> <span class="operator">*</span><span class="params">sem</span>)</span>;</span><br></pre></td></tr></table></figure>
+<p>&lt;&lt;linux 设备驱动程序&gt;&gt; 上所说的 init_MUTEX 函数貌似在新版本中已经删掉了, 可以用 sema_init(&amp;sem, 1); 来代替.<br>down_interruptible 函数当被中断时会返回非零值, down_trylock 当信号量不可获得时会返回非零值.</p>
+<h3 id="2-自旋锁"><a href="#2-自旋锁" class="headerlink" title="2. 自旋锁"></a>2. 自旋锁</h3><p>当对信号量执行 down 函数时, 如果当前无法获取信号量, 会阻塞当前执行线程, 但是并非 CPU 空转不工作. 而是” 进入休眠”. 进入休眠是一个有明确定义的术语. 当” 进入休眠” 时, 执行线程会进入休眠状态, 这时会把 CPU 让给其他执行线程知道将来它能获取信号量为止.</p>
+<p>但是自旋锁不一样, 当线程对自旋锁进行” 锁定” 动作时, 如果自旋锁已经被其他线程锁定, 那么当前线程将进行” 自旋”. 所谓自旋, 其实就是一个 while 循环 [它循环重复检查这个锁直到锁可用为止]. 所以说可见自旋锁当锁定时不会让出 CPU.</p>
+<p>所以自旋锁简单, 而且也比信号量快 (因为不用设计到 CPU 调度). 但是使用却有一些限制:</p>
+<ul>
+<li>考虑当前系统是单处理器非抢占系统, 那么如果一个线程进入自旋状态, 那么因为没有抢占其他线程得不到执行, 所以无法解锁自旋锁. 那么这个线程会一直循环下去. 整个系统会被卡死. <span style="color: #0000ff;"><strong>所以在非抢占式单处理器系统上自旋锁被优化为不做任何事.</strong></span></li>
+<li> 考虑在一个单处理器抢占式系统上. 一个线程获得了一个自旋锁, 然后再临界区执行时丢掉了 CPU(可能被抢占, 可能调用了进入休眠的函数). 如果获得 CPU 的线程也想获取那个自旋锁, 那么整个系统会死锁下去. <strong><span style="color: #0000ff;">所以为了避免这个, 当一个线程获得自旋锁之后<span style="color: #ff0000;">此线程所在的 CPU</span> 的抢占会被禁止.</span></strong> 另外,<strong><span style="color: #ff0000;"> 人们要注意不要再获得自旋锁之后执行会丢掉 CPU 的函数.</span></strong></li>
+<li> 另外, 当线程获得自旋锁之后, 发生了中断, 中断例程也请求获取自旋锁, 这时整个系统也会进入死锁. <strong><span style="color: #0000ff;">可以在获取锁时关闭当前 CPU 中断来解决.</span></strong></li>
+<li> 最后, 自旋锁的重要准则是: “<strong>自旋锁必须在可能的最短时间内拥有</strong> “</li>
+</ul>
+
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#<span class="keyword">include</span> &lt;linux/spinlock.h&gt;</span><br><span class="line"> </span><br><span class="line">spinlock_t lock = SPIN_LOCK_UNLOCKED;</span><br><span class="line">void spin<span class="constructor">_lock_init(<span class="params">spinlock_t</span> <span class="operator">*</span><span class="params">lock</span>)</span>;</span><br><span class="line"> </span><br><span class="line">void spin<span class="constructor">_lock(<span class="params">spinlock_t</span> <span class="operator">*</span><span class="params">lock</span>)</span>;</span><br><span class="line">void spin<span class="constructor">_lock_irqsave(<span class="params">spinlock_t</span> <span class="operator">*</span><span class="params">lock</span>, <span class="params">unsigned</span> <span class="params">long</span> <span class="params">flags</span>)</span>;</span><br><span class="line">void spin<span class="constructor">_lock_irq(<span class="params">spinlock_t</span> <span class="operator">*</span><span class="params">lock</span>)</span>;</span><br><span class="line">void spin<span class="constructor">_lock_bh(<span class="params">spinlock_t</span> <span class="operator">*</span><span class="params">lock</span>)</span>;</span><br><span class="line"> </span><br><span class="line">void spin<span class="constructor">_unlock(<span class="params">spinlock_t</span> <span class="operator">*</span><span class="params">lock</span>)</span>;</span><br><span class="line">void spin<span class="constructor">_unlock_irqsave(<span class="params">spinlock_t</span> <span class="operator">*</span><span class="params">lock</span>, <span class="params">unsigned</span> <span class="params">long</span> <span class="params">flags</span>)</span>;</span><br><span class="line">void spin<span class="constructor">_unlock_irq(<span class="params">spinlock_t</span> <span class="operator">*</span><span class="params">lock</span>)</span>;</span><br><span class="line">void spin<span class="constructor">_unlock_bh(<span class="params">spinlock_t</span> <span class="operator">*</span><span class="params">lock</span>)</span>;</span><br><span class="line"> </span><br><span class="line"><span class="built_in">int</span> spin<span class="constructor">_trylock(<span class="params">spinlock_t</span> <span class="operator">*</span><span class="params">lock</span>)</span>;</span><br><span class="line"><span class="built_in">int</span> spin<span class="constructor">_trylock_bh(<span class="params">spinlock_t</span> <span class="operator">*</span><span class="params">lock</span>)</span>;</span><br></pre></td></tr></table></figure>
+<p>irqsave 会将中断状态保存在 flags 中, 当 unlock 时必须提供同一个 flags.</p>
+<p>irq 函数会禁止本处理器的中断.</p>
+<p>bh 会关闭软中断.</p>
+<p>同样, 自旋锁有 rw 版本.</p>
+<h3 id="3-使用锁的一些准则与陷阱"><a href="#3-使用锁的一些准则与陷阱" class="headerlink" title="3. 使用锁的一些准则与陷阱"></a>3. 使用锁的一些准则与陷阱</h3><ul>
+<li>在编写函数时, 被调用的函数不能锁定此函数中一定锁定的锁否则会造成死锁. 所以当编写那些假定调用者已经获取锁的函数时,<span style="color: #0000ff;"><strong> 最好在注释中写明</strong></span>, 在此函数被调用之前调用者已经加锁. 防止几个月后重写时在函数中误加锁造成死锁. <strong><span style="color: #0000ff;">[最好养成习惯只在某一类函数中加锁 (如只在系统调用直接调用的函数中加锁)]</span></strong></li>
+<li> 必须同时获取多个锁时, 最好都按照一定顺序获取.</li>
+<li> 先获取局部的锁, 再获取全局的锁.</li>
+<li> 先获取信号量, 再获取自旋锁.</li>
+</ul>
+
+<h3 id="4-循环队列"><a href="#4-循环队列" class="headerlink" title="4. 循环队列"></a>4. 循环队列</h3><p>使用循环队列是一种免锁算法. 生产者在队列的一端中写入, 消费者从另一端取走. 如果设计的好, 可以不必使用锁.</p>
+<p>在 &lt;linux/kfifo.h&gt; 中有实现好的循环队列.</p>
+<h3 id="5-原子变量"><a href="#5-原子变量" class="headerlink" title="5. 原子变量"></a>5. 原子变量</h3><p>当对一个简单的整数进行加减的时候也加锁显得有些小题大做了. 但是很多整数运算确实不是原子的, 如 ++i;</p>
+<p>所以 linux 内核实现了原子类型 atomic_t 来进行高效的原子的整形运算.</p>
+<p>具体参见 &lt;asm/atomic.h&gt;</p>
+<h3 id="6-原子位操作"><a href="#6-原子位操作" class="headerlink" title="6. 原子位操作"></a>6. 原子位操作</h3><p>除了原子的整数变量, 内核也提供了原子的位操作类型和函数. 集体参见 &lt;asm/bitops.h&gt;</p>
+<h3 id="7-seqlock"><a href="#7-seqlock" class="headerlink" title="7.seqlock"></a>7.seqlock</h3><h3 id="8-读取-复制-更新-RCU"><a href="#8-读取-复制-更新-RCU" class="headerlink" title="8. 读取 - 复制 - 更新 (RCU)"></a>8. 读取 - 复制 - 更新 (RCU)</h3>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/驱动开发/">驱动开发</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/02/17/linux设备驱动程序(4)–并发/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/02/09/linux数据结构函数/"><span>linux 数据结构函数</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/02/09/linux数据结构函数/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-02-09T00:00:00.000Z">
+          2014-02-09
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux 数据结构函数</p>
+<p><a href="/notename/" title="archive 20140209"></a></p>
+<p>今天翻 man page, 发现 linux 下的 libc 比标准库要丰富很多, 除了提供了一些系统相关的包装函数 (fdopen popen dprintf 之类) 来降低编程难度以外, 还提供了一组数据结构相关的函数. 粗略看了一下, 提供了以下数据结构:</p>
+<ul>
+<li>哈希表</li>
+<li>队列</li>
+<li>二叉查找树</li>
+</ul>
+<p>还提供了简单的线性查找算法.<br>哈希表:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;search.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span>    <span class="title">hcreate</span><span class="params">(<span class="keyword">size_t</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>   <span class="title">hdestroy</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function">ENTRY *<span class="title">hsearch</span><span class="params">(ENTRY, ACTION)</span></span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _GNU_SOURCE</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hcreate_r</span><span class="params">(<span class="keyword">size_t</span> nel, struct hsearch_data *htab)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hsearch_r</span><span class="params">(ENTRY item, ACTION action, ENTRY **retval,</span></span></span><br><span class="line"><span class="function"><span class="params">              struct hsearch_data *htab)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hdestroy_r</span><span class="params">(struct hsearch_data *htab)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>队列:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;search.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span>   <span class="title">insque</span><span class="params">(<span class="keyword">void</span> *, <span class="keyword">void</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>   <span class="title">remque</span><span class="params">(<span class="keyword">void</span> *)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>线性查找:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;search.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span>  *<span class="title">lfind</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">size_t</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">size_t</span>, <span class="keyword">int</span> (*)(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>  *<span class="title">lsearch</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">void</span> *, <span class="keyword">size_t</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">size_t</span>, <span class="keyword">int</span> (*)(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *))</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>查找树:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;search.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span>  *<span class="title">tdelete</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *<span class="keyword">restrict</span>, <span class="keyword">void</span> **<span class="keyword">restrict</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">int</span>(*)(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>  *<span class="title">tfind</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">void</span> *<span class="keyword">const</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">int</span>(*)(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>  *<span class="title">tsearch</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">void</span> **,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">int</span>(*)(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>   <span class="title">twalk</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">void</span> (*)(<span class="keyword">const</span> <span class="keyword">void</span> *, VISIT, <span class="keyword">int</span> ))</span></span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _GNU_SOURCE</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">tdestroy</span><span class="params">(<span class="keyword">void</span> *root, <span class="keyword">void</span> (*free_node)(<span class="keyword">void</span> *nodep))</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/内核/">内核</a><a href="/tags/kernel/">kernel</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/02/09/linux数据结构函数/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/02/08/[转]LinuxNetcat命令：网络工具中的瑞士军刀/"><span>[转]Linux Netcat 命令：网络工具中的瑞士军刀</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/02/08/[转]LinuxNetcat命令：网络工具中的瑞士军刀/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-02-08T00:00:00.000Z">
+          2014-02-08
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>netcat 是网络工具中的瑞士军刀，它能通过 TCP 和 UDP 在网络中读写数据。通过与其他工具结合和重定向，你可以在脚本中以多种方式使用它。使用 netcat 命令所能完成的事情令人惊讶。</p>
+<p><a href="/notename/" title="archive 20140208"></a></p>
+<p>英文原文： <a href="https://mylinuxbook.com/linux-netcat-command/" target="_blank" rel="noopener">Linux Netcat command – The swiss army knife of networking</a>，编译：<a href="https://www.oschina.net/translate/linux-netcat-command" target="_blank" rel="noopener">oschina</a></p>
+<p>netcat 所做的就是在两台电脑之间建立链接并返回两个数据流，在这之后所能做的事就看你的想像力了。你能建立一个服务器，传输文件，与朋友聊天，传输流媒体或者用它作为其它协议的独立客户端。</p>
+<p>下面是一些使用 netcat 的例子.</p>
+<p>[A(172.31.100.7) B(172.31.100.23)]</p>
+<p>Linux netcat 命令实例：</p>
+<h3 id="1，端口扫描"><a href="#1，端口扫描" class="headerlink" title="1，端口扫描"></a>1，端口扫描</h3><p>端口扫描经常被系统管理员和黑客用来发现在一些机器上开放的端口，帮助他们识别系统中的漏洞。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc -z -v -n <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">21</span><span class="number">-25</span></span><br></pre></td></tr></table></figure>
+
+<p>可以运行在TCP或者UDP模式，默认是TCP，-u参数调整为udp.</p>
+<p>z 参数告诉netcat使用0 IO,连接成功后立即关闭连接， 不进行数据交换(谢谢@jxing 指点)</p>
+<p>v 参数指使用冗余选项（译者注：即详细输出）</p>
+<p>n 参数告诉netcat 不要使用DNS反向查询IP地址的域名</p>
+<p>这个命令会打印21到25 所有开放的端口。Banner是一个文本，Banner是一个你连接的服务发送给你的文本信息。当你试图鉴别漏洞或者服务的类型和版本的时候，Banner信息是非常有用的。但是，并不是所有的服务都会发送banner。</p>
+<p>一旦你发现开放的端口，你可以容易的使用netcat 连接服务抓取他们的banner。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ nc -v <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">21</span></span><br></pre></td></tr></table></figure>
+
+<p>netcat 命令会连接开放端口21并且打印运行在这个端口上服务的banner信息。</p>
+<h3 id="2，Chat-Server"><a href="#2，Chat-Server" class="headerlink" title="2，Chat Server"></a>2，Chat Server</h3><p>假如你想和你的朋友聊聊，有很多的软件和信息服务可以供你使用。但是，如果你没有这么奢侈的配置，比如你在计算机实验室，所有的对外的连接都是被限制的，你怎样和整天坐在隔壁房间的朋友沟通那？不要郁闷了，netcat提供了这样一种方法，你只需要创建一个Chat服务器，一个预先确定好的端口，这样子他就可以联系到你了。</p>
+<p>Server</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"><span class="meta-keyword">$nc</span> -l 1567</span></span><br></pre></td></tr></table></figure>
+
+<p>netcat 命令在1567端口启动了一个tcp 服务器，所有的标准输出和输入会输出到该端口。输出和输入都在此shell中展示。</p>
+<p>Client</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">1567</span></span><br></pre></td></tr></table></figure>
+
+<p>不管你在机器B上键入什么都会出现在机器A上。</p>
+<h3 id="3，文件传输"><a href="#3，文件传输" class="headerlink" title="3，文件传输"></a>3，文件传输</h3><p>大部分时间中，我们都在试图通过网络或者其他工具传输文件。有很多种方法，比如FTP,SCP,SMB等等，但是当你只是需要临时或者一次传输文件，真的值得浪费时间来安装配置一个软件到你的机器上嘛。假设，你想要传一个文件file.txt 从A 到B。A或者B都可以作为服务器或者客户端，以下，让A作为服务器，B为客户端。</p>
+<p>Server</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"><span class="meta-keyword">$nc</span> -l 1567 &lt; file.txt</span></span><br></pre></td></tr></table></figure>
+
+<p>Client</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc -n <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">1567</span> &gt; file.txt</span><br></pre></td></tr></table></figure>
+
+<p>这里我们创建了一个服务器在A上并且重定向netcat的输入为文件file.txt，那么当任何成功连接到该端口，netcat会发送file的文件内容。</p>
+<p>在客户端我们重定向输出到file.txt，当B连接到A，A发送文件内容，B保存文件内容到file.txt.</p>
+<p>没有必要创建文件源作为Server，我们也可以相反的方法使用。像下面的我们发送文件从B到A，但是服务器创建在A上，这次我们仅需要重定向netcat的输出并且重定向B的输入文件。</p>
+<p>B作为Server</p>
+<p>Server</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"><span class="meta-keyword">$nc</span> -l 1567 &gt; file.txt</span></span><br></pre></td></tr></table></figure>
+
+<p>Client</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc <span class="number">172.31</span><span class="number">.100</span><span class="number">.23</span> <span class="number">1567</span> &lt; file.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="4，目录传输"><a href="#4，目录传输" class="headerlink" title="4，目录传输"></a>4，目录传输</h3><p>发送一个文件很简单，但是如果我们想要发送多个文件，或者整个目录，一样很简单，只需要使用压缩工具tar，压缩后发送压缩包。</p>
+<p>如果你想要通过网络传输一个目录从A到B。</p>
+<p>Server</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"><span class="meta-keyword">$tar</span> -cvf – dir_name | nc -l 1567</span></span><br></pre></td></tr></table></figure>
+
+<p>Client</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc -n <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">1567</span> | tar -xvf -</span><br></pre></td></tr></table></figure>
+
+<p>这里在A服务器上，我们创建一个tar归档包并且通过-在控制台重定向它，然后使用管道，重定向给netcat，netcat可以通过网络发送它。</p>
+<p>在客户端我们下载该压缩包通过netcat 管道然后打开文件。</p>
+<p>如果想要节省带宽传输压缩包，我们可以使用bzip2或者其他工具压缩。</p>
+<p>Server</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$tar -cvf – dir_name| <span class="type">bzip2</span> -z | <span class="type">nc</span> -l <span class="number">1567</span></span><br></pre></td></tr></table></figure>
+<p>通过bzip2压缩</p>
+<p>Client</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc -n <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">1567</span> | bzip2 -d |tar -xvf -</span><br></pre></td></tr></table></figure>
+
+<p>使用bzip2解压</p>
+<h3 id="5-加密你通过网络发送的数据"><a href="#5-加密你通过网络发送的数据" class="headerlink" title="5. 加密你通过网络发送的数据"></a>5. 加密你通过网络发送的数据</h3><p>如果你担心你在网络上发送数据的安全，你可以在发送你的数据之前用如mcrypt的工具加密。</p>
+<p>服务端</p>
+<figure class="highlight tcl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc localhost <span class="number">1567</span> | mcrypt –<span class="keyword">flush</span> –bare -F -q -d -m ecb &gt; <span class="keyword">file</span>.txt</span><br></pre></td></tr></table></figure>
+
+<p>使用mcrypt工具加密数据。</p>
+<p>客户端</p>
+<figure class="highlight tcl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$mcrypt –<span class="keyword">flush</span> –bare -F -q -m ecb &lt; <span class="keyword">file</span>.txt | nc -l <span class="number">1567</span></span><br></pre></td></tr></table></figure>
+
+<p>使用mcrypt工具解密数据。</p>
+<p>以上两个命令会提示需要密码，确保两端使用相同的密码。</p>
+<p>这里我们是使用mcrypt用来加密，使用其它任意加密工具都可以。</p>
+<h3 id="6-流视频"><a href="#6-流视频" class="headerlink" title="6. 流视频"></a>6. 流视频</h3><p>虽然不是生成流视频的最好方法，但如果服务器上没有特定的工具，使用netcat，我们仍然有希望做成这件事。</p>
+<p>服务端</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"><span class="meta-keyword">$cat</span> video.avi | nc -l 1567</span></span><br></pre></td></tr></table></figure>
+
+<p>这里我们只是从一个视频文件中读入并重定向输出到netcat客户端</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">1567</span> | mplayer -vo x11 -cache <span class="number">3000</span> -</span><br></pre></td></tr></table></figure>
+
+<p>这里我们从socket中读入数据并重定向到mplayer。</p>
+<h3 id="7，克隆一个设备"><a href="#7，克隆一个设备" class="headerlink" title="7，克隆一个设备"></a>7，克隆一个设备</h3><p>如果你已经安装配置一台Linux机器并且需要重复同样的操作对其他的机器，而你不想在重复配置一遍。不在需要重复配置安装的过程，只启动另一台机器的一些引导可以随身碟和克隆你的机器。</p>
+<p>克隆Linux PC很简单，假如你的系统在磁盘/dev/sda上</p>
+<p>Server</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$dd</span> <span class="attribute">if</span>=/dev/sda | nc -l 1567</span><br></pre></td></tr></table></figure>
+
+<p>Client</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc -n <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">1567</span> | dd of=/dev/sda</span><br></pre></td></tr></table></figure>
+
+<p>dd是一个从磁盘读取原始数据的工具，我通过netcat服务器重定向它的输出流到其他机器并且写入到磁盘中，它会随着分区表拷贝所有的信息。但是如果我们已经做过分区并且只需要克隆root分区，我们可以根据我们系统root分区的位置，更改sda 为sda1，sda2.等等。</p>
+<h3 id="8，打开一个shell"><a href="#8，打开一个shell" class="headerlink" title="8，打开一个shell"></a>8，打开一个shell</h3><p>我们已经用过远程shell-使用telnet和ssh，但是如果这两个命令没有安装并且我们没有权限安装他们，我们也可以使用netcat创建远程shell。</p>
+<p>假设你的netcat支持 -c -e 参数(默认 netcat)</p>
+<p>Server</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$nc</span> -l <span class="number">1567</span> -e <span class="regexp">/bin/</span>bash -i</span><br></pre></td></tr></table></figure>
+
+<p>Client</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">1567</span></span><br></pre></td></tr></table></figure>
+
+<p>这里我们已经创建了一个netcat服务器并且表示当它连接成功时执行/bin/bash</p>
+<p>假如netcat 不支持-c 或者 -e 参数（openbsd netcat）,我们仍然能够创建远程shell</p>
+<p>Server</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$mkfifo</span> <span class="regexp">/tmp/</span>tmp_fifo</span><br><span class="line"><span class="variable">$cat</span> <span class="regexp">/tmp/</span>tmp_fifo | <span class="regexp">/bin/</span>sh -i <span class="number">2</span>&gt;&amp;<span class="number">1</span> | nc -l <span class="number">1567</span> &gt; <span class="regexp">/tmp/</span>tmp_fifo</span><br></pre></td></tr></table></figure>
+
+<p>这里我们创建了一个fifo文件，然后使用管道命令把这个fifo文件内容定向到shell 2&gt;&amp;1中。是用来重定向标准错误输出和标准输出，然后管道到netcat 运行的端口1567上。至此，我们已经把netcat的输出重定向到fifo文件中。</p>
+<p>说明：</p>
+<p>从网络收到的输入写到fifo文件中</p>
+<p>cat 命令读取fifo文件并且其内容发送给sh命令</p>
+<p>sh命令进程受到输入并把它写回到netcat。</p>
+<p>netcat 通过网络发送输出到client</p>
+<p>至于为什么会成功是因为管道使命令平行执行，fifo文件用来替代正常文件，因为fifo使读取等待而如果是一个普通文件，cat命令会尽快结束并开始读取空文件。</p>
+<p>在客户端仅仅简单连接到服务器</p>
+<p>Client</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc -n <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">1567</span></span><br></pre></td></tr></table></figure>
+
+<p>你会得到一个shell提示符在客户端</p>
+<h3 id="9，反向shell"><a href="#9，反向shell" class="headerlink" title="9，反向shell"></a>9，反向shell</h3><p>反向shell是指在客户端打开的shell。反向shell这样命名是因为不同于其他配置，这里服务器使用的是由客户提供的服务。</p>
+<p>服务端</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"><span class="meta-keyword">$nc</span> -l 1567</span></span><br></pre></td></tr></table></figure>
+
+<p>在客户端，简单地告诉netcat在连接完成后，执行shell。</p>
+<p>客户端</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">1567</span> -e /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>现在，什么是反向shell的特别之处呢<br>反向shell经常被用来绕过防火墙的限制，如阻止入站连接。例如，我有一个专用IP地址为172.31.100.7，我使用代理服务器连接到外部网络。如果我想从网络外部访问 这台机器如1.2.3.4的shell，那么我会用反向外壳用于这一目的。</p>
+<h3 id="10-指定源端口"><a href="#10-指定源端口" class="headerlink" title="10. 指定源端口"></a>10. 指定源端口</h3><p>假设你的防火墙过滤除25端口外其它所有端口，你需要使用-p选项指定源端口。</p>
+<p>服务器端</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"><span class="meta-keyword">$nc</span> -l 1567</span></span><br></pre></td></tr></table></figure>
+
+<p>客户端</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">1567</span> -p <span class="number">25</span></span><br></pre></td></tr></table></figure>
+
+<p>使用1024以内的端口需要root权限。</p>
+<p>该命令将在客户端开启25端口用于通讯，否则将使用随机端口。</p>
+<h3 id="11-指定源地址"><a href="#11-指定源地址" class="headerlink" title="11. 指定源地址"></a>11. 指定源地址</h3><p>假设你的机器有多个地址，希望明确指定使用哪个地址用于外部数据通讯。我们可以在netcat中使用-s选项指定ip地址。</p>
+<p>服务器端</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"><span class="meta-keyword">$nc</span> -u -l 1567 &lt; file.txt</span></span><br></pre></td></tr></table></figure>
+
+<p>客户端</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$nc -u <span class="number">172.31</span><span class="number">.100</span><span class="number">.7</span> <span class="number">1567</span> -s <span class="number">172.31</span><span class="number">.100</span><span class="number">.5</span> &gt; file.txt</span><br></pre></td></tr></table></figure>
+
+<p>该命令将绑定地址172.31.100.5。</p>
+<p>这仅仅是使用netcat的一些示例。</p>
+<p>其它用途有：</p>
+<ul>
+<li>使用-t选项模拟Telnet客户端，</li>
+<li>HTTP客户端用于下载文件，</li>
+<li>连接到邮件服务器，使用SMTP协议检查邮件，</li>
+<li>使用ffmpeg截取屏幕并通过流式传输分享，等等。其它更多用途。</li>
+</ul>
+<p>简单来说，只要你了解协议就可以使用netcat作为网络通讯媒介，实现各种客户端。</p>
+<h6 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h6><p><a href="https://linux.die.net/man/1/nc" target="_blank" rel="noopener">Netcat手册</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/netcat/">netcat</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/02/08/[转]LinuxNetcat命令：网络工具中的瑞士军刀/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/29/linux设备驱动程序(3)–字符设备驱动(设备号注册设备)/"><span>linux设备驱动程序(3) – 字符设备驱动(设备号 注册设备)</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/29/linux设备驱动程序(3)–字符设备驱动(设备号注册设备)/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-29T00:00:00.000Z">
+          2014-01-29
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>这次我们学习最简单的一种设备, 字符设备驱动的开发. 最终写出一个字符设备, 用户可以进行打开和关闭, 并向他写入数据, 它会始终保存着最后一次写入的数据, 对它进行读取会读出最后一次写入的数据.</p>
+<p><a href="/notename/" title="archive 20140129"></a></p>
+<h3 id="1-设备号"><a href="#1-设备号" class="headerlink" title="1.设备号"></a>1.设备号</h3><p>在linux中执行ls -l命令, 在日期之前可以看到两个用逗号隔开的数, 这个便是设备号, 逗号之前的是主设备号(major)后面的是次设备号(minor).</p>
+<p>在内核中, 设备号使用dev_t来表示(<code>&lt;linux/types.h&gt;</code>). dev_t可以同时保存主设备号和次设备号, 当需要从dev_t中获取主设备号或次设备号时, 可以使用以下:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="constructor">MAJOR(<span class="params">dev_t</span> <span class="params">dev</span>)</span>;</span><br><span class="line"><span class="constructor">MINOR(<span class="params">dev_t</span> <span class="params">dev</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>相反, 如果需要用设备号构造出dev_t则使用:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="constructor">MKDEV(<span class="params">int</span> <span class="params">major</span>, <span class="params">int</span> <span class="params">minor</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-分配设备号"><a href="#2-分配设备号" class="headerlink" title="2.分配设备号"></a>2.分配设备号</h3><p>建立字符设备前, 驱动程序首先应该分配设备号, 有三个函数用来分配(注册)设备号和释放设备号(在<code>&lt;linux/fs.h&gt;</code>中):</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">register_chrdev_region</span><span class="params">(<span class="keyword">dev_t</span> first, <span class="keyword">unsigned</span> <span class="keyword">int</span> count, </span></span></span><br><span class="line"><span class="function"><span class="params">				<span class="keyword">char</span> *name)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">alloc_chrdev_region</span><span class="params">(<span class="keyword">dev_t</span> *dev, <span class="keyword">unsigned</span> <span class="keyword">int</span> firstminor, </span></span></span><br><span class="line"><span class="function"><span class="params">				<span class="keyword">unsigned</span> <span class="keyword">int</span> count, <span class="keyword">char</span> *name)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unregister_chrdev_region</span><span class="params">(<span class="keyword">dev_t</span> first, <span class="keyword">unsigned</span> <span class="keyword">int</span> count)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>register_chrdev_region函数用在已知设备号的情况下向内核进行注册, alloc用在设备号不确定的情况下, 向内核动态分配设备号. first是申请的设备号的第一个, count是要连续申请的个数(次设备号的个数, 比如first是[10, 102], count是4, 则会申请[10,102][10,103][10,104][10,105]这四个). name是设备的名称, 将出现在/proc/devices和sysfs中. <strong>如果出错返回负的错误号</strong>.</p>
+<p>alloc函数成功后通过dev返回第一个设备号.</p>
+<p>例子:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="constructor">DEBUG_LOG(<span class="string">""</span>, <span class="string">"allocating device number\n"</span>)</span>;</span><br><span class="line"><span class="comment">/* 申请设备号 */</span></span><br><span class="line"><span class="keyword">if</span> (chr_major != <span class="number">0</span>)		<span class="comment">/* 如果用户提供了设备号 */</span></span><br><span class="line">&#123;</span><br><span class="line">	dev = <span class="constructor">MKDEV(<span class="params">chr_major</span>, <span class="params">chr_minor</span>)</span>;</span><br><span class="line">	ret = register<span class="constructor">_chrdev_region(<span class="params">dev</span>, 1, DEV_NAME)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">	ret = alloc<span class="constructor">_chrdev_region(&amp;<span class="params">dev</span>, <span class="params">chr_minor</span>, 1, DEV_NAME)</span>;</span><br><span class="line">	chr_major = <span class="constructor">MAJOR(<span class="params">dev</span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="constructor">DEBUG_LOG(KERN_WARNING, <span class="string">"cannot get major%d\n"</span>, <span class="params">chr_major</span>)</span>;</span><br><span class="line">	goto err;</span><br><span class="line">&#125;</span><br><span class="line"><span class="constructor">DEBUG_LOG(<span class="string">""</span>, <span class="string">"success\n"</span>)</span>;</span><br><span class="line"><span class="constructor">DEBUG_LOG(<span class="string">""</span>, <span class="string">"chr_major=%d, chr_minor=%d\n"</span>, <span class="params">chr_major</span>, <span class="params">chr_minor</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-重要的数据结构"><a href="#3-重要的数据结构" class="headerlink" title="3.重要的数据结构"></a>3.重要的数据结构</h3><p>关于字符设备驱动, 有三个重要的数据结构, 他们都在<code>&lt;linux/fs.h&gt;</code>中.分别是:</p>
+<ul>
+<li>struct file_operations</li>
+<li>struct file</li>
+<li>struct inode</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">module</span> *<span class="title">owner</span>;</span></span><br><span class="line">	<span class="keyword">loff_t</span> (*llseek) (struct file *, <span class="keyword">loff_t</span>, <span class="keyword">int</span>);</span><br><span class="line">	<span class="keyword">ssize_t</span> (*<span class="built_in">read</span>) (struct file *, <span class="keyword">char</span> __user *, <span class="keyword">size_t</span>, <span class="keyword">loff_t</span> *);</span><br><span class="line">	<span class="keyword">ssize_t</span> (*<span class="built_in">write</span>) (struct file *, <span class="keyword">const</span> <span class="keyword">char</span> __user *, <span class="keyword">size_t</span>, <span class="keyword">loff_t</span> *);</span><br><span class="line">	<span class="keyword">ssize_t</span> (*aio_read) (struct kiocb *, <span class="keyword">const</span> struct iovec *, <span class="keyword">unsigned</span> <span class="keyword">long</span>, <span class="keyword">loff_t</span>);</span><br><span class="line">	<span class="keyword">ssize_t</span> (*aio_write) (struct kiocb *, <span class="keyword">const</span> struct iovec *, <span class="keyword">unsigned</span> <span class="keyword">long</span>, <span class="keyword">loff_t</span>);</span><br><span class="line">	<span class="keyword">int</span> (*iterate) (struct file *, struct dir_context *);</span><br><span class="line">	<span class="function"><span class="keyword">unsigned</span> <span class="title">int</span> <span class="params">(*poll)</span> <span class="params">(struct file *, struct poll_table_struct *)</span></span>;</span><br><span class="line">	<span class="keyword">long</span> (*unlocked_ioctl) (struct file *, <span class="keyword">unsigned</span> <span class="keyword">int</span>, <span class="keyword">unsigned</span> <span class="keyword">long</span>);</span><br><span class="line">	<span class="keyword">long</span> (*compat_ioctl) (struct file *, <span class="keyword">unsigned</span> <span class="keyword">int</span>, <span class="keyword">unsigned</span> <span class="keyword">long</span>);</span><br><span class="line">	<span class="keyword">int</span> (*mmap) (struct file *, struct vm_area_struct *);</span><br><span class="line">	<span class="keyword">int</span> (*<span class="built_in">open</span>) (struct inode *, struct file *);</span><br><span class="line">	<span class="keyword">int</span> (*<span class="built_in">flush</span>) (struct file *, <span class="keyword">fl_owner_t</span> id);</span><br><span class="line">	<span class="keyword">int</span> (*<span class="built_in">release</span>) (struct inode *, struct file *);</span><br><span class="line">	<span class="keyword">int</span> (*fsync) (struct file *, <span class="keyword">loff_t</span>, <span class="keyword">loff_t</span>, <span class="keyword">int</span> datasync);</span><br><span class="line">	<span class="keyword">int</span> (*aio_fsync) (struct kiocb *, <span class="keyword">int</span> datasync);</span><br><span class="line">	<span class="keyword">int</span> (*fasync) (<span class="keyword">int</span>, struct file *, <span class="keyword">int</span>);</span><br><span class="line">	<span class="keyword">int</span> (*lock) (struct file *, <span class="keyword">int</span>, struct file_lock *);</span><br><span class="line">	<span class="keyword">ssize_t</span> (*sendpage) (struct file *, struct page *, <span class="keyword">int</span>, <span class="keyword">size_t</span>, <span class="keyword">loff_t</span> *, <span class="keyword">int</span>);</span><br><span class="line">	<span class="function"><span class="keyword">unsigned</span> <span class="title">long</span> <span class="params">(*get_unmapped_area)</span><span class="params">(struct file *, <span class="keyword">unsigned</span> <span class="keyword">long</span>, <span class="keyword">unsigned</span> <span class="keyword">long</span>, <span class="keyword">unsigned</span> <span class="keyword">long</span>, <span class="keyword">unsigned</span> <span class="keyword">long</span>)</span></span>;</span><br><span class="line">	<span class="keyword">int</span> (*check_flags)(<span class="keyword">int</span>);</span><br><span class="line">	<span class="keyword">int</span> (*flock) (struct file *, <span class="keyword">int</span>, struct file_lock *);</span><br><span class="line">	<span class="keyword">ssize_t</span> (*splice_write)(struct pipe_inode_info *, struct file *, <span class="keyword">loff_t</span> *, <span class="keyword">size_t</span>, <span class="keyword">unsigned</span> <span class="keyword">int</span>);</span><br><span class="line">	<span class="keyword">ssize_t</span> (*splice_read)(struct file *, <span class="keyword">loff_t</span> *, struct pipe_inode_info *, <span class="keyword">size_t</span>, <span class="keyword">unsigned</span> <span class="keyword">int</span>);</span><br><span class="line">	<span class="keyword">int</span> (*setlease)(struct file *, <span class="keyword">long</span>, struct file_lock **);</span><br><span class="line">	<span class="keyword">long</span> (*fallocate)(struct file *file, <span class="keyword">int</span> mode, <span class="keyword">loff_t</span> offset,</span><br><span class="line">			  <span class="keyword">loff_t</span> len);</span><br><span class="line">	<span class="keyword">int</span> (*show_fdinfo)(struct seq_file *m, struct file *f);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">file</span> &#123;</span></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * fu_list becomes invalid after file_free is called and queued via</span></span><br><span class="line"><span class="comment">	 * fu_rcuhead for RCU freeing</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">union</span> &#123;</span><br><span class="line">		<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>	<span class="title">fu_list</span>;</span></span><br><span class="line">		<span class="class"><span class="keyword">struct</span> <span class="title">llist_node</span>	<span class="title">fu_llist</span>;</span></span><br><span class="line">		<span class="class"><span class="keyword">struct</span> <span class="title">rcu_head</span> 	<span class="title">fu_rcuhead</span>;</span></span><br><span class="line">	&#125; f_u;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">path</span>		<span class="title">f_path</span>;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> f_dentry	f_path.dentry</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">inode</span>		*<span class="title">f_inode</span>;</span>	<span class="comment">/* cached value */</span></span><br><span class="line">	<span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span>	*<span class="title">f_op</span>;</span></span><br><span class="line"> </span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * Protects f_ep_links, f_flags, f_pos vs i_size in lseek SEEK_CUR.</span></span><br><span class="line"><span class="comment">	 * Must not be taken from IRQ context.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">spinlock_t</span>		f_lock;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_SMP</span></span><br><span class="line">	<span class="keyword">int</span>			f_sb_list_cpu;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	<span class="keyword">atomic_long_t</span>		f_count;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> 		f_flags;</span><br><span class="line">	<span class="keyword">fmode_t</span>			f_mode;</span><br><span class="line">	<span class="keyword">loff_t</span>			f_pos;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">fown_struct</span>	<span class="title">f_owner</span>;</span></span><br><span class="line">	<span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span>	*<span class="title">f_cred</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">file_ra_state</span>	<span class="title">f_ra</span>;</span></span><br><span class="line"> </span><br><span class="line">	u64			f_version;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_SECURITY</span></span><br><span class="line">	<span class="keyword">void</span>			*f_security;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	<span class="comment">/* needed for tty driver, and maybe others */</span></span><br><span class="line">	<span class="keyword">void</span>			*private_data;</span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_EPOLL</span></span><br><span class="line">	<span class="comment">/* Used by fs/eventpoll.c to link all the hooks to this file */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>	<span class="title">f_ep_links</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span>	<span class="title">f_tfile_llink</span>;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* #ifdef CONFIG_EPOLL */</span></span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">address_space</span>	*<span class="title">f_mapping</span>;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_DEBUG_WRITECOUNT</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span> f_mnt_write_state;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">inode</span> &#123;</span></span><br><span class="line">...</span><br><span class="line">	<span class="keyword">dev_t</span>			i_rdev;</span><br><span class="line">	<span class="keyword">union</span> &#123;</span><br><span class="line">		<span class="class"><span class="keyword">struct</span> <span class="title">pipe_inode_info</span>	*<span class="title">i_pipe</span>;</span></span><br><span class="line">		<span class="class"><span class="keyword">struct</span> <span class="title">block_device</span>	*<span class="title">i_bdev</span>;</span></span><br><span class="line">		<span class="class"><span class="keyword">struct</span> <span class="title">cdev</span>		*<span class="title">i_cdev</span>;</span></span><br><span class="line">	&#125;;</span><br><span class="line">...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>对于一个字符设备, 应当满足linux对于字符设备的定义(既它可以进行字符设备的操作, 如打开,读取,写入,ioctl,关闭), 所以他应当自己定义这些操作的函数, 然后把函数指针保存在<strong>struct file_operations</strong>结构中传递给内核. 这样内核就可以在用户对设备调用这些函数时调用适当的驱动程序. 所以在<strong>struct file_operations</strong>中可以看到, 大部分的都是函数指针, 而有一个成员例外, struct module *owner成员应给它赋值THIS_MODULE.</p>
+<p>例如:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> <span class="title">chr_fops</span> = </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	.owner = THIS_MODULE,</span><br><span class="line">	.<span class="built_in">open</span> = <span class="built_in">open</span>,</span><br><span class="line">	.<span class="built_in">release</span> = <span class="built_in">release</span>,</span><br><span class="line">	.<span class="built_in">read</span> = <span class="built_in">read</span>,</span><br><span class="line">	.<span class="built_in">write</span> = <span class="built_in">write</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>对于file和inode, 我的理解是, 用户每打开一个文件, 将产生一个file结构, 但是一个文件只有一个inode(硬盘上也保存着inode, 用户打开时将会读入内存). 所以看open和release函数的签名都有一个file和inode, 而其他函数只有file. 因为当打开文件时, 应当让file和inode建立联系, 关闭时应当解除联系. 所以内核的接口是这样设计的.</p>
+<h3 id="4-注册字符设备"><a href="#4-注册字符设备" class="headerlink" title="4.注册字符设备"></a>4.注册字符设备</h3><p>刚刚只是分配了设备号了, 内核其实连你的设备是什么类型都不知道. 所以第二步应该注册设备. 字符设备的注册用到的结构体为<strong>struct cdev</strong>(<code>&lt;linux/cdev.h&gt;</code>, 刚刚在inode结构体中也看见这个结构了i_cdev)</p>
+<p>cdev结构体的分配有两个函数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">struct cdev *<span class="title">cdev_alloc</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cdev_init</span><span class="params">(struct cdev *cdev, struct file_operations *fops)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>第一个函数会分配内存空间, 并进行初始化cdev, 第二个只是会初始化cdev.</p>
+<p>cdev有两个重要的字段, owner和ops, owner应该设置成THIS_MODULE, ops应当设置成一个指向struct file_operations的指针.</p>
+<p>cdev结构构造好之后通过这两个函数注册和移除字符设备:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cdev_add</span><span class="params">(struct cdev *dev, <span class="keyword">dev_t</span> num, <span class="keyword">unsigned</span> <span class="keyword">int</span> count)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cdev_del</span><span class="params">(struct cdev *dev)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>看看通过cdev_add我们传递给内核什么信息:</p>
+<ul>
+<li>通过num和count传递了设备号</li>
+<li>通过cdev内的ops传递了文件操作的函数指针</li>
+</ul>
+<p>这样, 当有用户请求对num指定的设备号的设备进行操作时, 就会通过ops中的指针调用相应的函数了. 这就完成了字符设备的注册.cdev_add会返回错误代码</p>
+<p>例:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">DEBUG_LOG(<span class="string">""</span>, <span class="string">"register char device\n"</span>);</span><br><span class="line"><span class="comment">/* 注册字符设备 */</span></span><br><span class="line">chr_dev = kmalloc(<span class="keyword">sizeof</span>(chr_dev), GFP_KERNEL);</span><br><span class="line"><span class="keyword">if</span> (chr_dev == <span class="literal">NULL</span>)</span><br><span class="line">&#123;</span><br><span class="line">	DEBUG_LOG(KERN_WARNING, <span class="string">"no memory\n"</span>);</span><br><span class="line">	ret = -ENOMEM;</span><br><span class="line">	<span class="keyword">goto</span> err1;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">memset</span>(chr_dev, <span class="number">0</span>, <span class="keyword">sizeof</span>(*chr_dev));</span><br><span class="line">cdev_init(&amp;chr_dev-&gt;cdev, &amp;chr_fops);</span><br><span class="line">chr_dev-&gt;cdev.owner = THIS_MODULE;</span><br><span class="line">chr_dev-&gt;cdev.ops = &amp;chr_fops;</span><br><span class="line"><span class="keyword">if</span> ((ret = cdev_add(&amp;chr_dev-&gt;cdev, dev, <span class="number">1</span>)) != <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">	DEBUG_LOG(KERN_WARNING, <span class="string">"Error %d adding chr\n"</span>, ret);</span><br><span class="line">	<span class="keyword">goto</span> err2;</span><br><span class="line">&#125;</span><br><span class="line">DEBUG_LOG(<span class="string">""</span>, <span class="string">"success\n"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>我们使用一个自己的结构来保存cdev和相关的信息chr_dev.</p>
+<h3 id="5-具体的驱动程序如何写"><a href="#5-具体的驱动程序如何写" class="headerlink" title="5.具体的驱动程序如何写"></a>5.具体的驱动程序如何写</h3><p>前面的所有操作讲的都是驱动程序的初始化操作, 都是应当写到module_init函数中的. 下面将驱动真正的事件处理函数应当怎么写.</p>
+<p>我们的功能是这个设备可以打开,关闭,读取,写入. 所以我们只需实现这几个函数, 如果用户对设备调用其他的函数, 内核会有相应的默认操作.</p>
+<h5 id="1-打开"><a href="#1-打开" class="headerlink" title="1)打开"></a>1)打开</h5><p>前面说了, 打开操作就是将inode和file结构体建立联系, 这两个结构体内核都会在用户打开/关闭文件时自动创建/销毁, 驱动程序不用照看他们的生命周期.</p>
+<p>open函数会用参数传来inode和file, inode是内核根据用户打开的文件创建的, 因为文件系统保存着设备文件的设备号, 而刚刚我们通过cdev_add函数将设备号和cdev建立了联系所以这个inode中会有一个指向对应cdev的指针. 但是file中没有, 我们要做的就是让每个打开的file也保存起这个指针(通过保存在<strong>filp-&gt;private_data</strong>中).</p>
+<p>但是我们的cdev保存在chr_dev结构中, 而且这个结构中还有另外一些我们感兴趣的东西, 所以不如直接保存chr_dev结构.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">open</span><span class="params">(struct inode *inode, struct file *filp)</span></span></span><br><span class="line"><span class="function"></span>&#123;	</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">chr_dev</span> *<span class="title">dev</span>;</span></span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"open from user\n"</span>);</span><br><span class="line"> </span><br><span class="line">	dev = container_of(inode-&gt;i_cdev, struct chr_dev, cdev);</span><br><span class="line">	filp-&gt;private_data = dev;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> ((filp-&gt;f_flags &amp; O_ACCMODE) == O_WRONLY)</span><br><span class="line">	&#123;</span><br><span class="line">		dev-&gt;last_char = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"open success\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-关闭"><a href="#2-关闭" class="headerlink" title="2)关闭"></a>2)关闭</h5><p>当用户关闭文件时, 我们应当:</p>
+<ul>
+<li>释放filp-&gt;private_data中我们分配的数据(如果不再使用)</li>
+<li>如果是最后一个文件被关闭, 关闭硬件(如果需要的话[硬件可能会费电])</li>
+</ul>
+<p>我们这两个工作都不用做.</p>
+<h5 id="3-读写"><a href="#3-读写" class="headerlink" title="3)读写"></a>3)读写</h5><p>这个很简单了没什么要说的. 注意一点, 传来的buf指针是用户空间的指针(用__user修饰), 我们不能对这个指针进行解引用, 因为它根本不指向我们这个空间(内核空间)的数据. 而对它进行读写只能通过函数copy_from_user/copy_to_user进行(<code>&lt;linux/uaccess&gt;</code>).</p>
+<p>另外, 如果在内核空间需要分配内存, 应使用kmalloc和kfree(<code>&lt;linux/stab.h&gt;</code>)</p>
+<p>直接看最终代码吧</p>
+<h3 id="6-最终代码"><a href="#6-最终代码" class="headerlink" title="6.最终代码"></a>6.最终代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/init.h&gt;			/* module_*		*/</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/kernel.h&gt;		/* printk		*/</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/moduleparam.h&gt;	/* module_param */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/types.h&gt;		/* dev_t		*/</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/fs.h&gt;			/* reg*_chrdev	*/</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/cdev.h&gt;			/* cdev_add		*/</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;asm/uaccess.h&gt;		/* copy_*_user	*/</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/string.h&gt;		/* memset		*/</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/slab.h&gt;			/* kmalloc		*/</span></span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEV_NAME <span class="meta-string">"chr"</span></span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _DEBUG</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _DEBUG</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEBUG_LOG(lvl, fmt, ...) 		\</span></span><br><span class="line">	printk(lvl <span class="string">"%s: %s:%d &lt;%s&gt;: "</span> fmt,	\</span><br><span class="line">	DEV_NAME, __FILE__, __LINE__, __func__, ##__VA_ARGS__)</span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEBUG_LOG(lvl, fmt, ...) </span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"> </span><br><span class="line">MODULE_LICENSE(<span class="string">"Dual BSD/GPL"</span>);</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">chr_dev</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">char</span> last_char;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">cdev</span> <span class="title">cdev</span>;</span></span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">open</span><span class="params">(struct inode *inode, struct file *filp)</span></span></span><br><span class="line"><span class="function"></span>&#123;	</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">chr_dev</span> *<span class="title">dev</span>;</span></span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"open from user\n"</span>);</span><br><span class="line"> </span><br><span class="line">	dev = container_of(inode-&gt;i_cdev, struct chr_dev, cdev);</span><br><span class="line">	filp-&gt;private_data = dev;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> ((filp-&gt;f_flags &amp; O_ACCMODE) == O_WRONLY)</span><br><span class="line">	&#123;</span><br><span class="line">		dev-&gt;last_char = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"open success\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">release</span><span class="params">(struct inode *inode, struct file *filp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"release from user\n"</span>);</span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"release success\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">read</span><span class="params">(struct file *filp, <span class="keyword">char</span> __user *buf, <span class="keyword">size_t</span> count, <span class="keyword">loff_t</span> *fpos)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">chr_dev</span> *<span class="title">dev</span> = <span class="title">filp</span>-&gt;<span class="title">private_data</span>;</span></span><br><span class="line">	<span class="keyword">char</span>* kbuf = kmalloc(count, GFP_KERNEL);</span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"read from user\n"</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> (kbuf == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		DEBUG_LOG(KERN_WARNING, <span class="string">"no memory\n"</span>);</span><br><span class="line">		<span class="keyword">goto</span> err1;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">memset</span>(kbuf, dev-&gt;last_char, count);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> (copy_to_user(buf, kbuf, count) != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		DEBUG_LOG(KERN_WARNING, <span class="string">"copy_to_user error\n"</span>);</span><br><span class="line">		<span class="keyword">goto</span> err;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	kfree(kbuf);</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"read success count=%d\n"</span>, count);</span><br><span class="line">	<span class="keyword">return</span> count;</span><br><span class="line"> </span><br><span class="line">err1:</span><br><span class="line">	kfree(kbuf);</span><br><span class="line">err:</span><br><span class="line">	<span class="keyword">return</span> -EFAULT;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">write</span><span class="params">(struct file *filp, <span class="keyword">const</span> <span class="keyword">char</span> __user *buf, <span class="keyword">size_t</span> count, <span class="keyword">loff_t</span> *fpos)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">chr_dev</span> *<span class="title">dev</span> = <span class="title">filp</span>-&gt;<span class="title">private_data</span>;</span></span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"write from user\n"</span>);</span><br><span class="line">	<span class="keyword">if</span> (copy_from_user(&amp;dev-&gt;last_char, buf + count - <span class="number">1</span>, <span class="number">1</span>) != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		DEBUG_LOG(KERN_WARNING, <span class="string">"copy_from_user error\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> -EFAULT;</span><br><span class="line">	&#125;</span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"write success count=%d\n"</span>, count);</span><br><span class="line">	<span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> <span class="title">chr_fops</span> = </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	.owner = THIS_MODULE,</span><br><span class="line">	.<span class="built_in">open</span> = <span class="built_in">open</span>,</span><br><span class="line">	.<span class="built_in">release</span> = <span class="built_in">release</span>,</span><br><span class="line">	.<span class="built_in">read</span> = <span class="built_in">read</span>,</span><br><span class="line">	.<span class="built_in">write</span> = <span class="built_in">write</span>,</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">int</span> chr_major = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> chr_minor = <span class="number">0</span>;</span><br><span class="line"><span class="comment">//module_param(chr_major, int, S_IRUGO);</span></span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">chr_dev</span>* <span class="title">chr_dev</span>;</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">chr_init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> ret;</span><br><span class="line">	<span class="keyword">dev_t</span> dev;</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"allocating device number\n"</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="comment">/* 申请设备号 */</span></span><br><span class="line">	<span class="keyword">if</span> (chr_major != <span class="number">0</span>)		<span class="comment">/* 如果用户提供了设备号 */</span></span><br><span class="line">	&#123;</span><br><span class="line">		dev = MKDEV(chr_major, chr_minor);</span><br><span class="line">		ret = register_chrdev_region(dev, <span class="number">1</span>, DEV_NAME);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		ret = alloc_chrdev_region(&amp;dev, chr_minor, <span class="number">1</span>, DEV_NAME);</span><br><span class="line">		chr_major = MAJOR(dev);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		DEBUG_LOG(KERN_WARNING, <span class="string">"cannot get major%d\n"</span>, chr_major);</span><br><span class="line">		<span class="keyword">goto</span> err;</span><br><span class="line">	&#125;</span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"success\n"</span>);</span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"chr_major=%d, chr_minor=%d\n"</span>, chr_major, chr_minor);</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"register char device\n"</span>);</span><br><span class="line">	<span class="comment">/* 注册字符设备 */</span></span><br><span class="line">	chr_dev = kmalloc(<span class="keyword">sizeof</span>(chr_dev), GFP_KERNEL);</span><br><span class="line">	<span class="keyword">if</span> (chr_dev == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		DEBUG_LOG(KERN_WARNING, <span class="string">"no memory\n"</span>);</span><br><span class="line">		ret = -ENOMEM;</span><br><span class="line">		<span class="keyword">goto</span> err1;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">memset</span>(chr_dev, <span class="number">0</span>, <span class="keyword">sizeof</span>(*chr_dev));</span><br><span class="line">	cdev_init(&amp;chr_dev-&gt;cdev, &amp;chr_fops);</span><br><span class="line">	chr_dev-&gt;cdev.owner = THIS_MODULE;</span><br><span class="line">	chr_dev-&gt;cdev.ops = &amp;chr_fops;</span><br><span class="line">	<span class="keyword">if</span> ((ret = cdev_add(&amp;chr_dev-&gt;cdev, dev, <span class="number">1</span>)) != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		DEBUG_LOG(KERN_WARNING, <span class="string">"Error %d adding chr\n"</span>, ret);</span><br><span class="line">		<span class="keyword">goto</span> err2;</span><br><span class="line">	&#125;</span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"success\n"</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> </span><br><span class="line">err2:</span><br><span class="line">	kfree(chr_dev);</span><br><span class="line">err1:</span><br><span class="line">	unregister_chrdev_region(dev, <span class="number">1</span>);</span><br><span class="line">err:</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">chr_exit</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"unloading module\n"</span>);</span><br><span class="line"> </span><br><span class="line">	cdev_del(&amp;chr_dev-&gt;cdev);</span><br><span class="line">	kfree(chr_dev);</span><br><span class="line">	unregister_chrdev_region(MKDEV(chr_major, chr_minor), <span class="number">1</span>);</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(<span class="string">""</span>, <span class="string">"success\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">module_init(chr_init);</span><br><span class="line">module_exit(chr_exit);</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/驱动开发/">驱动开发</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/29/linux设备驱动程序(3)–字符设备驱动(设备号注册设备)/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/28/linux设备驱动程序(2)–内核版本导出符号模块参数/"><span>linux设备驱动程序(2) – 内核版本 导出符号 模块参数</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/28/linux设备驱动程序(2)–内核版本导出符号模块参数/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-28T00:00:00.000Z">
+          2014-01-28
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>关于 内核版本 导出符号 模块参数 的内容</p>
+<p><a href="/notename/" title="archive 20140128"></a></p>
+<h3 id="1-内核版本"><a href="#1-内核版本" class="headerlink" title="1.内核版本"></a>1.内核版本</h3><p>有时模块会针对多个不同版本的内核进行编译, 这时就应该用到预处理命令来实现条件编译. 主要通过测试<code>&lt;linux/version.h&gt;</code>中的宏来完成.</p>
+<p>UTS_RELEASE: 内核版本的字符串, 如”2.6.10″</p>
+<p>LINUX_VERSION_CODE: 内核版本的二进制表示, 每个版本号对应一个字节, 如2.6.10版的LINUX_VERSION_CODE为0x02060a</p>
+<p>KERNEL_VERSION(major, minor, release): 这个宏将major, minor和release扩展成LINUX_VERSION_CODE的形式, 可以直观的进行测试</p>
+<h3 id="2-导出模块符号"><a href="#2-导出模块符号" class="headerlink" title="2.导出模块符号"></a>2.导出模块符号</h3><p>有时, 模块可能需要被其他模块来调用, 所以需要导出自己模块的符合供别人使用. Linux内核头文件提供了一个方便的方法来到处内核符号:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="constructor">EXPORT_SYMBOL(<span class="params">name</span>)</span>;		<span class="comment">//导出name</span></span><br><span class="line"><span class="constructor">EXPORT_SYMBOL_GPL(<span class="params">name</span>)</span>;	<span class="comment">//导出的符号只能被GPL代码使用</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-许可证"><a href="#3-许可证" class="headerlink" title="3.许可证"></a>3.许可证</h3><p>通过MODULE_LECENSE(license)宏来声明当前模块的许可证, license是一个字符串, 支持的许可证如下:</p>
+<p>“GPL”, “GPL v2”, “GPL and additional rights”, “Dual BSD/GPL”, “Dual MPL/GPL”, “Proprietary”(专用)</p>
+<p>如果不声明, 默认为”Proprietary”</p>
+<h3 id="4-模块参数"><a href="#4-模块参数" class="headerlink" title="4.模块参数"></a>4.模块参数</h3><p>linux内核模块可以声明全局变量为模块参数, 从而可以在加载时赋值.</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">static <span class="built_in">char</span>* whom = <span class="string">"nobody"</span>;</span><br><span class="line">static <span class="built_in">int</span> howmany = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">module</span><span class="constructor">_param(<span class="params">howmany</span>, <span class="params">int</span>, S_IRUGO)</span>;</span><br><span class="line"><span class="keyword">module</span><span class="constructor">_param(<span class="params">whom</span>, <span class="params">charp</span>, S_IRUGO)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>通过module_param宏可以导出whom和howmany两个模块参数. 这个宏在&lt;linux/moduleparam.h&gt;中定义.<br>当插入模块时, 使用以下指令来设置模块参数:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insmod hello <span class="attribute">howmany</span>=10 <span class="attribute">whom</span>=<span class="string">"zzZ"</span></span><br></pre></td></tr></table></figure>
+
+<p>对于module_param宏的第二个参数, 可以取以下值:</p>
+<pre><code>bool
+invbool
+    布尔值, 应关联int型, invbool会翻转布尔值.
+charp
+    字符指针, 也就是字符串
+int, long, short, uint, ulong, ushort</code></pre><p>还有一个姐妹宏module_param_array(name, type, num, perm);来设置数组参数.</p>
+<p>再来说说第三个参数perm, 这个是成员访问许可, 在<code>&lt;linux/stat.h&gt;</code>中定义可选值. 这个用来控制谁能访问sysfs中对模块参数的表述. 如果perm为0, 则在sysfs中没有对用的入口项(entry), 否则会在/sys/module中出现. 如果使用S_IRUGO, 任何人都可读取, 但不能修改. S_IRUGO | S_IWUSR允许root修改.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/驱动开发/">驱动开发</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/28/linux设备驱动程序(2)–内核版本导出符号模块参数/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/27/记录一下开发过程的小插曲minimad/"><span>记录一下开发过程的小插曲minimad</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/27/记录一下开发过程的小插曲minimad/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-27T00:00:00.000Z">
+          2014-01-27
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>libmad是一个开源mp3软件解码库(很久以前的东西了, 原来曾用过, 突然有想法把它放我mk808上试试), c+汇编写的, 本身对arm平台有汇编优化, 可是因为年代久远而且是针对armv4优化的, 优化了还不如不优化(优化了反而有杂音, 关了之后很好).</p>
+<p><a href="/notename/" title="archive 20140127"></a></p>
+<p>源代码目录里有一个示例用的minimad.c, 是基于这个库的一个简单的mp3播放器. 插上我的号称7.1channel的usb外置声卡(20块淘宝货), 和aplay连用, 就能听歌了!(geek就是爱折腾, 没办法)</p>
+<p>首先, 从sourceforge.net上找到libmad并wget到mk808上, cd入目录, ./configure –disable-fpm关掉平台优化.</p>
+<p>然后需要改一下Makefile, 打开Makefile查找-fforce-mem, 删掉它(这是gcc老版本才有的选项)</p>
+<p>然后make(编译libmad), make minimad(编译minimad).</p>
+<p>没什么错误的话就会在当前目录看见一个绿色的minimad了.</p>
+<p>这个minimad说是播放器, 不如说是解码器…因为它只会从stdin读入mp3文件, 然后把解码后的pcm数据输出到stdout, 所以还得借助aplay来控制硬件播放.</p>
+<p>这是命令:</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">sudo</span> <span class="keyword">bash </span>-c <span class="string">"minimad &lt;1.mp3 | aplay -f cd"</span></span><br></pre></td></tr></table></figure>
+
+<p>这个是让1.mp3作为minimad的输入, 然后输出通过管道给aplay. -f是format, 使用CD格式的format, 也就是16 bit little endian, 44100, stereo, 正好是minimad的输出格式. 然后带上耳机, 就能听到美妙的歌声了.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/minimad/">minimad</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/27/记录一下开发过程的小插曲minimad/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/26/linux设备驱动程序(1)–helloworld/"><span>linux设备驱动程序(1) – helloworld</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/26/linux设备驱动程序(1)–helloworld/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-26T00:00:00.000Z">
+          2014-01-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>经过这几天痛苦debug，ztun终于是勉强能用了。（bug应该还不少，但不想改了呀wwww</p>
+<p><a href="/notename/" title="archive 20140126"></a></p>
+<p>然后，昨天看完了《linux系统编程》今天开始正式学习《linux设备驱动程序》，自然先从helloworld开始。</p>
+<p>对于驱动开发，首先你得有内核源代码树。如果你是ubuntu之类的发行版，一般软件仓库里会有linux-kernel-header包，下载一个适合自己的版本就可以了，它会安装在/scr中，但一般使用/lib/module/<code>uname -r</code>/build这个路径（这是个连接，连接到/src中）</p>
+<p>如果你是使用开发板做嵌入式，那么就麻烦一些，因为没有人给你做好内核树让你用，你必须自己从kernel.org或者你的零售商那里获取合适版本的内核源代码。然后cd到源代码目录执行以下操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make oldconfig</span><br><span class="line">make prepare</span><br><span class="line">make scripts <span class="comment">#不一定需要, 我这里就不用</span></span><br></pre></td></tr></table></figure>
+
+<p>如果是交叉编译还应该在make前加上ARCH=XXX CROSS_COMPILE=XXX，比如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make</span><br></pre></td></tr></table></figure>
+
+<p>好的，这样准备工作就完成了，可以写helloworld了：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* file: hello.c */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"linux/init.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"linux/module.h"</span></span></span><br><span class="line"> </span><br><span class="line">MODULE_LICENSE(<span class="string">"Dual BSD/GPL"</span>);</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hello_init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	printk(<span class="string">"Hello world\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">hello_exit</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	printk(<span class="string">"Goodbye\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">module_init(hello_init);</span><br><span class="line">module_exit(hello_exit);</span><br></pre></td></tr></table></figure>
+
+<p>而一向让人头疼的Makefile却很好写：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">obj-m := hello.o</span><br></pre></td></tr></table></figure>
+
+<p>什么？你TM在逗我？只有一行？对，只有一行，但是命令行需要麻烦点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -C /lib/module/`uname -r`/build M=`<span class="built_in">pwd</span>` modules</span><br></pre></td></tr></table></figure>
+
+<p>obj-m的意思是需要编译的模块，因为使用:=所以表示覆盖前面的值，所以只会编译hello.c而不会编译内核中的其他模块。命令行中/lib/module/<code>uname -r</code>/build是内核源代码树的路径，你可以改成你自己的。-C指令表示make执行时先chdir到内核源代码树，调用那里的Makefile，M=<code>pwd</code>代表模块代码在当前目录。</p>
+<p>执行成功后会在当前目录下生成一个hello.ko文件，这就是刚编译好的内核模块了。执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo insmod ./hello.ko</span><br><span class="line">dmesg</span><br><span class="line">sudo remod ./hello.ko</span><br><span class="line">dmesg</span><br></pre></td></tr></table></figure>
+
+<p>可以在两次dmesg中看到Hello world和Goodbye。</p>
+<p>但是每次都打那么长的命令行是不能接受的，特别是交叉编译时命令行更长。这个稍复杂点的Makefile可以解救你：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(KERNELRELEASE)</span>,)</span><br><span class="line">	obj-m := hello.o</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	KERNELDIR ?= /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build</span><br><span class="line">	PWD := <span class="variable">$(<span class="built_in">shell</span> pwd)</span></span><br><span class="line"> </span><br><span class="line"><span class="section">all:</span></span><br><span class="line">	<span class="variable">$(MAKE)</span> -C <span class="variable">$(KERNELDIR)</span> M=<span class="variable">$(PWD)</span> modules</span><br><span class="line"> </span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	<span class="variable">$(MAKE)</span> -C <span class="variable">$(KERNELDIR)</span> M=<span class="variable">$(PWD)</span> clean</span><br><span class="line"> </span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure>
+
+<p>只需要在模块目录打一个make就可以编译。</p>
+<p>下面分析一下这个Makefile。这个其实有点像递归，执行make时，KERNELRELEASE变量还没有被设置，所以执行else里的。首先吧KERNELDIR设置成内核源代码树路径。PWD变量设置成当前目录。然后执行$(MAKE) -C $(KERNELDIR) M=$(PWD) modules。这句话被翻译成刚刚的那句命令行。于是又执行一次make（递归来了。。。）递归时会先读取内核源代码树里的Makefile，里面设置了KERNELRELEASE变量所以还是刚刚的那句代码obj-m := hello.o。于是，完成编译。</p>
+<p>书上没写清楚的东西都说清楚了，希望对那些像我一样在看了书之后搞不出helloworld的人有帮助吧。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/驱动开发/">驱动开发</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/26/linux设备驱动程序(1)–helloworld/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  <a href="/page/6/" class="pagination-prev">上一页</a>
+  
+  
+  <a href="/page/8/" class="pagination-next">下一页</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

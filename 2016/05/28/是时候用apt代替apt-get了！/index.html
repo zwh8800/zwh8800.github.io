@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>是时候用 apt 代替 apt-get 了！ | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="最近无痛升级了 ubuntu 16.04 ，软件包和数据一点没丢。比上次 12.04 升级 14.04 舒服多了，直接 ssh 就搞定升级了。不得不说 ubuntu 已经成熟很多了。升级后我才发现多了个 apt 命令，用起来很符合我的审美，不过这个东西好像也存在比较久的一段时间了，实在是后知后觉了。">
+  
+
+  
+  
+  <meta name="keywords" content="linux,运维,ubuntu">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="是时候用 apt 代替 apt-get 了！"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>是时候用 apt 代替 apt-get 了！</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/05/28/是时候用apt代替apt-get了！/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-05-28T01:51:48.000Z">
+          2016-05-28
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>最近无痛升级了 ubuntu 16.04 ，软件包和数据一点没丢。比上次 12.04 升级 14.04 舒服多了，直接 ssh 就搞定升级了。不得不说 ubuntu 已经成熟很多了。升级后我才发现多了个 <code>apt</code> 命令，用起来很符合我的审美，不过这个东西好像也存在比较久的一段时间了，实在是后知后觉了。</p>
+<p><a href="/notename/" title="it is time to replace apt-get with apt"></a></p>
+<p>apt 这个命令行工具在功能上基本涵盖了以前 apt-get 和 apt-cache 的功能，在他们之上提供了一个 high-level 的命令行界面，而且也更有交互性。</p>
+<p><img src="http://static.zybuluo.com/zwh8800/j8b5ircljx0gzxv76c6w9wiv/image_1ajqh3qkm1kf81vb81kmtjldlipg.png" alt="image_1ajqh3qkm1kf81vb81kmtjldlipg.png-416.8kB"></p>
+<p>在命令行下敲击 apt 后会打印出一些常见命令：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">zzz@ubuntu-server ~ $ apt</span><br><span class="line">apt 1.2.10 (amd64)</span><br><span class="line">用法： apt [选项] 命令</span><br><span class="line"></span><br><span class="line">命令行软件包管理器 apt 提供软件包搜索，管理和信息查询等功能。</span><br><span class="line">它提供的功能与其他 APT 工具相同（像 apt-<span class="builtin-name">get</span> 和 apt-cache），</span><br><span class="line">但是默认情况下被设置得更适合交互。</span><br><span class="line"></span><br><span class="line">常用命令：</span><br><span class="line">  list - 根据名称列出软件包</span><br><span class="line">  search - 搜索软件包描述</span><br><span class="line">  show - 显示软件包细节</span><br><span class="line">  install - 安装软件包</span><br><span class="line">  <span class="builtin-name">remove</span> - 移除软件包</span><br><span class="line">  autoremove - 卸载所有自动安装且不再使用的软件包</span><br><span class="line">  update - 更新可用软件包列表</span><br><span class="line"> <span class="built_in"> upgrade </span>- 通过 安装/升级 软件来更新系统</span><br><span class="line">  full-upgrade - 通过 卸载/安装/升级 来更新系统</span><br><span class="line">  edit-sources - 编辑软件源信息文件</span><br><span class="line"></span><br><span class="line">参见 apt(8) 以获取更多关于可用命令的信息。</span><br><span class="line">程序配置选项及语法都已经在 apt.conf(5) 中阐明。</span><br><span class="line">欲知如何配置软件源，请参阅 sources.list(5)。</span><br><span class="line">软件包及其版本偏好可以通过 apt_preferences(5) 来设置。</span><br><span class="line">关于安全方面的细节可以参考 apt-secure(8).</span><br><span class="line">                                         本 APT 具有超级牛力。</span><br></pre></td></tr></table></figure>
+
+<p>虽然这个 <code>超级牛力</code> 是什么鬼我也不明白了。。。（莫非是 powered by GNU？）但是基本的使用介绍还是很清晰的。对于咱们普通用户来说，最明显的就是把 search 功能合并过来了。</p>
+<p>另外，比较好用的一点是 list 命令。可以使用 <code>apt list --upgradable</code> 来查看需要升级的软件包，有点类似 <code>brew outdated</code> 。</p>
+<p>还有一个 <code>apt show</code> 可以打印出软件包的基本信息。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">zzz@ubuntu-server</span> <span class="string">~</span> <span class="string">$</span> <span class="string">apt</span> <span class="string">show</span> <span class="string">zsh</span></span><br><span class="line"><span class="attr">Package:</span> <span class="string">zsh</span></span><br><span class="line"><span class="attr">Version:</span> <span class="number">5.1</span><span class="number">.1</span><span class="string">-1ubuntu2</span></span><br><span class="line"><span class="attr">Priority:</span> <span class="string">optional</span></span><br><span class="line"><span class="attr">Section:</span> <span class="string">shells</span></span><br><span class="line"><span class="attr">Origin:</span> <span class="string">Ubuntu</span></span><br><span class="line"><span class="attr">Maintainer:</span> <span class="string">Ubuntu</span> <span class="string">Developers</span> <span class="string">&lt;ubuntu-devel-discuss@lists.ubuntu.com&gt;</span></span><br><span class="line"><span class="attr">Original-Maintainer:</span> <span class="string">Debian</span> <span class="string">Zsh</span> <span class="string">Maintainers</span> <span class="string">&lt;pkg-zsh-devel@lists.alioth.debian.org&gt;</span></span><br><span class="line"><span class="attr">Bugs:</span> <span class="string">https://bugs.launchpad.net/ubuntu/+filebug</span></span><br><span class="line"><span class="attr">Installed-Size:</span> <span class="number">2</span><span class="string">,023</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Pre-Depends:</span> <span class="string">dpkg</span> <span class="string">(&gt;=</span> <span class="number">1.17</span><span class="number">.14</span><span class="string">)</span></span><br><span class="line"><span class="attr">Depends:</span> <span class="string">zsh-common</span> <span class="string">(=</span> <span class="number">5.1</span><span class="number">.1</span><span class="string">-1ubuntu2),</span> <span class="string">libc6</span> <span class="string">(&gt;=</span> <span class="number">2.15</span><span class="string">),</span> <span class="string">libcap2</span> <span class="string">(&gt;=</span> <span class="number">1</span><span class="string">:2.10),</span> <span class="string">libtinfo5</span> <span class="string">(&gt;=</span> <span class="number">6</span><span class="string">)</span></span><br><span class="line"><span class="attr">Recommends:</span> <span class="string">libncursesw5</span> <span class="string">(&gt;=</span> <span class="number">6</span><span class="string">),</span> <span class="string">libpcre3</span></span><br><span class="line"><span class="attr">Suggests:</span> <span class="string">zsh-doc</span></span><br><span class="line"><span class="attr">Homepage:</span> <span class="string">http://www.zsh.org/</span></span><br><span class="line"><span class="attr">Supported:</span> <span class="string">5y</span></span><br><span class="line"><span class="attr">Download-Size:</span> <span class="number">651</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">APT-Sources:</span> <span class="string">http://cn.archive.ubuntu.com/ubuntu</span> <span class="string">xenial/main</span> <span class="string">amd64</span> <span class="string">Packages</span></span><br><span class="line"><span class="attr">Description:</span> <span class="string">具有很多特性的</span> <span class="string">Shell</span></span><br><span class="line"> <span class="string">Zsh</span> <span class="string">是一个既可用作登录</span> <span class="string">Shell，又可用于执行脚本的命令解析器。</span> <span class="string">在标准</span> <span class="string">Shell</span> <span class="string">中</span> <span class="string">Zsh</span> <span class="string">与</span> <span class="string">Ksh</span></span><br><span class="line"> <span class="string">最相近，同时又带有许多改进。Zsh</span> <span class="string">支持命令行编辑，内置拼写纠正，支持可编程命令补全、带自动加载的</span> <span class="string">Shell</span> <span class="string">函数、历史功能和大量其他特性。</span></span><br></pre></td></tr></table></figure>
+
+<p>总之就是各种命令清晰漂亮了很多，个人用起来很舒服。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/运维/">运维</a><a href="/tags/ubuntu/">ubuntu</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>重装了MK808的系统 精简了很多东西 记录一下 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="今年寒假前买的MK808 感觉用来做迷你服务器简直神器, 性能比树莓派要高, 价格却是二分之一. 上次装系统时还不怎么懂linux服务器配置, 基本是照着wiki step by step的来. 这次有了自己租服务器的几个月经验, 养成了一些好习惯, 自然感觉原来装的系统各种不爽. 于是今天下午有时">
+  
+
+  
+  
+  <meta name="keywords" content="折腾">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="重装了MK808的系统 精简了很多东西 记录一下"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>重装了MK808的系统 精简了很多东西 记录一下</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/10/11/重装了MK808的系统精简了很多东西记录一下/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-10-11T00:00:00.000Z">
+          2013-10-11
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>今年寒假前买的MK808 感觉用来做迷你服务器简直神器, 性能比树莓派要高, 价格却是二分之一. 上次装系统时还不怎么懂linux服务器配置, 基本是照着wiki step by step的来. 这次有了自己租服务器的几个月经验, 养成了一些好习惯, 自然感觉原来装的系统各种不爽. 于是今天下午有时间从头来过一边.</p>
+<p><a href="/notename/" title="archive 20131011"></a></p>
+<p>几个重要点先记录一下 以免遗忘:</p>
+<h6 id="1-MK808的无线网卡驱动很操蛋-必须装一个补丁包-modules-3-0-8-alok-RC3-1-tgz-关键是开机后需要执行两条插入驱动模块的命令才能用无线网卡"><a href="#1-MK808的无线网卡驱动很操蛋-必须装一个补丁包-modules-3-0-8-alok-RC3-1-tgz-关键是开机后需要执行两条插入驱动模块的命令才能用无线网卡" class="headerlink" title="1. MK808的无线网卡驱动很操蛋, 必须装一个补丁包, modules-3.0.8-alok-RC3.1.tgz 关键是开机后需要执行两条插入驱动模块的命令才能用无线网卡,"></a>1. MK808的无线网卡驱动很操蛋, 必须装一个补丁包, modules-3.0.8-alok-RC3.1.tgz 关键是开机后需要执行两条插入驱动模块的命令才能用无线网卡,</h6><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">depmod -a       #仅第一次使用即可</span><br><span class="line">modprobe -a bcm40181</span><br><span class="line">service networking restart </span><br><span class="line">ifconfig eth0 up</span><br></pre></td></tr></table></figure>
+<p>很麻烦, 所以在网上找了个办法, 编辑/etc/rc.local文件, 在后面加上上面那几句话即可. 每次开机前会自动执行.</p>
+<h6 id="2-网络的设置也记录一下吧-编辑-etc-network-interfaces文件来完成-关键是在eth0的下面-eth0是无线网卡-而不是wlan0-加上"><a href="#2-网络的设置也记录一下吧-编辑-etc-network-interfaces文件来完成-关键是在eth0的下面-eth0是无线网卡-而不是wlan0-加上" class="headerlink" title="2. 网络的设置也记录一下吧, 编辑/etc/network/interfaces文件来完成. 关键是在eth0的下面(eth0是无线网卡, 而不是wlan0)加上"></a>2. 网络的设置也记录一下吧, 编辑/etc/network/interfaces文件来完成. 关键是在eth0的下面(eth0是无线网卡, 而不是wlan0)加上</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wpa-ssid 你的wifi名字</span><br><span class="line">wpa-psk 你的wifi密码</span><br></pre></td></tr></table></figure>
+<p>每次更改这个文件之后需要</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">service networking restart</span></span><br></pre></td></tr></table></figure>
+
+<p>来重启网络, 不过发现改个ip什么的可以直接在ssh下进行, 网不会断掉</p>
+<h6 id="3-还有一个恶心的东西不知道为什么在终端内经常会是不是打出一行字-上面有提示用这条命令能去除"><a href="#3-还有一个恶心的东西不知道为什么在终端内经常会是不是打出一行字-上面有提示用这条命令能去除" class="headerlink" title="3. 还有一个恶心的东西不知道为什么在终端内经常会是不是打出一行字, 上面有提示用这条命令能去除"></a>3. 还有一个恶心的东西不知道为什么在终端内经常会是不是打出一行字, 上面有提示用这条命令能去除</h6><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo <span class="number">0</span> &gt; <span class="regexp">/proc/</span>sys<span class="regexp">/kernel/</span>hung_task_timeout_secs</span><br></pre></td></tr></table></figure>
+
+<p>所以说也把他放在/etc/rc.local里吧</p>
+<h6 id="4-最后一点是最近租服务器养成的好习惯-建立一个文件叫installed-每装一个软件包就把名字和依赖记录在里面-迁移的时候方便-删除的时候也不怕漏掉"><a href="#4-最后一点是最近租服务器养成的好习惯-建立一个文件叫installed-每装一个软件包就把名字和依赖记录在里面-迁移的时候方便-删除的时候也不怕漏掉" class="headerlink" title="4. 最后一点是最近租服务器养成的好习惯, 建立一个文件叫installed, 每装一个软件包就把名字和依赖记录在里面, 迁移的时候方便, 删除的时候也不怕漏掉"></a>4. 最后一点是最近租服务器养成的好习惯, 建立一个文件叫installed, 每装一个软件包就把名字和依赖记录在里面, 迁移的时候方便, 删除的时候也不怕漏掉</h6><h6 id="5-补充一个-因为mk808没有自带时钟-每次开机是与NTP时间服务器校准时钟-但是要设定一下时区用下面命令设置时区"><a href="#5-补充一个-因为mk808没有自带时钟-每次开机是与NTP时间服务器校准时钟-但是要设定一下时区用下面命令设置时区" class="headerlink" title="5. 补充一个, 因为mk808没有自带时钟, 每次开机是与NTP时间服务器校准时钟, 但是要设定一下时区用下面命令设置时区"></a>5. 补充一个, 因为mk808没有自带时钟, 每次开机是与NTP时间服务器校准时钟, 但是要设定一下时区用下面命令设置时区</h6><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="meta-keyword">/usr/</span>share<span class="meta-keyword">/zoneinfo/</span>Asia/ShangHai <span class="meta-keyword">/etc/</span>localtime</span><br><span class="line">sudo ntpdate cn.pool.ntp.org</span><br></pre></td></tr></table></figure>
+<p>大致就这样 洗澡去</p>
+<p>详细可参考这两篇文章:</p>
+<p><a href="https://www.cnblogs.com/Jedimaster/archive/2013/04/12/3016312.html" target="_blank" rel="noopener">https://www.cnblogs.com/Jedimaster/archive/2013/04/12/3016312.html</a></p>
+<p><a href="https://www.miniand.com/wiki/Optional-Upgrading+your+PicUntu+installation+to+RC3" target="_blank" rel="noopener">https://www.miniand.com/wiki/Optional-Upgrading+your+PicUntu+installation+to+RC3</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/折腾/">折腾</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

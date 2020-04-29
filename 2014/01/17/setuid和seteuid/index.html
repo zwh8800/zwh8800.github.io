@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>setuid和seteuid | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="linux下有4种uid, 真实uid(real user id), 有效uid(effective user id), 被保存的uid(saved user id)和文件系统的uid. 本文详细讲解一下相关内容。
+
+linux下有4种uid, 真实uid(real user id), 有效uid(">
+  
+
+  
+  
+  <meta name="keywords" content="linux,系统编程,unix">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="setuid和seteuid"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>setuid和seteuid</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/17/setuid和seteuid/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-17T00:00:00.000Z">
+          2014-01-17
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux下有4种uid, 真实uid(real user id), 有效uid(effective user id), 被保存的uid(saved user id)和文件系统的uid. 本文详细讲解一下相关内容。</p>
+<p><a href="/notename/" title="archive 20140117"></a></p>
+<p>linux下有4种uid, 真实uid(<em>real user id</em>), 有效uid(<em>effective user id</em>), 被保存的uid(<em>saved user id</em>)和文件系统的uid.</p>
+<p>先说下这两个系统调用, 再说这几种uid:</p>
+<ul>
+<li>setuid(uid)首先请求内核将本进程的[真实uid],[有效uid]和[被保存的uid]<strong>都</strong>设置成函数指定的uid, 若权限不够则请求<strong>只</strong>将effective uid设置成uid, 再不行则调用失败.</li>
+<li>seteuid(uid)仅请求内核将本进程的[有效uid]设置成函数指定的uid.</li>
+</ul>
+<p>再具体来说setuid函数的话是这样的规则:</p>
+<ul>
+<li>当用户<strong>具有超级用户权限</strong>的时候,setuid 函数设置的id对<strong>三者都</strong>起效.【规则一】</li>
+<li>否则,<strong>仅当该id为real user ID 或者saved user ID时,该id对effective user ID起效</strong>.【规则二】</li>
+<li>否则,setuid函数调用失败.</li>
+</ul>
+<p>现在说下前三种uid</p>
+<p>real uid表示进程的实际执行者, <strong>只有root才能更改real uid</strong>, effective uid用于检测进程在执行时所获得的访问文件的权限(既 但进程访问文件时, 检测effective uid有没有权限访问这个文件), saved uid用于保存effective uid, <strong>以便当effective uid设置成其他id时可以再设置回来</strong>(下面着重讲).</p>
+<p>一般情况下, 当一个程序执行时(既调用exec), <strong>进程的effective uid会和real uid一致</strong>, 但是可执行文件有一个set-user-ID位, 如果这个set-user-ID位被设置了, 那么执行exec后, <strong>进程的effective uid会设置成可执行文件的属主uid, 同时saved uid也会被设置成effective uid</strong>.</p>
+<p>举例说明: 用户zzz执行了文件a.out, a.out的属主为hzzz且设置了set-user-ID位. 现在本进程的real uid为zzz, effective uid = saved uid = hzzz.</p>
+<p>进程执行了一会之后, 突然想用zzz的权限访问一个文件, 于是进程可能会调用setuid(zzz), 此时检测进程的权限, 进程的effective uid是hzzz, 不是root, 所以不能更改real uid(只有root才能更改real uid[setuid规则一不满足]), 所以只能设置effective uid, 发现effective uid可以被设置为zzz(因为real uid是zzz[规则二满足]), 所以函数调用成功, 只将effective uid设置成zzz.</p>
+<p>现在进程访问完zzz的文件了, 又想回到hzzz的环境中执行, 所以有可能会调用setuid(hzzz), 这次saved uid的作用就表现出来了, 因为刚刚只是改变了effective uid, 而saved uid还保存着之前的effective uid, 所以可以调用setuid(hzzz)来要回原来的权限([规则二满足]).</p>
+<p>代码:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"real uid is %d\n"</span>, getuid());</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"effective uid is %d\n"</span>, geteuid());</span><br><span class="line">	getchar();</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> (seteuid(<span class="number">1001</span>) == <span class="number">-1</span>)	<span class="comment">/* zzz = 1001 */</span></span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"seteuid"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"real uid is %d\n"</span>, getuid());</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"effective uid is %d\n"</span>, geteuid());</span><br><span class="line">	getchar();</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> (seteuid(<span class="number">0</span>) == <span class="number">-1</span>)		<span class="comment">/* root = 1001 */</span></span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"seteuid"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"real uid is %d\n"</span>, getuid());</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"effective uid is %d\n"</span>, geteuid());</span><br><span class="line">	getchar();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后编译代码, 并把可执行文件的属主改为root, 然后添加上set-user-ID位:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gcc uid.c -o uid</span><br><span class="line">sudo chown root:root uid</span><br><span class="line">sudo chmod u+s uid</span><br></pre></td></tr></table></figure>
+
+<p>执行uid之后会打印出如下:</p>
+<blockquote>
+<p>real uid is 1001<br>effective uid is 0<br>real uid is 1001<br>effective uid is 1001<br>real uid is 1001<br>effective uid is 0</p>
+</blockquote>
+<p>可以看出, 我们先把effective uid改成了zzz. 之后又可以改回root.这就是saved uid的作用.<br>另外这个程序中使用的是seteuid而不是setuid, 这是因为如果改成setuid的话, 执行第一个setuid时, 因为当前effective uid为root, 第一个规则就满足, 所以把real uid, effective uid和saved uid都改成hzzz了, 因为这样更改了saved uid, 我们就回不去root了.</p>
+<p>所以, 从这里也可以看出来setuid和seteuid的区别, 分清什么时候用哪个.</p>
+<p>参考:</p>
+<p><a href="https://www.cppblog.com/converse/archive/2007/12/20/39166.html" target="_blank" rel="noopener">https://www.cppblog.com/converse/archive/2007/12/20/39166.html</a><br><a href="https://blog.csdn.net/buaalei/article/details/5344647" target="_blank" rel="noopener">https://blog.csdn.net/buaalei/article/details/5344647</a><br><a href="https://www.dutor.net/index.php/2010/08/cmd-chmod-set-user-id-set-group-id/" target="_blank" rel="noopener">https://www.dutor.net/index.php/2010/08/cmd-chmod-set-user-id-set-group-id/</a><br><a href="https://hi.baidu.com/zhujian0805/item/cf54470f0bec70c02f4c6b4e" target="_blank" rel="noopener">https://hi.baidu.com/zhujian0805/item/cf54470f0bec70c02f4c6b4e</a></p>
+<p><img src="http://static.zybuluo.com/zwh8800/z5vfopj00g0q8qt6dcme95yx/image_1bl0fnhvhft51tdk8q87491gkj9.png" alt="image_1bl0fnhvhft51tdk8q87491gkj9.png-268.8kB"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/系统编程/">系统编程</a><a href="/tags/unix/">unix</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

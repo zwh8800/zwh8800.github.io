@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>golang template 学习笔记 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="最近几天用golang写自己的博客系统，手贱选用了golang自己的template包做模版系统。发现这个模版里面好多不符合常识的地方，记录一下。（偷懒没直接用pongo2真是败笔
+
+[toc]
+首先，golang的template分在两个package里，我一开始只看 html/template ">
+  
+
+  
+  
+  <meta name="keywords" content="golang,template">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="golang template 学习笔记"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>golang template 学习笔记</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/07/golangtemplate学习笔记/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-07T07:05:57.000Z">
+          2016-04-07
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>最近几天用golang写自己的博客系统，手贱选用了golang自己的template包做模版系统。发现这个模版里面好多不符合常识的地方，记录一下。（偷懒没直接用pongo2真是败笔</p>
+<p><a href="/notename/" title="learning golang template"></a></p>
+<p>[toc]</p>
+<p>首先，golang的template分在两个package里，我一开始只看 <code>html/template</code> 包了，一直吐槽为什么文档这么不全，后来发现大部分功能在 <code>text/template</code> 里，html包只负责部分html特有的功能。</p>
+<h2 id="Layout"><a href="#Layout" class="headerlink" title="Layout"></a>Layout</h2><p>先看两种常见的模版布局方式吧(都是伪代码)：</p>
+<h3 id="1-include-方式"><a href="#1-include-方式" class="headerlink" title="1. include 方式"></a>1. include 方式</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- content.html --&gt;</span></span><br><span class="line">&#123;% raw %&#125;&#123;&#123; include "header.html" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- content --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">&#123;% raw %&#125;&#123;&#123; include "footer.html" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line"><span class="comment">&lt;!-- end of content.html --&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- header.html --&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span></span><br><span class="line">    xxx</span><br><span class="line">    <span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"xxx.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">media</span>=<span class="string">"screen"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"xxx.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- end of header.html --&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- footer.html --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- end end of footer.html --&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-layout-方式"><a href="#2-layout-方式" class="headerlink" title="2. layout 方式"></a>2. layout 方式</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- layout.html --&gt;</span></span><br><span class="line">&#123;% raw %&#125;&#123;&#123; define "layout" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span></span><br><span class="line">    xxx</span><br><span class="line">    <span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"xxx.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">media</span>=<span class="string">"screen"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"xxx.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    &#123;% raw %&#125;&#123;&#123; template "moreStyles" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    &#123;% raw %&#125;&#123;&#123; template "content" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">    &#123;% raw %&#125;&#123;&#123; template "moreScripts" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line">&#123;% raw %&#125;&#123;&#123; end &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line"><span class="comment">&lt;!-- end of footer.html --&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;&#123;&#123; use "layout" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">&#123;% raw %&#125;&#123;&#123; define "content" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">    <span class="comment">&lt;!-- content --&gt;</span></span><br><span class="line">&#123;% raw %&#125;&#123;&#123; end &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">&#123;% raw %&#125;&#123;&#123; define "moreScript" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"you-script.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">&#123;% raw %&#125;&#123;&#123; end &#125;&#125;&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-实现"><a href="#3-实现" class="headerlink" title="3. 实现"></a>3. 实现</h3><p>一般我习惯layout方式的模版，这样结构清晰，而且IDE友好。但是golang的template好像没有对layout格式的模版做<strong>特别的</strong>支持。只好找一种折衷的比较优雅的实现方式。</p>
+<p>首先，在模版目录下新建一个 <code>common</code> 目录，用于存放各种公共的template。之后，在下面创建 <code>layout.html</code> 。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;&#123;&#123; define "layout" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span></span><br><span class="line">    &#123;% raw %&#125;&#123;&#123; template "title" .&#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"common.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>&gt;</span></span><br><span class="line">    &#123;% raw %&#125;&#123;&#123; template "moreStyles" .&#125;&#125;&#123;% endraw %&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    &#123;% raw %&#125;&#123;&#123; template "content" .&#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"common.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    &#123;% raw %&#125;&#123;&#123; template "moreScripts" .&#125;&#125;&#123;% endraw %&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line">&#123;% raw %&#125;&#123;&#123; end &#125;&#125;&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+<p>这个文件使用action <code>define</code> 定义了一个叫做 <code>layout</code> 的模版，这个layout模版分别引用了 <code>title</code>、 <code>moreStyles</code>、 <code>content</code>、 <code>moreScripts</code> 这四个模版。</p>
+<p>之后，在模版目录下新建真正的view，比如 <code>note.html</code>。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;&#123;&#123;/* 定义layout所需要的template */&#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">&#123;% raw %&#125;&#123;&#123; define "title" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">&#123;% raw %&#125;&#123;&#123; .note.Title &#125;&#125; - &#123;&#123; .site.Name &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">&#123;% raw %&#125;&#123;&#123; end &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">&#123;% raw %&#125;&#123;&#123; define "moreHeaders" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">&#123;% raw %&#125;&#123;&#123; end &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">&#123;% raw %&#125;&#123;&#123; define "moreStyles" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"/static/css/note.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>&gt;</span></span><br><span class="line">&#123;% raw %&#125;&#123;&#123; end &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">&#123;% raw %&#125;&#123;&#123; define "moreScripts" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"/static/js/jquery-2.2.2.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"/static/js/note.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="actionscript">        <span class="comment">// inline script</span></span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">&#123;% raw %&#125;&#123;&#123; end &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">&#123;% raw %&#125;&#123;&#123; define "content" &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">article</span> <span class="attr">class</span>=<span class="string">"note"</span>&gt;</span></span><br><span class="line">        &#123;% raw %&#125;&#123;&#123; .note.UnescapedContent &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">article</span>&gt;</span></span><br><span class="line">&#123;% raw %&#125;&#123;&#123; end &#125;&#125;&#123;% endraw %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% raw %&#125;&#123;&#123;/* 引用layout，传入scope */&#125;&#125;&#123;% endraw %&#125;</span><br><span class="line">&#123;% raw %&#125;&#123;&#123; template "layout" . &#125;&#125;&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个需要文件定义所有被layout引用的模版项（为空也要定义），然后最重要的一句是 <code>{{ template "layout" . }}</code> 这里把 <code>.</code> 传给了layout，从而能使 <code>layout</code> 访问model。</p>
+<p>总之golang的template只使用了两个关键字 <code>template</code> 和 <code>define</code> 完成这个工作，可以算好处也可以算坏处（不够直观）</p>
+<p>最后，在代码中这样调用：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> templateDir = <span class="string">"template"</span></span><br><span class="line"><span class="keyword">const</span> commonDir = <span class="string">"common"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Render <span class="keyword">struct</span> &#123;</span><br><span class="line">	templateName <span class="keyword">string</span></span><br><span class="line">	template     <span class="keyword">string</span></span><br><span class="line">	data         <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewRender</span><span class="params">(template <span class="keyword">string</span>, data <span class="keyword">interface</span>&#123;&#125;)</span> *<span class="title">Render</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;Render&#123;</span><br><span class="line">		template,</span><br><span class="line">		path.Join(templateDir, template),</span><br><span class="line">		data,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Render)</span> <span class="title">Render</span><span class="params">(w http.ResponseWriter)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	util.WriteContentType(w, []<span class="keyword">string</span>&#123;<span class="string">"text/html; charset=utf-8"</span>&#125;)</span><br><span class="line">	t := template.New(<span class="string">""</span>)</span><br><span class="line">	<span class="keyword">if</span> _, err := t.ParseGlob(path.Join(templateDir, </span><br><span class="line">	    commonDir, <span class="string">"*"</span>)); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> _, err := t.ParseFiles(r.template); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> t.ExecuteTemplate(w, r.templateName, r.data)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，可以在common里定义更多通用的小组件，以便调用，比如 <code>tag</code>、<code>article</code> 之类的。</p>
+<h2 id="Unescape"><a href="#Unescape" class="headerlink" title="Unescape"></a>Unescape</h2><p>golang的escape做的很好，可以区分当前语境（<code>Contexts</code>)，把变量放到不同的地方会有不同的输出：</p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>{{.}} 的输出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>{{.}}</code></td>
+<td><code>O&#39;Reilly: How are &amp;lt;i&amp;gt;you&amp;lt;/i&amp;gt;?</code></td>
+</tr>
+<tr>
+<td><code>&lt;a title=&#39;{{.}}&#39;&gt;</code></td>
+<td><code>O&amp;#39;Reilly: How are you?</code></td>
+</tr>
+<tr>
+<td><code>&lt;a href=&quot;/{{.}}&quot;&gt;</code></td>
+<td><code>O&amp;#39;Reilly: How are %3ci%3eyou%3c/i%3e?</code></td>
+</tr>
+<tr>
+<td><code>&lt;a href=&quot;?q={{.}}&quot;&gt;</code></td>
+<td><code>O&amp;#39;Reilly%3a%20How%20are%3ci%3e...%3f</code></td>
+</tr>
+<tr>
+<td><code>&lt;a onx=&#39;f(&quot;{{.}}&quot;)&#39;&gt;</code></td>
+<td><code>O\x27Reilly: How are \x3ci\x3eyou...?</code></td>
+</tr>
+<tr>
+<td><code>&lt;a onx=&#39;f({{.}})&#39;&gt;</code></td>
+<td><code>&quot;O\x27Reilly: How are \x3ci\x3eyou...?&quot;</code></td>
+</tr>
+<tr>
+<td><code>&lt;a onx=&#39;pattern = /{{.}}/;&#39;&gt;</code></td>
+<td><code>O\x27Reilly: How are \x3ci\x3eyou...\x3f</code></td>
+</tr>
+</tbody></table>
+<p>假如 <code>{{.}}` 是 `O'Reilly: How are <i>you</i>?`，把 `{{.}}</code> 放到不同的地方会有不同的输出。</p>
+<p>但是怎么让变量输出它本身的模样呢，<code>html/template</code> 提供了几个type来做这件事：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> (</span><br><span class="line">	CSS <span class="keyword">string</span></span><br><span class="line">	HTML <span class="keyword">string</span></span><br><span class="line">	JS <span class="keyword">string</span></span><br><span class="line">	JSStr <span class="keyword">string</span></span><br><span class="line">	URL <span class="keyword">string</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>假如在模版中</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"&#123;% raw %&#125;&#123;&#123; .img.url &#125;&#125;&#123;% endraw %&#125;"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>是无法直接输出的。需要用到上面的几个类型。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">data := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125; &#123;</span><br><span class="line">    url: template.URL(url),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其他的类似。</p>
+<h2 id="Pipelines"><a href="#Pipelines" class="headerlink" title="Pipelines"></a>Pipelines</h2><p>golang起的这个名字有点奇怪，当作是 <code>expression</code> （表达式）就好了。有三种使用方法</p>
+<ul>
+<li>参数</li>
+<li>.method [参数 参数 参数 …]</li>
+<li>函数 [参数 参数 参数 …]</li>
+</ul>
+<p>是可以直接调用方法或函数的，不过不需要加小括号。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/golang/">golang</a><a href="/tags/template/">template</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>用 elasticsearch 给博客加上了搜索 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="博客从 Wordpress 迁移过来之后一直缺少一个搜索功能，这个博客我是当做笔记性质的，有时候脑子里突然想不起某个东西的时候就上来查一下。没有搜索还是很不方便的，所以费了点时间研究了下大名鼎鼎的 elasticsearch 配合 golang 给博客加上了搜索功能。
+
+elasticsearch ">
+  
+
+  
+  
+  <meta name="keywords" content="golang,elasticsearch,搜索引擎">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="用 elasticsearch 给博客加上了搜索"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>用 elasticsearch 给博客加上了搜索</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/05/25/用elasticsearch给博客加上了搜索/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-05-25T14:21:11.000Z">
+          2016-05-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>博客从 Wordpress 迁移过来之后一直缺少一个搜索功能，这个博客我是当做笔记性质的，有时候脑子里突然想不起某个东西的时候就上来查一下。没有搜索还是很不方便的，所以费了点时间研究了下大名鼎鼎的 elasticsearch 配合 golang 给博客加上了搜索功能。</p>
+<p><a href="/notename/" title="add internal search to your blog using elasticsearch"></a></p>
+<h2 id="elasticsearch-介绍"><a href="#elasticsearch-介绍" class="headerlink" title="elasticsearch 介绍"></a>elasticsearch 介绍</h2><p>elasticsearch 是一个 java 编写的搜索和分析引擎，功能十分强大。但是并不意味着你的程序必须使用 java 开发，elasticsearch 是一个独立运行的程序，它会开放一个 RESTful 的接口供人调用，所以使用起来十分方便，甚至使用 curl 就能对它进行访问。另外，elasticsearch 的可伸缩性也很吸引我，使用 elasticsearch 组建一个集群十分方便，只需要把几个 elasticsearch 放到同一个局域网内就可以了，不用做任何配置你就能跑起来一个集群。这样，当你的数据量或者并发量增大的时候，只需要简单的购买几台新服务器就能解决性能问题。</p>
+<p>我是通过 <a href="http://es.xiaoleilu.com/" target="_blank" rel="noopener">Elasticsearch 权威指南（中文版）</a> 这本书来学习的，也推荐大家看一看，比我讲的好。</p>
+<h3 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h3><p>elasticsearch 中有几个基本概念，大概可以和数据库的这几个概念对应起来（如下表）。但是有一点需要注意，elasticsearch 中不会限制数据必须存在一个二维表中，你可以保存一个对象，一个数组，一个字符串，或者一个整数，就像一个 JSON 一样，十分灵活。事实上，elasticsearch 的通讯协议确实是使用 JSON 的。</p>
+<p>| 数据库 | elasticsearch |<br>|  |  |<br>| Databases | 索引（Indices） |<br>| Tables | 类型（Types） |<br>| Rows | 文档（Documents） |<br>| Columns | 字段（Fields） |<br>| schema | Mapping |</p>
+<p>在 elasticsearch 中保存的每条记录叫一个 <code>document</code> ，它可以是一个包含很多字段的对象，默认情况下每个字段都能被搜索。</p>
+<h3 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h3><p>使用 curl 就可以对 elasticsearch 进行操作，但是我还是推荐一个 chrome 应用 <a href="https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop" target="_blank" rel="noopener" title="postman 的下载链接"><code>postman</code></a> ，有 JSON 语法高亮和检测，还可以保存历史记录。</p>
+<p><img src="http://static.zybuluo.com/zwh8800/ohw9r0kvh69o6stu45td81sj/90.pic_hd.jpg" alt="90.pic_hd.jpg-1070kB"></p>
+<h4 id="索引一条记录"><a href="#索引一条记录" class="headerlink" title="索引一条记录"></a>索引一条记录</h4><p>在 elasticsearch 中存储数据的行为叫做 <code>索引（index）</code> 。使用 HTTP 协议的 PUT 动词可以存储数据。</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PUT <span class="symbol">http:</span>/<span class="regexp">/localhost:9200/mdblog</span><span class="regexp">/note/</span><span class="number">23432</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"id"</span>: <span class="number">23</span>,</span><br><span class="line">    <span class="string">"notename"</span>: <span class="string">"golang-china-download-mirror"</span>,</span><br><span class="line">    <span class="string">"title"</span>: <span class="string">"做了个 golang 安装包的镜像"</span>,</span><br><span class="line">    <span class="string">"content"</span>: <span class="string">"做了个 golang 安装包的镜像 闲扯 golang\n        \n        2016-05-25 16:04 PM\n    鉴于国情，国内下载 golang 安装包还是挺蛋疼的，就算使用代理速度也比较感人。虽然现在 docker 镜像是个比较好的选择，但还是有很多场景需要原始的 golang 环境的。所以抽空做了个 mirror ，定时拉取 golang 官网的安装包到我的服务器上。地址在这里：https://lengzzz.com/download/golang/包含了 golang 1.5 之后的所有版本，所有平台的安装包和源码包都放在里面，自行 control + f 搜一下吧。新版本的 golang release 之后，应该在一两天内可以拉取过来。欢迎使用。"</span>,</span><br><span class="line">    <span class="string">"timestamp"</span>: <span class="string">"2016-05-25T08:04:53Z"</span>,</span><br><span class="line">    <span class="string">"lastModified"</span>: <span class="string">"2016-05-25T09:01:42.923822162Z"</span>,</span><br><span class="line">    <span class="string">"tagList"</span>: [</span><br><span class="line">      <span class="string">"golang"</span>,</span><br><span class="line">      <span class="string">"闲扯"</span></span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上，把要存储的数据写成一个 JSON 对象，放到 HTTP 的 Body 中传送给 elasticsearch 即可存储数据。</p>
+<p>我们可以看到 url 中包含了 4 部分的信息。</p>
+<p>| 名字 | 信息 |<br>|  |  |<br>| localhost:9200 | Elasticsearch 的 url |<br>| mdblog | 索引名（Index） |<br>| note | 类型名（Type） |<br>| 23432 | 文档ID（Document ID） |</p>
+<p>很方便吧。</p>
+<h4 id="获取一条记录"><a href="#获取一条记录" class="headerlink" title="获取一条记录"></a>获取一条记录</h4><p>大家应当已经想到了，使用 GET 动词。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET http:<span class="regexp">//</span>localhost:<span class="number">9200</span><span class="regexp">/mdblog/</span>note<span class="regexp">/23432</span></span><br></pre></td></tr></table></figure>
+
+<p>返回的信息会多一些 metadata 。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"_index"</span>: <span class="string">"mdblog"</span>,</span><br><span class="line">  <span class="attr">"_type"</span>: <span class="string">"note"</span>,</span><br><span class="line">  <span class="attr">"_id"</span>: <span class="string">"389344"</span>,</span><br><span class="line">  <span class="attr">"_version"</span>: <span class="number">1</span>,</span><br><span class="line">  <span class="attr">"found"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"_source"</span>: &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="number">23</span>,</span><br><span class="line">    <span class="attr">"notename"</span>: <span class="string">"golang-china-download-mirror"</span>,</span><br><span class="line">    <span class="attr">"title"</span>: <span class="string">"做了个 golang 安装包的镜像"</span>,</span><br><span class="line">    <span class="attr">"content"</span>: <span class="string">"做了个 golang 安装包的镜像 闲扯 golang\n        \n        2016-05-25 16:04 PM\n    鉴于国情，国内下载 golang 安装包还是挺蛋疼的，就算使用代理速度也比较感人。虽然现在 docker 镜像是个比较好的选择，但还是有很多场景需要原始的 golang 环境的。所以抽空做了个 mirror ，定时拉取 golang 官网的安装包到我的服务器上。地址在这里：https://lengzzz.com/download/golang/包含了 golang 1.5 之后的所有版本，所有平台的安装包和源码包都放在里面，自行 control + f 搜一下吧。新版本的 golang release 之后，应该在一两天内可以拉取过来。欢迎使用。"</span>,</span><br><span class="line">    <span class="attr">"timestamp"</span>: <span class="string">"2016-05-25T08:04:53Z"</span>,</span><br><span class="line">    <span class="attr">"lastModified"</span>: <span class="string">"2016-05-25T09:01:42.923822162Z"</span>,</span><br><span class="line">    <span class="attr">"tagList"</span>: [</span><br><span class="line">      <span class="string">"golang"</span>,</span><br><span class="line">      <span class="string">"闲扯"</span></span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h4><p>搜索的话可以使用 <code>查询 DSL</code> 进行，说是 DSL（领域特定语言） 听起来很吓人，实际上就是几个 JSON 对象的组合而已。</p>
+<p>调用搜索接口需要在 url 后面加一个 <code>_search</code> 。</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">GET http://localhost:<span class="number">9200</span>/mdblog/note/_search</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"query"</span> : &#123;</span><br><span class="line">        <span class="string">"match"</span> : &#123;</span><br><span class="line">            <span class="string">"title"</span> : "<span class="type">linux</span><span class="string">"</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样，就可以使用 match 查询进行查询了。</p>
+<p>结果：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"took"</span>: <span class="number">2</span>,</span><br><span class="line">  <span class="attr">"timed_out"</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="attr">"_shards"</span>: &#123;</span><br><span class="line">    <span class="attr">"total"</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">"successful"</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">"failed"</span>: <span class="number">0</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"hits"</span>: &#123;</span><br><span class="line">    <span class="attr">"total"</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="attr">"max_score"</span>: <span class="number">0.6609862</span>,</span><br><span class="line">    <span class="attr">"hits"</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">"_index"</span>: <span class="string">"mdblog"</span>,</span><br><span class="line">        <span class="attr">"_type"</span>: <span class="string">"note"</span>,</span><br><span class="line">        <span class="attr">"_id"</span>: <span class="string">"340165"</span>,</span><br><span class="line">        <span class="attr">"_score"</span>: <span class="number">0.6609862</span>,</span><br><span class="line">        <span class="attr">"_source"</span>: &#123;</span><br><span class="line">          <span class="attr">"id"</span>: <span class="number">11</span>,</span><br><span class="line">          <span class="attr">"notename"</span>: <span class="string">"add-swap-on-linux"</span>,</span><br><span class="line">          <span class="attr">"title"</span>: <span class="string">"在Linux下设置swap"</span>,</span><br><span class="line">          <span class="attr">"content"</span>: <span class="string">"在Linux下设置swap linux\n        \n        2016-04-10 15:53 PM\n    今早起来发现博客的数据库挂了，赶紧用手机上的ConnectBot连上去把mysql启动。看了下日志大概是因为内存不够用且没设置swap，所以mysql进程申请不到内存挂了（小内存服务器桑不起）所以赶紧把swap搞上，这样至少能让服务不轻易挂掉。这里记录一下，以备遗忘。大概分三步\n生成一个空文件\n把文件格式化成swap格式\n挂载\n"</span>,</span><br><span class="line">          <span class="attr">"timestamp"</span>: <span class="string">"2016-04-10T07:53:58Z"</span>,</span><br><span class="line">          <span class="attr">"lastModified"</span>: <span class="string">"2016-05-24T05:27:01.435772194Z"</span>,</span><br><span class="line">          <span class="attr">"tagList"</span>: [</span><br><span class="line">            <span class="string">"linux"</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，我们可以为搜索加上高亮：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">GET http://localhost:<span class="number">9200</span>/mdblog/note/_search</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"query"</span> : &#123;</span><br><span class="line">        <span class="string">"match"</span> : &#123;</span><br><span class="line">            <span class="string">"title"</span> : "<span class="type">linux</span><span class="string">"</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;,</span></span><br><span class="line"><span class="string">    "</span>highlight<span class="string">": &#123;</span></span><br><span class="line"><span class="string">        "</span>pre_tags<span class="string">" : ["</span>&lt;b&gt;<span class="string">"],</span></span><br><span class="line"><span class="string">        "</span>post_tags<span class="string">" : ["</span>&lt;/b&gt;<span class="string">"],</span></span><br><span class="line"><span class="string">        "</span>fields<span class="string">" : &#123;</span></span><br><span class="line"><span class="string">            "</span>title<span class="string">" : &#123;&#125;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样的话，在 hit 中会有一个 <code>highlight</code> 字段，所有关键字会用 <code>&lt;b&gt;&lt;/b&gt;</code> 扩起来。</p>
+<h4 id="创建-mapping"><a href="#创建-mapping" class="headerlink" title="创建 mapping"></a>创建 mapping</h4><p>默认情况下 elasticsearch 是不需要“建表”操作的。mapping（类似数据库的表结构）会在第一次 index 的时候建立。但是提前建立 mapping 有助于查询。建立 mapping 也是使用 PUT 动词。</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">PUT <span class="symbol">http:</span>/<span class="regexp">/localhost:9200/mdblog</span><span class="regexp">/note/</span>_mapping</span><br><span class="line">&#123;</span><br><span class="line">	<span class="string">"note"</span>: &#123;</span><br><span class="line">		<span class="string">"properties"</span>: &#123;</span><br><span class="line">			<span class="string">"id"</span>: &#123;</span><br><span class="line">				<span class="string">"type"</span>: <span class="string">"long"</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="string">"title"</span>: &#123;</span><br><span class="line">				<span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">				<span class="string">"term_vector"</span>: <span class="string">"with_positions_offsets"</span>,</span><br><span class="line">				<span class="string">"analyzer"</span>: <span class="string">"ik_syno"</span>,</span><br><span class="line">				<span class="string">"search_analyzer"</span>: <span class="string">"ik_syno"</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="string">"content"</span>: &#123;</span><br><span class="line">				<span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">				<span class="string">"term_vector"</span>: <span class="string">"with_positions_offsets"</span>,</span><br><span class="line">				<span class="string">"analyzer"</span>: <span class="string">"ik_syno"</span>,</span><br><span class="line">				<span class="string">"search_analyzer"</span>: <span class="string">"ik_syno"</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="string">"notename"</span>: &#123;</span><br><span class="line">				<span class="string">"type"</span>: <span class="string">"string"</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="string">"tagList"</span>: &#123;</span><br><span class="line">				<span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">				<span class="string">"term_vector"</span>: <span class="string">"with_positions_offsets"</span>,</span><br><span class="line">				<span class="string">"analyzer"</span>: <span class="string">"ik_syno"</span>,</span><br><span class="line">				<span class="string">"search_analyzer"</span>: <span class="string">"ik_syno"</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="string">"timestamp"</span>: &#123;</span><br><span class="line">				<span class="string">"type"</span>: <span class="string">"date"</span>,</span><br><span class="line">				<span class="string">"index"</span>: <span class="string">"not_analyzed"</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="string">"lastModified"</span>: &#123;</span><br><span class="line">				<span class="string">"type"</span>: <span class="string">"date"</span>,</span><br><span class="line">				<span class="string">"index"</span>: <span class="string">"not_analyzed"</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上，建立一个 mapping 。主要是设置一下数据类型和查询方式。</p>
+<h2 id="在-golang-中使用"><a href="#在-golang-中使用" class="headerlink" title="在 golang 中使用"></a>在 golang 中使用</h2><p>在 golang 中有方便的 package 来操纵 elasticsearch。我使用的是 <a href="https://github.com/olivere/elastic" target="_blank" rel="noopener"><code>gopkg.in/olivere/elastic.v3</code></a> 还不错的一个包，所有操作都是链式调用，很有 linq 的感觉。</p>
+<p>使用 elastic 需要先创建一个客户端：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">InitElasticSearch</span><span class="params">()</span> <span class="params">(err error)</span></span> &#123;</span><br><span class="line">	esClient, err = elastic.NewClient(</span><br><span class="line">	    elastic.SetURL(<span class="string">"http://localhost:9200"</span>))</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后，就可以用 client 进行操作了。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">noteDetail := model.NoteDetail&#123;</span><br><span class="line">	Id:           note.Id,</span><br><span class="line">	Notename:     note.Notename,</span><br><span class="line">	Title:        note.Title,</span><br><span class="line">	Content:      note.ContentText(),</span><br><span class="line">	Timestamp:    note.Timestamp,</span><br><span class="line">	LastModified: note.LastModified,</span><br><span class="line">	TagList:      tagNameList,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 首先调用 Index 函数，代表这是一次索引（Index）操作</span></span><br><span class="line"><span class="comment">// 接着提供各种参数</span></span><br><span class="line">_, err := esClient.Index().</span><br><span class="line">	Index(MdBlogIndexName).</span><br><span class="line">	Type(NoteTypeName).</span><br><span class="line">	Id(strconv.FormatInt(note.UniqueId, <span class="number">10</span>)).</span><br><span class="line">	BodyJson(noteDetail).</span><br><span class="line">	Do()</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>索引一条记录</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">IsNoteDocumentExist</span><span class="params">(uniqueId <span class="keyword">int64</span>)</span> <span class="params">(<span class="keyword">bool</span>, error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> esClient.Exists().</span><br><span class="line">		Index(MdBlogIndexName).</span><br><span class="line">		Type(NoteTypeName).</span><br><span class="line">		Id(strconv.FormatInt(uniqueId, <span class="number">10</span>)).</span><br><span class="line">		Do()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>判断是否存在</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SearchNoteByKeyword</span><span class="params">(keyword <span class="keyword">string</span>, </span></span></span><br><span class="line"><span class="function"><span class="params">    page, limit <span class="keyword">int64</span>)</span> <span class="params">([]*model.SearchedNote, <span class="keyword">int64</span>, error)</span></span> &#123;</span><br><span class="line">	page-- <span class="comment">//数据库层的页数从0开始数</span></span><br><span class="line">	offset := page * limit</span><br><span class="line"></span><br><span class="line">	query := elastic.NewMultiMatchQuery(keyword).</span><br><span class="line">		FieldWithBoost(<span class="string">"notename"</span>, <span class="number">1</span>).</span><br><span class="line">		FieldWithBoost(<span class="string">"tagList"</span>, <span class="number">2</span>).</span><br><span class="line">		FieldWithBoost(<span class="string">"content"</span>, <span class="number">4</span>).</span><br><span class="line">		FieldWithBoost(<span class="string">"title"</span>, <span class="number">4</span>)</span><br><span class="line">	highlight := elastic.NewHighlight().</span><br><span class="line">		Field(<span class="string">"content"</span>).</span><br><span class="line">		Field(<span class="string">"title"</span>).</span><br><span class="line">		Field(<span class="string">"tagList"</span>)</span><br><span class="line"></span><br><span class="line">	result, err := esClient.Search().</span><br><span class="line">		Index(MdBlogIndexName).</span><br><span class="line">		Type(NoteTypeName).</span><br><span class="line">		Query(query).</span><br><span class="line">		Highlight(highlight).</span><br><span class="line">		From(<span class="keyword">int</span>(offset)).</span><br><span class="line">		Size(<span class="keyword">int</span>(limit)).</span><br><span class="line">		Do()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, <span class="number">0</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> result.Hits == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, <span class="number">0</span>, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	maxPage := (result.TotalHits()<span class="number">-1</span>)/limit + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	noteList := <span class="built_in">make</span>([]*model.SearchedNote, <span class="number">0</span>, <span class="built_in">len</span>(result.Hits.Hits))</span><br><span class="line">	<span class="keyword">for</span> _, hit := <span class="keyword">range</span> result.Hits.Hits &#123;</span><br><span class="line">		note := model.NewSearchedNote()</span><br><span class="line">		err := json.Unmarshal(*hit.Source, note)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, <span class="number">0</span>, err</span><br><span class="line">		&#125;</span><br><span class="line">		note.FillHighlight(hit.Highlight)</span><br><span class="line"></span><br><span class="line">		noteList = <span class="built_in">append</span>(noteList, note)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> noteList, maxPage, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>搜索记录</p>
+<h2 id="´-・ω・｀"><a href="#´-・ω・｀" class="headerlink" title="(´ ・ω・｀)"></a>(´ ・ω・｀)</h2><p>总的来说，elasticsearch 还是很方便强大的，好评。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/golang/">golang</a><a href="/tags/elasticsearch/">elasticsearch</a><a href="/tags/搜索引擎/">搜索引擎</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

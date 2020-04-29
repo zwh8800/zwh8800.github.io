@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>在 OS X 的命令行下使用代理 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="相信程序员们工作中必不可少的就是一个趁手的代理。但是 Mac 客户端只提供了系统代理（供 app 调用的）和一个裸的 socks5 代理。都不方便在命令行工具中使用。下面介绍一种方法可以方便的在命令行中使用代理的方法。
+
+首先介绍一个常识，大多数 gnu unix 程序都会访问一个环境变量 http">
+  
+
+  
+  
+  <meta name="keywords" content="bash,mac技巧,terminal,代理">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="在 OS X 的命令行下使用代理"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>在 OS X 的命令行下使用代理</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/27/在OSX的命令行下使用代理/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-27T03:39:43.000Z">
+          2016-04-27
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>相信程序员们工作中必不可少的就是一个趁手的代理。但是 Mac 客户端只提供了系统代理（供 app 调用的）和一个裸的 socks5 代理。都不方便在命令行工具中使用。下面介绍一种方法可以方便的在命令行中使用代理的方法。</p>
+<p><a href="/notename/" title="using proxy in osx terminal"></a></p>
+<p>首先介绍一个常识，大多数 gnu unix 程序都会访问一个环境变量 <code>http_proxy</code> ，比如 curl 在执行时会先访问一下 http_proxy ， 如果有这个变量的话，会使用这个变量给出的地址作为 proxy 。这相当于是 gnu 给我们带来的一个福利<a href="具体参考[这里](https://wiki.archlinux.org/index.php/proxy_settings)">^proxysetting</a>。</p>
+<p>但是这个方式只支持 http、https、ftp 和 rsync 协议，不过大多数情况下也够用了，因为在命令行下大多是执行 <code>npm</code>，<code>go get</code> 才会用到代理，而这些程序打多使用 http 协议。</p>
+<p>那么，具体思路就是使用一个转换器，把 socks5 代理转换成 http 代理，然后使用 <code>http_proxy</code> 环境变量。</p>
+<p>polipo 可以做代理转换器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装polipo</span></span><br><span class="line">brew install polipo</span><br></pre></td></tr></table></figure>
+
+<p>为了方便我们使用它，可以在 <code>~/.bash_profile</code> 里加一个 alias：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ~/.bash_profile</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> startPolipo=<span class="string">'polipo socksParentProxy=localhost:1080 proxyAddress=0.0.0.0'</span></span><br></pre></td></tr></table></figure>
+
+<p>这样，在使用之前，需要先开一个新的 term 窗口，执行一下 <code>startPolipo</code> 开启一个代理转换器。可以看到 polipo 监听了 8123 端口。</p>
+<p>之后，在需要代理的程序前面加上 <code>http_proxy=http://localhost:8123 https_proxy=http://localhost:8123</code> 就可以让程序使用代理了。</p>
+<p>另外，为了更加方便，我们可以再搞一个 alise：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alias</span> proxy=<span class="string">'env http_proxy=http://localhost:8123 https_proxy=http://localhost:8123'</span></span><br></pre></td></tr></table></figure>
+
+<p>只需要每次在需要使用 proxy 的命令前面加上 <code>proxy</code> 就可以使用代理了。例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxy curl https://google.com/</span><br></pre></td></tr></table></figure>
+
+<p>可以看见 curl 打印了 Google 首页出来</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/bash/">bash</a><a href="/tags/mac技巧/">mac技巧</a><a href="/tags/terminal/">terminal</a><a href="/tags/代理/">代理</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

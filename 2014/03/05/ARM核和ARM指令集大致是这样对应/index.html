@@ -1,0 +1,561 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>ARM 核和 ARM 指令集大致是这样对应 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="ARM 核和 ARM 指令集大致是这样对应
+
+ARM7TDMI ARMv4TARM9E ARMv5TEARM11 ARMV6cortex ARMv7
+下面是网上找的乱七八糟的列表 将就着看 反正 cortex 以前的都是老黄历了 唉ARM7TDMIv4TARM7TDMI-Sv4TARM7EJ-Sv5">
+  
+
+  
+  
+  <meta name="keywords" content="ARM">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="ARM 核和 ARM 指令集大致是这样对应"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>ARM 核和 ARM 指令集大致是这样对应</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/05/ARM核和ARM指令集大致是这样对应/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-05T00:00:00.000Z">
+          2014-03-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>ARM 核和 ARM 指令集大致是这样对应</p>
+<p><a href="/notename/" title="archive 20140305"></a></p>
+<p>ARM7TDMI ARMv4T<br>ARM9E ARMv5TE<br>ARM11 ARMV6<br>cortex ARMv7</p>
+<p>下面是网上找的乱七八糟的列表 将就着看 反正 cortex 以前的都是老黄历了 唉<br>ARM7TDMI<br>v4T<br>ARM7TDMI-S<br>v4T<br>ARM7EJ-S<br>v5E<br>DSP,Jazelle<br>[译注 3]<br>ARM920T<br>v4T<br>MMU<br>ARM922T<br>v4T<br>MMU<br>ARM926EJ-S<br>v5E<br>MMU<br>DSP,Jazelle<br>ARM946E-S<br>v5E<br>MPU<br>DSP<br>ARM966E-S<br>v5E<br>DSP<br>ARM968E-S<br>v5E<br>DMA,DSP<br>ARM966HS<br>v5E<br>MPU（可选）<br>DSP<br>ARM1020E<br>v5E<br>MMU<br>DSP<br>ARM1022E<br>v5E<br>MMU<br>DSP<br>ARM1026EJ-S<br>v5E<br>MMU 或 MPU<br>[译注 2]<br>DSP, Jazelle<br>ARM1136J(F)-S<br>v6<br>MMU<br>DSP, Jazelle<br>ARM1176JZ(F)-S<br>v6<br>MMU+TrustZone<br>DSP, Jazelle<br>ARM11 MPCore<br>v6<br>MMU + 多处理器缓存支持<br>DSP<br>ARM1156T2(F)-S<br>v6<br>MPU<br>DSP<br>Cortex-M3<br>v7-M<br>MPU（可选）<br>NVIC<br>Cortex-R4<br>v7-R<br>MPU<br>DSP<br>Cortex-R4F<br>v7-R<br>MPU<br>DSP + 浮点运算<br>Cortex-A8<br>v7-A<br>MMU+TrustZone<br>DSP, Jazelle<br>［译注 2］：Jazelle 是 ARM 处理器的硬件 Java 加速器。<br>［译注 3］：MMU，存储器管理单元，用于实现虚拟内存和内存的分区保护，这是应用处理器与嵌入式处理器的分水岭。电脑和数码产品所使用的处理器几乎清一色地都带 MMU。但是 MMU 也引入了不确定性，这有时是嵌入式领域——尤其是实时系统不可接受的。然而对于安全关键（safety-critical）的嵌入式系统，还是不能没有内存的分区保护的。为解决矛盾，于是就有了 MPU。可以把 MPU 认为是 MMU 的功能子集，它只支持分区保护，不支持具有 “定位决定性” 的虚拟内存机制。<br>到了架构 7 时代，ARM 改革了一度使用的，冗长的、需要 “解码” 的数字命名法，转到另一种看起来比较整齐的命名法。比如，ARMv7 的三个款式都以 Cortex 作为主名。这不仅更加澄清并且 “精装” 了所使用的 ARM 架构，也避免了新手对架构号和系列号的混淆。例如，ARM7TDMI 并不是一款 ARMv7 的产品，而是辉煌起点——v4T 架构的产品。</p>
+<p>———————–update—————————-<br>补个表格 from <a href="https://en.wikipedia.org/wiki/List_of_ARM_microarchitectures" target="_blank" rel="noopener">wikipedia</a></p>
+<table class="wikitable" style="font-size: 85%; text-align: center;">
+<tbody>
+<tr>
+<th>ARM Family</th>
+<th>ARM Architecture</th>
+<th>ARM Core</th>
+<th>Feature</th>
+<th><a title="CPU cache" href="/wiki/CPU_cache">Cache</a> (I&nbsp;/&nbsp;D), <a title="Memory management unit" href="/wiki/Memory_management_unit">MMU</a></th>
+<th>Typical <a class="mw-redirect" title="Million instructions per second" href="/wiki/Million_instructions_per_second">MIPS</a> @ <a class="mw-redirect" title="MHz" href="/wiki/MHz">MHz</a></th>
+</tr>
+<tr>
+<th>ARM1</th>
+<td>ARMv1</td>
+<td>ARM1</td>
+<td>First implementation</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="2">ARM2</th>
+<td>ARMv2</td>
+<td>ARM2</td>
+<td>ARMv2 added the MUL (multiply) instruction</td>
+<td>None</td>
+<td>4&nbsp;MIPS @ 8&nbsp;MHz<p></p>
+<p>0.33 <a class="mw-redirect" title="DMIPS" href="/wiki/DMIPS">DMIPS</a>/MHz</p></td>
+</tr>
+<tr>
+<td>ARMv2a</td>
+<td>ARM250</td>
+<td>Integrated <a title="Memory controller" href="/wiki/Memory_controller">MEMC</a> (MMU), Graphics and IO processor. ARMv2a added the SWP and SWPB (swap) instructions.</td>
+<td>None, MEMC1a</td>
+<td>7&nbsp;MIPS @ 12&nbsp;MHz</td>
+</tr>
+<tr>
+<th>ARM3</th>
+<td>ARMv2a</td>
+<td>ARM3</td>
+<td>First integrated memory cache.</td>
+<td>4&nbsp;<a title="Kibibyte" href="/wiki/Kibibyte">KB</a> unified</td>
+<td>12&nbsp;MIPS @ 25&nbsp;MHz<p></p>
+<p>0.50 DMIPS/MHz</p></td>
+</tr>
+<tr>
+<th rowspan="3">ARM6</th>
+<td rowspan="3">ARMv3</td>
+<td>ARM60</td>
+<td>ARMv3 first to support 32-bit memory address space (previously 26-bit)</td>
+<td>None</td>
+<td>10&nbsp;MIPS @ 12&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM600</td>
+<td>As ARM60, cache and coprocessor bus (for FPA10 floating-point unit).</td>
+<td>4&nbsp;KB unified</td>
+<td>28&nbsp;MIPS @ 33&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM610</td>
+<td>As ARM60, cache, no coprocessor bus.</td>
+<td>4&nbsp;KB unified</td>
+<td>17&nbsp;MIPS @ 20&nbsp;MHz<p></p>
+<p>0.65 DMIPS/MHz</p></td>
+</tr>
+<tr>
+<th rowspan="3"><a title="ARM7" href="/wiki/ARM7">ARM7</a></th>
+<td rowspan="3">ARMv3</td>
+<td>ARM700</td>
+<td></td>
+<td>8&nbsp;KB unified</td>
+<td>40&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM710</td>
+<td>As ARM700, no coprocessor bus.</td>
+<td>8&nbsp;KB unified</td>
+<td>40&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM710a</td>
+<td>As ARM710</td>
+<td>8&nbsp;KB unified</td>
+<td>40&nbsp;MHz<p></p>
+<p>0.68 DMIPS/MHz</p></td>
+</tr>
+<tr>
+<th rowspan="4"><a class="mw-redirect" title="ARM7TDMI" href="/wiki/ARM7TDMI">ARM7TDMI</a></th>
+<td rowspan="4">ARMv4T</td>
+<td>ARM7TDMI(-S)</td>
+<td>3-stage pipeline, Thumb, ARMv4 first to drop legacy ARM <a title="26-bit" href="/wiki/26-bit">26-bit</a> <a title="Address space" href="/wiki/Address_space">addressing</a></td>
+<td>none</td>
+<td>15&nbsp;MIPS @ 16.8&nbsp;MHz<p></p>
+<p>63 DMIPS @ 70&nbsp;MHz</p></td>
+</tr>
+<tr>
+<td>ARM710T</td>
+<td>As ARM7TDMI, cache</td>
+<td>8&nbsp;KB unified, MMU</td>
+<td>36&nbsp;MIPS @ 40&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM720T</td>
+<td>As ARM7TDMI, cache</td>
+<td>8&nbsp;KB unified, MMU with Fast Context Switch Extension</td>
+<td>60&nbsp;MIPS @ 59.8&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM740T</td>
+<td>As ARM7TDMI, cache</td>
+<td><a title="Memory protection" href="/wiki/Memory_protection">MPU</a></td>
+<td></td>
+</tr>
+<tr>
+<th><a class="mw-redirect" title="ARM7EJ" href="/wiki/ARM7EJ">ARM7EJ</a></th>
+<td>ARMv5TEJ</td>
+<td>ARM7EJ-S</td>
+<td>5-stage pipeline, Thumb, Jazelle DBX, Enhanced DSP instructions</td>
+<td>none</td>
+<td></td>
+</tr>
+<tr>
+<th>ARM8</th>
+<td>ARMv4</td>
+<td>ARM810<sup class="reference" id="cite_ref-4"><a href="#cite_note-4"><span>[</span>4<span>]</span></a></sup><sup class="reference" id="cite_ref-eetimes_810_5-0"><a href="#cite_note-eetimes_810-5"><span>[</span>5<span>]</span></a></sup></td>
+<td>5-stage pipeline, static branch prediction, double-bandwidth memory</td>
+<td>8&nbsp;KB unified, MMU</td>
+<td>84&nbsp;MIPS @ 72&nbsp;MHz<p></p>
+<p>1.16 DMIPS/MHz</p></td>
+</tr>
+<tr>
+<th rowspan="4"><a title="ARM9" href="/wiki/ARM9">ARM9</a>TDMI</th>
+<td rowspan="4">ARMv4T</td>
+<td>ARM9TDMI</td>
+<td>5-stage pipeline, Thumb</td>
+<td>none</td>
+<td></td>
+</tr>
+<tr>
+<td>ARM920T</td>
+<td>As ARM9TDMI, cache</td>
+<td>16&nbsp;KB / 16&nbsp;KB, MMU with FCSE (Fast Context Switch Extension)<sup class="reference" id="cite_ref-6"><a href="#cite_note-6"><span>[</span>6<span>]</span></a></sup></td>
+<td>200&nbsp;MIPS @ 180&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM922T</td>
+<td>As ARM9TDMI, caches</td>
+<td>8&nbsp;KB / 8&nbsp;KB, MMU</td>
+<td></td>
+</tr>
+<tr>
+<td>ARM940T</td>
+<td>As ARM9TDMI, caches</td>
+<td>4&nbsp;KB / 4&nbsp;KB, MPU</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="5"><a class="mw-redirect" title="ARM9E" href="/wiki/ARM9E">ARM9E</a></th>
+<td rowspan="3">ARMv5TE</td>
+<td>ARM946E-S</td>
+<td>Thumb, Enhanced DSP instructions, caches</td>
+<td>variable, tightly coupled memories, MPU</td>
+<td></td>
+</tr>
+<tr>
+<td>ARM966E-S</td>
+<td>Thumb, Enhanced DSP instructions</td>
+<td>no cache, TCMs</td>
+<td></td>
+</tr>
+<tr>
+<td>ARM968E-S</td>
+<td>As ARM966E-S</td>
+<td>no cache, TCMs</td>
+<td></td>
+</tr>
+<tr>
+<td>ARMv5TEJ</td>
+<td>ARM926EJ-S</td>
+<td>Thumb, Jazelle DBX, Enhanced DSP instructions</td>
+<td>variable, TCMs, MMU</td>
+<td>220&nbsp;MIPS @ 200&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARMv5TE</td>
+<td>ARM996HS</td>
+<td>Clockless processor, as ARM966E-S</td>
+<td>no caches, TCMs, MPU</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="3">ARM10E</th>
+<td rowspan="2">ARMv5TE</td>
+<td>ARM1020E</td>
+<td>6-stage pipeline, Thumb, Enhanced DSP instructions, (VFP)</td>
+<td>32&nbsp;KB / 32&nbsp;KB, MMU</td>
+<td></td>
+</tr>
+<tr>
+<td>ARM1022E</td>
+<td>As ARM1020E</td>
+<td>16&nbsp;KB / 16&nbsp;KB, MMU</td>
+<td></td>
+</tr>
+<tr>
+<td>ARMv5TEJ</td>
+<td>ARM1026EJ-S</td>
+<td>Thumb, Jazelle DBX, Enhanced DSP instructions, (VFP)</td>
+<td>variable, MMU or MPU</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="4"><a title="ARM11" href="/wiki/ARM11">ARM11</a></th>
+<td>ARMv6</td>
+<td>ARM1136J(F)-S<sup class="reference" id="cite_ref-7"><a href="#cite_note-7"><span>[</span>7<span>]</span></a></sup></td>
+<td>8-stage pipeline, <a title="SIMD" href="/wiki/SIMD">SIMD</a>, Thumb, Jazelle DBX, (VFP), Enhanced DSP instructions</td>
+<td>variable, MMU</td>
+<td>740 @ 532–665&nbsp;MHz (i.MX31 SoC), 400–528&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARMv6T2</td>
+<td>ARM1156T2(F)-S</td>
+<td>8-stage pipeline, <a title="SIMD" href="/wiki/SIMD">SIMD</a>, Thumb-2, (VFP), Enhanced DSP instructions</td>
+<td>variable, MPU</td>
+<td></td>
+</tr>
+<tr>
+<td>ARMv6Z</td>
+<td>ARM1176JZ(F)-S</td>
+<td>As ARM1136EJ(F)-S</td>
+<td>variable, MMU + TrustZone</td>
+<td>965 DMIPS @ 772&nbsp;MHz, up to 2 600 DMIPS with four processors<sup class="reference" id="cite_ref-8"><a href="#cite_note-8"><span>[</span>8<span>]</span></a></sup></td>
+</tr>
+<tr>
+<td>ARMv6K</td>
+<td>ARM11 MPCore</td>
+<td>As ARM1136EJ(F)-S, 1–4 core SMP</td>
+<td>variable, MMU</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="3">SecurCore</th>
+<td>ARMv6-M</td>
+<td>SC000</td>
+<td></td>
+<td></td>
+<td>0.9 DMIPS/MHz</td>
+</tr>
+<tr>
+<td>ARMv4T</td>
+<td>SC100</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ARMv7-M</td>
+<td>SC300</td>
+<td></td>
+<td></td>
+<td>1.25 DMIPS/MHz</td>
+</tr>
+<tr>
+<th rowspan="5"><a title="ARM Cortex-M" href="/wiki/ARM_Cortex-M">Cortex-M</a></th>
+<td rowspan="3">ARMv6-M</td>
+<td>Cortex-M0 <sup class="reference" id="cite_ref-M0-Spec_9-0"><a href="#cite_note-M0-Spec-9"><span>[</span>9<span>]</span></a></sup></td>
+<td>Microcontroller profile, Thumb + Thumb-2 subset (BL, MRS, MSR, ISB, DSB, DMB),<sup class="reference" id="cite_ref-M0-InstrSet_10-0"><a href="#cite_note-M0-InstrSet-10"><span>[</span>10<span>]</span></a></sup> hardware multiply instruction (optional small), optional system timer, optional bit-banding memory</td>
+<td>No cache, No TCM, No MPU</td>
+<td>0.84 DMIPS/MHz</td>
+</tr>
+<tr>
+<td>Cortex-M0+ <sup class="reference" id="cite_ref-M0.2B-Spec_11-0"><a href="#cite_note-M0.2B-Spec-11"><span>[</span>11<span>]</span></a></sup></td>
+<td>Microcontroller profile, Thumb + Thumb-2 subset (BL, MRS, MSR, ISB, DSB, DMB),<sup class="reference" id="cite_ref-M0-InstrSet_10-1"><a href="#cite_note-M0-InstrSet-10"><span>[</span>10<span>]</span></a></sup> hardware multiply instruction (optional small), optional system timer, optional bit-banding memory</td>
+<td>No cache, No TCM, optional MPU with 8 regions</td>
+<td>0.93 DMIPS/MHz</td>
+</tr>
+<tr>
+<td>Cortex-M1 <sup class="reference" id="cite_ref-M1-Spec_12-0"><a href="#cite_note-M1-Spec-12"><span>[</span>12<span>]</span></a></sup></td>
+<td>Microcontroller profile, Thumb + Thumb-2 subset (BL, MRS, MSR, ISB, DSB, DMB),<sup class="reference" id="cite_ref-M0-InstrSet_10-2"><a href="#cite_note-M0-InstrSet-10"><span>[</span>10<span>]</span></a></sup> hardware multiply instruction (optional small), OS option adds SVC / banked stack pointer, optional system timer, no bit-banding memory</td>
+<td>No cache, 0-1024&nbsp;KB I-TCM, 0-1024&nbsp;KB D-TCM, No MPU</td>
+<td>136 DMIPS @ 170&nbsp;MHz,<sup class="reference" id="cite_ref-13"><a href="#cite_note-13"><span>[</span>13<span>]</span></a></sup> (0.8 DMIPS/MHz FPGA-dependent)<sup class="reference" id="cite_ref-14"><a href="#cite_note-14"><span>[</span>14<span>]</span></a></sup></td>
+</tr>
+<tr>
+<td>ARMv7-M</td>
+<td><a class="mw-redirect" title="ARM Cortex-M3" href="/wiki/ARM_Cortex-M3#Cortex-M3">Cortex-M3</a> <sup class="reference" id="cite_ref-M3-Spec_15-0"><a href="#cite_note-M3-Spec-15"><span>[</span>15<span>]</span></a></sup></td>
+<td>Microcontroller profile, Thumb / Thumb-2, hardware multiply and divide instructions, optional bit-banding memory</td>
+<td>No cache, No TCM, optional MPU with 8 regions</td>
+<td>1.25 DMIPS/MHz</td>
+</tr>
+<tr>
+<td>ARMv7E-M</td>
+<td><a class="mw-redirect" title="ARM Cortex-M4" href="/wiki/ARM_Cortex-M4#Cortex-M4">Cortex-M4</a> <sup class="reference" id="cite_ref-M4-Spec_16-0"><a href="#cite_note-M4-Spec-16"><span>[</span>16<span>]</span></a></sup></td>
+<td>Microcontroller profile, Thumb / Thumb-2 / DSP / optional FPv4 single-precision <a title="Floating-point unit" href="/wiki/Floating-point_unit">FPU</a>, hardware multiply and divide instructions, optional bit-banding memory</td>
+<td>No cache, No TCM, optional MPU with 8 regions</td>
+<td>1.25 DMIPS/MHz</td>
+</tr>
+<tr>
+<th rowspan="3"><a title="ARM Cortex-R" href="/wiki/ARM_Cortex-R">Cortex-R</a></th>
+<td rowspan="3">ARMv7-R</td>
+<td>Cortex-R4 <sup class="reference" id="cite_ref-R4-Spec_17-0"><a href="#cite_note-R4-Spec-17"><span>[</span>17<span>]</span></a></sup></td>
+<td>Real-time profile, Thumb / Thumb-2 / DSP / optional VFPv3 <a title="Floating-point unit" href="/wiki/Floating-point_unit">FPU</a>, hardware multiply and optional divide instructions, optional parity &amp; ECC for internal buses / cache / TCM, 8-stage pipeline dual-core running <a title="Lockstep (computing)" href="/wiki/Lockstep_(computing)">lockstep</a> with fault logic</td>
+<td>0–64&nbsp;KB / 0–64&nbsp;KB, 0–2 of 0–8&nbsp;<a title="Mebibyte" href="/wiki/Mebibyte">MB</a> TCM, opt MPU with 8/12 regions</td>
+<td></td>
+</tr>
+<tr>
+<td>Cortex-R5 (MPCore) <sup class="reference" id="cite_ref-R5-Spec_18-0"><a href="#cite_note-R5-Spec-18"><span>[</span>18<span>]</span></a></sup></td>
+<td>Real-time profile, Thumb / Thumb-2 / DSP / optional VFPv3 FPU and precision, hardware multiply and optional divide instructions, optional parity &amp; ECC for internal buses / cache / TCM, 8-stage pipeline dual-core running lock-step with fault logic / optional as 2 independent cores, low-latency peripheral port (LLPP), accelerator coherency port (ACP) <sup class="reference" id="cite_ref-R5-PR_19-0"><a href="#cite_note-R5-PR-19"><span>[</span>19<span>]</span></a></sup></td>
+<td>0–64&nbsp;KB / 0–64&nbsp;KB, 0–2 of 0–8&nbsp;MB TCM, opt MPU with 12/16 regions</td>
+<td></td>
+</tr>
+<tr>
+<td>Cortex-R7 (MPCore) <sup class="reference" id="cite_ref-R7-Spec_20-0"><a href="#cite_note-R7-Spec-20"><span>[</span>20<span>]</span></a></sup></td>
+<td>Real-time profile, Thumb / Thumb-2 / DSP / optional VFPv3 FPU and precision, hardware multiply and optional divide instructions, optional parity &amp; ECC for internal buses / cache / TCM, 11-stage pipeline dual-core running lock-step with fault logic / out-of-order execution / dynamic <a title="Register renaming" href="/wiki/Register_renaming">register renaming</a> / optional as 2 independent cores, low-latency peripheral port (LLPP), ACP <sup class="reference" id="cite_ref-R5-PR_19-1"><a href="#cite_note-R5-PR-19"><span>[</span>19<span>]</span></a></sup></td>
+<td>0–64&nbsp;KB / 0–64&nbsp;KB,&nbsp;? of 0–128&nbsp;KB TCM, opt MPU with 16 regions</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="6"><a title="ARM Cortex-A" href="/wiki/ARM_Cortex-A">Cortex-A</a></th>
+<td rowspan="6">ARMv7-A</td>
+<td><a title="ARM Cortex-A5" href="/wiki/ARM_Cortex-A5">Cortex-A5</a> <sup class="reference" id="cite_ref-A5-Spec_21-0"><a href="#cite_note-A5-Spec-21"><span>[</span>21<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb / Thumb-2 / DSP / SIMD / Optional VFPv4-D16 <a title="Floating-point unit" href="/wiki/Floating-point_unit">FPU</a> / Optional NEON / Jazelle RCT and DBX, 1–4 cores / optional MPCore, snoop control unit (SCU), generic interrupt controller (GIC), accelerator coherence port (ACP)</td>
+<td>4-64&nbsp;KB / 4-64&nbsp;KB L1, MMU + TrustZone</td>
+<td>1.57&nbsp;DMIPS / MHz per core</td>
+</tr>
+<tr>
+<td><a title="ARM Cortex-A7 MPCore" href="/wiki/ARM_Cortex-A7_MPCore">Cortex-A7 MPCore</a> <sup class="reference" id="cite_ref-A7-Spec_22-0"><a href="#cite_note-A7-Spec-22"><span>[</span>22<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb / Thumb-2 / DSP / VFPv4-D16 FPU / NEON / Jazelle RCT and DBX / Hardware virtualization, in-order execution, <a title="Superscalar" href="/wiki/Superscalar">superscalar</a>, 1–4 SMP cores, Large Physical Address Extensions (LPAE), snoop control unit (SCU), generic interrupt controller (GIC), ACP, architecture and feature set are identical to A15, 8-10 stage pipeline, low-power design<sup class="reference" id="cite_ref-Article-A7_23-0"><a href="#cite_note-Article-A7-23"><span>[</span>23<span>]</span></a></sup></td>
+<td>32&nbsp;KB / 32&nbsp;KB L1, 0–4&nbsp;MB L2, MMU + TrustZone</td>
+<td>1.9 DMIPS / MHz per core</td>
+</tr>
+<tr>
+<td><a title="ARM Cortex-A8" href="/wiki/ARM_Cortex-A8">Cortex-A8</a> <sup class="reference" id="cite_ref-A8-Spec_24-0"><a href="#cite_note-A8-Spec-24"><span>[</span>24<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb / Thumb-2 / VFPv3 FPU / NEON / Jazelle RCT and DAC, 13-stage <a title="Superscalar" href="/wiki/Superscalar">superscalar</a> pipeline</td>
+<td>16-32&nbsp;KB / 16–32&nbsp;KB L1, 0–1&nbsp;MB L2 opt ECC, MMU + TrustZone</td>
+<td>up to 2000 (2.0 DMIPS/MHz in speed from 600&nbsp;MHz to greater than 1&nbsp;<a title="Hertz" href="/wiki/Hertz">GHz</a>)</td>
+</tr>
+<tr>
+<td><a title="ARM Cortex-A9 MPCore" href="/wiki/ARM_Cortex-A9_MPCore">Cortex-A9 MPCore</a> <sup class="reference" id="cite_ref-A9-Spec_25-0"><a href="#cite_note-A9-Spec-25"><span>[</span>25<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb / Thumb-2 / DSP / Optional VFPv3 FPU / Optional NEON / Jazelle RCT and DBX, <a title="Out-of-order execution" href="/wiki/Out-of-order_execution">out-of-order</a> <a title="Speculative execution" href="/wiki/Speculative_execution">speculative issue</a> <a title="Superscalar" href="/wiki/Superscalar">superscalar</a>, 1–4 SMP cores, snoop control unit (SCU), generic interrupt controller (GIC), accelerator coherence port (ACP)</td>
+<td>16–64&nbsp;KB / 16–64&nbsp;KB L1, 0–8&nbsp;MB L2 opt parity, MMU + TrustZone</td>
+<td>2.5 DMIPS/MHz per core, 10,000 DMIPS @ 2&nbsp;GHz on Performance Optimized TSMC <a class="mw-redirect" title="45 nm" href="/wiki/45_nm">40G</a> (dual core)</td>
+</tr>
+<tr>
+<td><a title="ARM Cortex-A12" href="/wiki/ARM_Cortex-A12">ARM Cortex-A12</a> <sup class="reference" id="cite_ref-A12-Spec_26-0"><a href="#cite_note-A12-Spec-26"><span>[</span>26<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb-2 / DSP / VFPv4 FPU / NEON / Hardware virtualization, <a title="Out-of-order execution" href="/wiki/Out-of-order_execution">out-of-order</a> <a title="Speculative execution" href="/wiki/Speculative_execution">speculative issue</a> <a title="Superscalar" href="/wiki/Superscalar">superscalar</a>, 1–4 SMP cores, Large Physical Address Extensions (LPAE), snoop control unit (SCU), generic interrupt controller (GIC), accelerator coherence port (ACP)</td>
+<td>32-64&nbsp;KB / 32&nbsp;KB L1, 256&nbsp;KB-8&nbsp;MB L2</td>
+<td>3.0 DMIPS / MHz per core</td>
+</tr>
+<tr>
+<td><a class="mw-redirect" title="ARM Cortex-A15 MPCore" href="/wiki/ARM_Cortex-A15_MPCore">Cortex-A15 MPCore</a> <sup class="reference" id="cite_ref-A15-Spec_27-0"><a href="#cite_note-A15-Spec-27"><span>[</span>27<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb / Thumb-2 / DSP / VFPv4 FPU / NEON / Integer divide / Fused MAC / Jazelle RCT / Hardware virtualization, <a title="Out-of-order execution" href="/wiki/Out-of-order_execution">out-of-order</a> <a title="Speculative execution" href="/wiki/Speculative_execution">speculative issue</a> <a title="Superscalar" href="/wiki/Superscalar">superscalar</a>, 1–4 SMP cores, Large Physical Address Extensions (LPAE), snoop control unit (SCU), generic interrupt controller (GIC), ACP, 15-24 stage pipeline<sup class="reference" id="cite_ref-Article-A7_23-1"><a href="#cite_note-Article-A7-23"><span>[</span>23<span>]</span></a></sup></td>
+<td>32&nbsp;KB I$ w/parity / 32&nbsp;KB D$ w/<a title="ECC memory" href="/wiki/ECC_memory">ECC</a> L1, 0–4&nbsp;MB L2, L2 has ECC, MMU + TrustZone</td>
+<td>At least 3.5 DMIPS/MHz per core (Up to 4.01 DMIPS/MHz depending on implementation).<sup class="reference" id="cite_ref-A15-Performance_28-0"><a href="#cite_note-A15-Performance-28"><span>[</span>28<span>]</span></a></sup></td>
+</tr>
+<tr>
+<th rowspan="2">Cortex-A50</th>
+<td rowspan="2">ARMv8-A</td>
+<td>Cortex-A53<sup class="reference" id="cite_ref-29"><a href="#cite_note-29"><span>[</span>29<span>]</span></a></sup></td>
+<td>Application profile, AArch32 and AArch64, 1-4 SMP cores, Trustzone, NEON advanced SIMD, VFPv4, hardware virtualization, dual issue, in-order pipeline</td>
+<td>8-64&nbsp;KB w/parity / 8-64&nbsp;KB w/ECC L1 per core, 128&nbsp;KB-2&nbsp;MB L2 shared, 40-bit physical addresses</td>
+<td>2.3 DMIPS/MHz</td>
+</tr>
+<tr>
+<td><a title="ARM Cortex-A57" href="/wiki/ARM_Cortex-A57">Cortex-A57</a><sup class="reference" id="cite_ref-30"><a href="#cite_note-30"><span>[</span>30<span>]</span></a></sup></td>
+<td>Application profile, AArch32 and AArch64, 1-4 SMP cores, Trustzone, NEON advanced SIMD, VFPv4, hardware virtualization, multi-issue, deeply out-of-order pipeline</td>
+<td>48&nbsp;KB w/DED parity / 32&nbsp;KB w/ECC L1 per core, 512&nbsp;KB-2&nbsp;MB L2 shared, 44-bit physical addresses</td>
+<td>At least 4.1 DMIPS/MHz per core (Up to 4.76 DMIPS/MHz depending on implementation).</td>
+</tr>
+<tr>
+<th>ARM Family</th>
+<th>ARM Architecture</th>
+<th>ARM Core</th>
+<th>Feature</th>
+<th>Cache (I&nbsp;/&nbsp;D), <a title="Memory management unit" href="/wiki/Memory_management_unit">MMU</a></th>
+<th>Typical <a class="mw-redirect" title="Million instructions per second" href="/wiki/Million_instructions_per_second">MIPS</a> @ MHz</th>
+</tr>
+</tbody>
+</table>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/ARM/">ARM</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

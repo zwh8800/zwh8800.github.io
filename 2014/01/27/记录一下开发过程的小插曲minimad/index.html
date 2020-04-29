@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>记录一下开发过程的小插曲minimad | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="libmad是一个开源mp3软件解码库(很久以前的东西了, 原来曾用过, 突然有想法把它放我mk808上试试), c+汇编写的, 本身对arm平台有汇编优化, 可是因为年代久远而且是针对armv4优化的, 优化了还不如不优化(优化了反而有杂音, 关了之后很好).
+
+源代码目录里有一个示例用的mini">
+  
+
+  
+  
+  <meta name="keywords" content="linux,minimad">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="记录一下开发过程的小插曲minimad"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>记录一下开发过程的小插曲minimad</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/27/记录一下开发过程的小插曲minimad/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-27T00:00:00.000Z">
+          2014-01-27
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>libmad是一个开源mp3软件解码库(很久以前的东西了, 原来曾用过, 突然有想法把它放我mk808上试试), c+汇编写的, 本身对arm平台有汇编优化, 可是因为年代久远而且是针对armv4优化的, 优化了还不如不优化(优化了反而有杂音, 关了之后很好).</p>
+<p><a href="/notename/" title="archive 20140127"></a></p>
+<p>源代码目录里有一个示例用的minimad.c, 是基于这个库的一个简单的mp3播放器. 插上我的号称7.1channel的usb外置声卡(20块淘宝货), 和aplay连用, 就能听歌了!(geek就是爱折腾, 没办法)</p>
+<p>首先, 从sourceforge.net上找到libmad并wget到mk808上, cd入目录, ./configure –disable-fpm关掉平台优化.</p>
+<p>然后需要改一下Makefile, 打开Makefile查找-fforce-mem, 删掉它(这是gcc老版本才有的选项)</p>
+<p>然后make(编译libmad), make minimad(编译minimad).</p>
+<p>没什么错误的话就会在当前目录看见一个绿色的minimad了.</p>
+<p>这个minimad说是播放器, 不如说是解码器…因为它只会从stdin读入mp3文件, 然后把解码后的pcm数据输出到stdout, 所以还得借助aplay来控制硬件播放.</p>
+<p>这是命令:</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">sudo</span> <span class="keyword">bash </span>-c <span class="string">"minimad &lt;1.mp3 | aplay -f cd"</span></span><br></pre></td></tr></table></figure>
+
+<p>这个是让1.mp3作为minimad的输入, 然后输出通过管道给aplay. -f是format, 使用CD格式的format, 也就是16 bit little endian, 44100, stereo, 正好是minimad的输出格式. 然后带上耳机, 就能听到美妙的歌声了.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/minimad/">minimad</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

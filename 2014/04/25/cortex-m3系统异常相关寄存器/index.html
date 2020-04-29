@@ -1,0 +1,309 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>cortex-m3 系统异常相关寄存器 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="enc28j60 驱动和 udp 协议栈移植到 stm32 成功
+
+1. 手动挂起、清除系统异常和中断挂起示意
+
+软件挂起
+
+    
+        
+            类型
+            NMI
+            PendSV
+            SysTick
+   ">
+  
+
+  
+  
+  <meta name="keywords" content="单片机,stm32">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="cortex-m3 系统异常相关寄存器"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>cortex-m3 系统异常相关寄存器</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/04/25/cortex-m3系统异常相关寄存器/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-04-25T00:00:00.000Z">
+          2014-04-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>enc28j60 驱动和 udp 协议栈移植到 stm32 成功</p>
+<p><a href="/notename/" title="archive 20140425"></a></p>
+<h3 style="color: #080">1. 手动挂起、清除系统异常和中断挂起示意</h3>
+
+<p>软件挂起</p>
+<table>
+    <thead>
+        <tr>
+            <td>类型</td>
+            <td>NMI</td>
+            <td>PendSV</td>
+            <td>SysTick</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>寄存器位</td>
+            <td>NMIPENDSET</td>
+            <td>PENDSVSET</td>
+            <td>PENDSTSET</td>
+        </tr>
+    </tbody>
+</table>
+软件清除
+<table>
+    <thead>
+        <tr>
+            <td>类型</td>
+            <td>PendSV</td>
+            <td>SysTick</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>寄存器位</td>
+            <td>PENDSVCLR</td>
+            <td>PENDSVCLR</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>中断挂起状态示意</p>
+<p><span style="color: red">ISRPENDING</span></p>
+<p>寄存器: <span style="color: red">SCB_ICSR</span>(Interrupt Control and state register)</p>
+<p><img src="http://static.zybuluo.com/zwh8800/1191dgqrfw76d139d4omlu1n/image_1bl04ftuo1f9ck9318ol1pqn195c9.png" alt="image_1bl04ftuo1f9ck9318ol1pqn195c9.png-148.6kB"><br><img src="http://static.zybuluo.com/zwh8800/6f6kib4vfu4gk2c15b7j8lb1/image_1bl04gc7heidbq71ikbn99tanm.png" alt="image_1bl04gc7heidbq71ikbn99tanm.png-174.2kB"></p>
+<h3 style="color: #080">2. 设置系统异常优先级</h3>
+寄存器: <span style="color: red">SCB_SHPRx</span>(System handler priority)
+
+<p><img src="http://static.zybuluo.com/zwh8800/8qp2dq1oke7qkd28ew17j5wn/image_1bl04hde214oj1i9i13iv194p1vam13.png" alt="image_1bl04hde214oj1i9i13iv194p1vam13.png-101.3kB"><br><img src="http://static.zybuluo.com/zwh8800/20pp7nw51faremehckt1mqt5/image_1bl04hodm70q11la19pkuuh1jhr1g.png" alt="image_1bl04hodm70q11la19pkuuh1jhr1g.png-116.3kB"><br><img src="http://static.zybuluo.com/zwh8800/zvi2cg6p0okw2wm9pss3roam/image_1bl04i123oasa21c94f1u1r01t.png" alt="image_1bl04i123oasa21c94f1u1r01t.png-57.5kB"></p>
+<h3 style="color: #080">3. 使能 fault，和挂起状态、活动状态示意</h3>
+使能
+<table>
+    <thead>
+        <tr>
+            <td>类型</td>
+            <td>Usage fault</td>
+            <td>Bus fault</td>
+            <td>mem fault</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>寄存器位</td>
+            <td>USGFAULTENA</td>
+            <td>BUSFAULTENA</td>
+            <td>MEMFAULTENA</td>
+        </tr>
+    </tbody>
+</table>
+挂起状态
+<table>
+    <thead>
+        <tr>
+            <td>类型</td>
+            <td>SVC</td>
+            <td>Bus fault</td>
+            <td>mem fault</td>
+            <td>Usage fault</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>寄存器位</td>
+            <td>SVCALLPENDED</td>
+            <td>BUSFAULTPENDED</td>
+            <td>MEMFAULTPENDED</td>
+            <td>USGFAULTPENDED</td>
+        </tr>
+    </tbody>
+</table>
+活动状态
+<table>
+    <thead>
+        <tr>
+            <td>类型</td>
+            <td>SysTick</td>
+            <td>PendSV</td>
+            <td>Debug Monitor</td>
+            <td>SVC</td>
+            <td>Usage fault</td>
+            <td>Bus fault</td>
+            <td>Mem fault</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>寄存器位</td>
+            <td>SYSTICKACT</td>
+            <td>PENDSVACT</td>
+            <td>MONITORACT</td>
+            <td>SVCALLACT</td>
+            <td>USGFAULTACT</td>
+            <td>BUSFAULTACT</td>
+            <td>MEMFAULTACT</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>寄存器: <span style="color: red">SCB_SHCSR</span>(System handler control and state register)</p>
+<p><img src="http://static.zybuluo.com/zwh8800/61h1c9pz2dfw4lhcjgy54xpz/image_1bl04u1pi1o0v9cc19ugj11c672a.png" alt="image_1bl04u1pi1o0v9cc19ugj11c672a.png-177.9kB"></p>
+<p>一个 dump 出 scb(System control block 系统控制块) 的函数, 调试的时候有时很有用</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#define PRIORITY_Msk 0xF0</span></span><br><span class="line"><span class="comment">#define PRIORITY_Pos 4</span></span><br><span class="line">void dump_scb()</span><br><span class="line">&#123;</span><br><span class="line">	uint32_t icsr = SCB-&gt;ICSR;</span><br><span class="line">	uint32_t shcsr = SCB-&gt;SHCSR;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"ICSR:\r\n"</span>);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t there %s interrupt pending\r\n"</span>, </span><br><span class="line">		(icsr &amp; SCB_ICSR_ISRPENDING_Msk) ? <span class="string">"is"</span> : <span class="string">"isn't"</span>);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t pending exception number:%u\r\n"</span>, </span><br><span class="line">		(icsr &amp; SCB_ICSR_VECTPENDING_Msk) &gt;&gt; SCB_ICSR_VECTPENDING_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t active exception number:%u\r\n"</span>, </span><br><span class="line">		(icsr &amp; SCB_ICSR_VECTACTIVE_Msk) &gt;&gt; SCB_ICSR_VECTACTIVE_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"SHPRx:\r\n"</span>);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Mem Manage:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">0</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Bus Fault:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">1</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Usage Fault:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">2</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t SVC:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">7</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Debug Monitor:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">8</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t PendSV:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">10</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t SysTick:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">11</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"SHCSR:\r\n"</span>);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Usage Fault enable:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_USGFAULTENA_Msk) &gt;&gt; SCB_SHCSR_USGFAULTENA_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Bus Fault enable:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_BUSFAULTENA_Msk) &gt;&gt; SCB_SHCSR_BUSFAULTENA_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Mem Fault enable:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_MEMFAULTENA_Msk) &gt;&gt; SCB_SHCSR_MEMFAULTENA_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\r\n"</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t SVCall pended:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_SVCALLPENDED_Msk) &gt;&gt; SCB_SHCSR_SVCALLPENDED_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Bus Fault pended:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_BUSFAULTPENDED_Msk) &gt;&gt; SCB_SHCSR_BUSFAULTPENDED_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Mem Fault pended:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_MEMFAULTPENDED_Msk) &gt;&gt; SCB_SHCSR_MEMFAULTPENDED_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Usage Fault pended:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_USGFAULTPENDED_Msk) &gt;&gt; SCB_SHCSR_USGFAULTPENDED_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\r\n"</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t SysTick active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_SYSTICKACT_Msk) &gt;&gt; SCB_SHCSR_SYSTICKACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t PendSV active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_PENDSVACT_Msk) &gt;&gt; SCB_SHCSR_PENDSVACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Monitor active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_MONITORACT_Msk) &gt;&gt; SCB_SHCSR_MONITORACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t SVCall active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_SVCALLACT_Msk) &gt;&gt; SCB_SHCSR_SVCALLACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Usage Fault active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_USGFAULTACT_Msk) &gt;&gt; SCB_SHCSR_USGFAULTACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Bus Fault active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_BUSFAULTACT_Msk) &gt;&gt; SCB_SHCSR_BUSFAULTACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Mem Fault active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_MEMFAULTACT_Msk) &gt;&gt; SCB_SHCSR_MEMFAULTACT_Pos);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">#define DIVBYZERO_Pos 9</span></span><br><span class="line"><span class="comment">#define DIVBYZERO_Msk (1ul &lt;&lt; DIVBYZERO_Pos)</span></span><br><span class="line"><span class="comment">#define UNALIGNED_Pos 8</span></span><br><span class="line"><span class="comment">#define UNALIGNED_Msk (1ul &lt;&lt; UNALIGNED_Pos)</span></span><br><span class="line"><span class="comment">#define NOCP_Pos 3</span></span><br><span class="line"><span class="comment">#define NOCP_Msk (1ul &lt;&lt; NOCP_Pos)</span></span><br><span class="line"><span class="comment">#define INVPC_Pos 2</span></span><br><span class="line"><span class="comment">#define INVPC_Msk (1ul &lt;&lt; INVPC_Pos)</span></span><br><span class="line"><span class="comment">#define INVSTATE_Pos 1</span></span><br><span class="line"><span class="comment">#define INVSTATE_Msk (1ul &lt;&lt; INVSTATE_Pos)</span></span><br><span class="line"><span class="comment">#define UNDEFINSTR_Pos 0</span></span><br><span class="line"><span class="comment">#define UNDEFINSTR_Msk (1ul &lt;&lt; UNDEFINSTR_Pos)</span></span><br><span class="line">void dump_ufsr()</span><br><span class="line">&#123;</span><br><span class="line">	uint16_t ufsr = (SCB-&gt;CFSR &amp; SCB_CFSR_USGFAULTSR_Msk) &gt;&gt; SCB_CFSR_USGFAULTSR_Pos;</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"UFSR:\r\n"</span>);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Divide by zero: %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; DIVBYZERO_Msk) &gt;&gt; DIVBYZERO_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Unaligned access: %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; UNALIGNED_Msk) &gt;&gt; UNALIGNED_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t No coprocessor: %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; NOCP_Msk) &gt;&gt; NOCP_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Invaild PC load: %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; INVPC_Msk) &gt;&gt; INVPC_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Invaild state(attempt to entry ARM state): %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; INVSTATE_Msk) &gt;&gt; INVSTATE_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Undefined instruction: %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; UNDEFINSTR_Msk) &gt;&gt; UNDEFINSTR_Pos);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/单片机/">单片机</a><a href="/tags/stm32/">stm32</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

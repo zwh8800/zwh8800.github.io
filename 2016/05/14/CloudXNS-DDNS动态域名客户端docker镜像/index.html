@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>CloudXNS-DDNS 动态域名客户端 docker 镜像 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="最近换上了 CloudXNS 的域名服务。以前使用花生壳的时候比较方便，大多数路由器都支持，而且还提供了 Linux 下的客户端源码供定制。换上 CloudXNS 之后这些方便的东西当然没有了，不过 CloudXNS 也提供了 API，作为程序员当然要自己写一个了。这篇文章是这个 CloudXNS ">
+  
+
+  
+  
+  <meta name="keywords" content="CloudXNS,DDNS,docker,动态DNS">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="CloudXNS-DDNS 动态域名客户端 docker 镜像"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>CloudXNS-DDNS 动态域名客户端 docker 镜像</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/05/14/CloudXNS-DDNS动态域名客户端docker镜像/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-05-14T07:15:34.000Z">
+          2016-05-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>最近<a href="https://lengzzz.com/note/the-domain-hosting-to-cloudxns-perfect-supporting-the-let-s-encrypt">换上</a>了 CloudXNS 的域名服务。以前使用花生壳的时候比较方便，大多数路由器都支持，而且还提供了 Linux 下的客户端源码供定制。换上 CloudXNS 之后这些方便的东西当然没有了，不过 CloudXNS 也提供了 API，作为程序员当然要自己写一个了。这篇文章是这个 CloudXNS DDNS 客户端的使用介绍。</p>
+<p><a href="/notename/" title="a docker image for CloudXNS DDNS"></a></p>
+<p>客户端是使用 golang 开发的，放到了 <a href="https://github.com/zwh8800/cloudxns-ddns" target="_blank" rel="noopener"><i class="icon-github"></i> github 上 <sub>https://github.com/zwh8800/cloudxns-ddns</sub></a>。需要的可以自己编译，不过我已经做好了 <a href="https://hub.docker.com/r/zwh8800/cloudxns-ddns" target="_blank" rel="noopener">docker 镜像 <sub>https://hub.docker.com/r/zwh8800/cloudxns-ddns</sub></a> 了可以直接使用。</p>
+<p>首先，拉取镜像：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull zwh8800/cloudxns-ddns</span><br></pre></td></tr></table></figure>
+
+<p>然后，编写一个很简单的配置文件，放到某个文件夹中（如/home/zzz/cloudxns-ddns/config，下面以此为例子)</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[CloudXNS]</span></span><br><span class="line"><span class="attr">APIKey</span>=<span class="string">"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</span></span><br><span class="line"><span class="attr">SecureKey</span>=<span class="string">"xxxxxxxxxxxxxx"</span></span><br><span class="line"></span><br><span class="line"><span class="section">[Domain]</span></span><br><span class="line"><span class="attr">Data</span>=<span class="string">"home.lengzzz.com"</span></span><br><span class="line"><span class="attr">Data</span>=<span class="string">"haha.lengzzz.com"</span></span><br></pre></td></tr></table></figure>
+
+<p>上面 <code>APIKey</code> 是你在 <a href="https://www.cloudxns.net/AccountManage/apimanage.html" target="_blank" rel="noopener">CloudXNS <sub>https://www.cloudxns.net/AccountManage/apimanage.html</sub></a> 申请的 key，填进去即可。下面是你想要动态的域名，可以写很多。</p>
+<p>然后，启动镜像即可。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="builtin-name">run</span> --name cloudxns-ddns -d -v /home/zzz/cloudxns-ddns/log:/app/log -v /home/zzz/cloudxns-ddns/config:/app<span class="built_in">/config </span>zwh8800/cloudxns-ddns</span><br></pre></td></tr></table></figure>
+
+<p>注意一点，需要把刚写的配置文件当作 <code>volumn</code> 挂载到容器上，如上 <code>-v /home/zzz/cloudxns-ddns/config:/app/config</code> 。这样的话，你可以方便的修改配置文件然后 <code>docker restart cloud-ddns</code> 。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/CloudXNS/">CloudXNS</a><a href="/tags/DDNS/">DDNS</a><a href="/tags/docker/">docker</a><a href="/tags/动态DNS/">动态DNS</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

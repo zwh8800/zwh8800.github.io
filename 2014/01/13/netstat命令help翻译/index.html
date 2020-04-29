@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>netstat命令help翻译 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="翻译了一下 netstat –help 的提示信息
+
+12345678910111213141516171819202122232425262728293031323334zzz@lengzzz:~$ netstat --helpusage: netstat [-vWeenNcCF] [&amp;lt;Af">
+  
+
+  
+  
+  <meta name="keywords" content="系统编程,unix">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="netstat命令help翻译"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>netstat命令help翻译</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/13/netstat命令help翻译/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-13T00:00:00.000Z">
+          2014-01-13
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>翻译了一下 netstat –help 的提示信息</p>
+<p><a href="/notename/" title="archive 20140113"></a></p>
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">zzz@</span><span class="string">lengzzz:</span>~$ <span class="string">netstat </span><span class="built_in">--help</span></span><br><span class="line"><span class="built_in">usage:</span> <span class="string">netstat </span>[-<span class="string">vWeenNcCF]</span> [&lt;<span class="string">Af&gt;</span>] -r         <span class="string">netstat </span>&#123;-V|<span class="built_in">--version|-h|--help&#125;</span></span><br><span class="line"><span class="built_in"></span>       <span class="string">netstat </span>[-<span class="string">vWnNcaeol]</span> [&lt;<span class="string">Socket&gt;</span> ...]</span><br><span class="line">       <span class="string">netstat </span>&#123; [-<span class="string">vWeenNac]</span> -i | [-<span class="string">cWnNe]</span> -M | -s &#125;</span><br><span class="line"></span><br><span class="line">        -r, <span class="built_in">--route</span>			显示路由表</span><br><span class="line">        -i, <span class="built_in">--interfaces</span>		显示接口列表</span><br><span class="line">        -g, <span class="built_in">--groups</span>		显示组播组成员</span><br><span class="line">        -s, <span class="built_in">--statistics</span>		显示网络统计数据（类似<span class="string">SNMP）</span></span><br><span class="line">        -M, <span class="built_in">--masquerade</span>	显示伪装连接</span><br><span class="line"></span><br><span class="line">        -v, <span class="built_in">--verbose</span>		显示详细信息</span><br><span class="line">        -W, <span class="built_in">--wide</span>			不截断<span class="string">IP地</span>址</span><br><span class="line">        -n, <span class="built_in">--numeric</span>		不解析名字</span><br><span class="line">        <span class="built_in">--numeric-hosts</span>		不解析主机名</span><br><span class="line">        <span class="built_in">--numeric-ports</span>		不解析端口名</span><br><span class="line">        <span class="built_in">--numeric-users</span>		不解析用户名</span><br><span class="line">        -N, <span class="built_in">--symbolic</span>		解析硬件名</span><br><span class="line">        -e, <span class="built_in">--extend</span>		显示更多信息</span><br><span class="line">        -p, <span class="built_in">--programs</span>		显示套接字的<span class="string">PID/</span>程序名</span><br><span class="line">        -c, <span class="built_in">--continuous</span>		刷屏显示</span><br><span class="line"></span><br><span class="line">        -l, <span class="built_in">--listening</span>		显示监听套接字</span><br><span class="line">        -a, <span class="built_in">--all,</span> <span class="built_in">--listening</span>	显示所有套接字（默认：只显示连接套接字）</span><br><span class="line">        -o, <span class="built_in">--timers</span>		显示套接字定时器状态</span><br><span class="line">        -F, <span class="built_in">--fib</span>			显示前导路由信息（默认启用）</span><br><span class="line">        -C, <span class="built_in">--cache</span>			显示路由<span class="string">cache中</span>的前导路由信息</span><br><span class="line"></span><br><span class="line">  &lt;<span class="string">Socket&gt;</span>=&#123;-t|<span class="built_in">--tcp&#125;</span> &#123;-u|<span class="built_in">--udp&#125;</span> &#123;-w|<span class="built_in">--raw&#125;</span> &#123;-x|<span class="built_in">--unix&#125;</span> <span class="built_in">--ax25</span> <span class="built_in">--ipx</span> <span class="built_in">--netrom</span></span><br><span class="line"><span class="built_in"></span>  &lt;<span class="string">AF&gt;</span>=<span class="string">Use </span><span class="string">'-6|-4'</span> <span class="string">or </span><span class="string">'-A &lt;af&gt;'</span> <span class="string">or </span><span class="string">'--&lt;af&gt;'</span>; <span class="string">default:</span> <span class="string">inet</span></span><br><span class="line"><span class="string"> </span> 可以使用的地址族列表 (支持路由的):</span><br><span class="line">    <span class="string">inet </span>(<span class="string">DARPA </span><span class="string">Internet)</span> <span class="string">inet6 </span>(<span class="string">IPv6)</span> <span class="string">ax25 </span>(<span class="string">AMPR </span><span class="string">AX.</span><span class="string">25)</span> </span><br><span class="line">    <span class="string">netrom </span>(<span class="string">AMPR </span><span class="string">NET/</span><span class="string">ROM)</span> <span class="string">ipx </span>(<span class="string">Novell </span><span class="string">IPX)</span> <span class="string">ddp </span>(<span class="string">Appletalk </span><span class="string">DDP)</span> </span><br><span class="line">    <span class="string">x25 </span>(<span class="string">CCITT </span>X.<span class="string">25)</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/系统编程/">系统编程</a><a href="/tags/unix/">unix</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

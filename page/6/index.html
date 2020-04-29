@@ -1,0 +1,1229 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第 6 页 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/04/15/UDP,ICMP,IP协议校验和的计算/"><span>UDP, ICMP, IP 协议校验和的计算</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/04/15/UDP,ICMP,IP协议校验和的计算/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-04-15T00:00:00.000Z">
+          2014-04-15
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>UDP, ICMP, IP 协议校验和的计算</p>
+<p><a href="/notename/" title="archive 20140415"></a></p>
+<p>最近在实现一个简单的 udp 协议栈, 几乎每一层的协议都要计算校验和. 总结一下校验和计算的过程, 也希望对他人有用.</p>
+<h3 style="color: #080">1. 校验范围</h3>
+虽然每个协议里都有校验和字段, 但是每个校验和覆盖的范围都是不同的:
+
+<p>IP 协议: <code>只包含 20 字节的 IP 报头</code><br>ICMP 协议: <code>整个 ICMP 报文 (ICMP 报头 + ICMP 数据)</code><br>UDP 协议 / TCP 协议: <code>除了整个 UDP/TCP 报文以外</code>, <span style="color: red">前面再加上一个 12 字节的伪 IP 报头</span>. <code>对这个整体一起算校验和 (见下图)</code><br><img src="http://static.zybuluo.com/zwh8800/3jd3lz3cgr4pcagcvta67lbd/image_1bl0634aqgqv1tka1fej1j7a10pjp.png" alt="image_1bl0634aqgqv1tka1fej1j7a10pjp.png-56.4kB"></p>
+<p>图 from:TCP/IP 详解</p>
+<p>另外, 如果接收到的 UDP 校验和为 0, 则说明不要进行校验和计算</p>
+<h3 style="color: #080">2. 计算步骤</h3>
+发送时:
+
+<p>将校验和字段置零<br>对校验范围<code>逐 16bit 做反码和</code><br>得到的和即为校验和<br>接收时:</p>
+<p>对校验范围<code>逐 16bit 做反码和</code><br>若校验和为 0 则正确, 否则错误</p>
+<h3 style="color: #080">3. 如何计算</h3>
+反码: 这里的反码指的是对原来的数所有位二进制取反, 既: unsigned int A 的反码为~ A
+
+<p>对每个数求反码然后相加, <code>如果最高位有进位则加到最低位 (循环进位)</code></p>
+<p>如果是<code>奇数</code>个字节, 将最后一个字节 (设为 Z) 扩展成: [Z, 0x00]</p>
+<p>由上面简单的解释, 我们可以写出一个最直观的算法, 本人自己写了一个, 感觉太烂了就不放出来了.</p>
+<h3 style="color: #080">4. 优化</h3>
+事实上, 我们一直没提到二进制反码和的优点, 在 RFC1071 中详细的提到了反码和具有的数学上的优点, 利用这些, 可以有效加快校验和的计算:
+
+<p>在计算时先求反再相加和先相加再求反结果一致<br>延迟进位 (在 32 比特加法器中进行 16 比特求和，这样溢出就被放到了高 16 位中。这种方法可以避免使用进位敏感指令但需要两倍于在 32 比特寄存器相加的加法运算。速度提高取决于具体的硬件体系。)<br>字节顺序无关<br>第二点对于 32 位机很好, 但是在 8 位单片机上就有点…</p>
+<p>然后, 在 RFC1071 中还给出了一个利用了这些优化的 C 示例:</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">unsigned</span> short <span class="title">checksum</span><span class="params">(<span class="keyword">unsigned</span> short* data, <span class="keyword">int</span> <span class="built_in">size</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">register</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">while</span>( <span class="built_in">size</span> &gt; <span class="number">1</span> )  </span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">/*  This is the inner loop */</span></span><br><span class="line">		sum += *data++;</span><br><span class="line">		<span class="built_in">size</span> -= <span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">/*  Add left-over byte, if any */</span></span><br><span class="line">	<span class="keyword">if</span>( <span class="built_in">size</span> &gt; <span class="number">0</span> )</span><br><span class="line">		sum += * (<span class="keyword">unsigned</span> <span class="keyword">char</span> *) data;</span><br><span class="line"> </span><br><span class="line">	<span class="comment">/*  Fold 32-bit sum to 16 bits */</span></span><br><span class="line">	<span class="keyword">while</span> (sum &gt;&gt; <span class="number">16</span>)</span><br><span class="line">		sum = (sum &amp; <span class="number">0xffff</span>) + (sum &gt;&gt; <span class="number">16</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> ~sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>作者使用一个 32 位的 sum 来保存计算结果. 11 行是处理奇数个数据的. 最后一个循环是把进位加到低位上.</p>
+<p>看到这么好的实现, 我也放弃用我自己写的了, 干脆用这个. 另外, stm32 中有一个硬件实现的 CRC 模块. 下次移植到 stm32 上的时候用用它试试.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/网络协议/">网络协议</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/04/15/UDP,ICMP,IP协议校验和的计算/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/04/14/一个方便的Image_slider的jQuery代码/"><span>一个方便的 Image_slider 的 jQuery 代码</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/04/14/一个方便的Image_slider的jQuery代码/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-04-14T00:00:00.000Z">
+          2014-04-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>UDP, ICMP, IP 协议校验和的计算</p>
+<p><a href="/notename/" title="archive 20140414"></a></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;script src=<span class="string">"script/jquery-1.11.0.min.js"</span>&gt;&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;body&gt;</span><br><span class="line"> </span><br><span class="line">&lt;div id=<span class="string">"slider"</span>&gt;</span><br><span class="line">	&lt;img style=<span class="string">"position:absolute"</span> src=<span class="string">"images/sliser_bg_img_1.jpg"</span> /&gt;</span><br><span class="line">	&lt;img style=<span class="string">"position:absolute;display:none"</span> src=<span class="string">"images/sliser_bg_img_2.jpg"</span> /&gt;</span><br><span class="line">	&lt;img style=<span class="string">"position:absolute;display:none"</span> src=<span class="string">"images/sliser_bg_img_3.jpg"</span> /&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp"> </span></span><br><span class="line"><span class="regexp">&lt;script&gt;</span></span><br><span class="line"><span class="regexp">	var slider = $("#slider");</span></span><br><span class="line"><span class="regexp">	var img_list = slider.children();</span></span><br><span class="line"><span class="regexp">	var current = 0;</span></span><br><span class="line"><span class="regexp"> </span></span><br><span class="line"><span class="regexp">	setInterval("change()", 3000);</span></span><br><span class="line"><span class="regexp"> </span></span><br><span class="line"><span class="regexp">	function change()</span></span><br><span class="line"><span class="regexp">	&#123;</span></span><br><span class="line"><span class="regexp">		$(img_list[current]).fadeOut(800);</span></span><br><span class="line"><span class="regexp">		current++;</span></span><br><span class="line"><span class="regexp">		if (current &gt;= img_list.length)</span></span><br><span class="line"><span class="regexp">		&#123;</span></span><br><span class="line"><span class="regexp">			current = 0;</span></span><br><span class="line"><span class="regexp">		&#125;</span></span><br><span class="line"><span class="regexp">		$(img_list[current]).fadeIn(800);</span></span><br><span class="line"><span class="regexp">	&#125;</span></span><br><span class="line"><span class="regexp"> </span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br><span class="line"> </span><br><span class="line">&lt;<span class="regexp">/body&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>html&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/JS/">JS</a><a href="/tags/jquery/">jquery</a><a href="/tags/前端/">前端</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/04/14/一个方便的Image_slider的jQuery代码/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/04/10/自己造操作系统(1)–开篇,zOS/"><span>自己造操作系统 (1) – 开篇, zOS</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/04/10/自己造操作系统(1)–开篇,zOS/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-04-10T00:00:00.000Z">
+          2014-04-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>自己造操作系统系列 0.1 版</p>
+<p><a href="/notename/" title="archive 20140410"></a></p>
+<p>[最近一直都忙着造轮子, 博客都没空写. 今天算是把调度器写出来能用了, 算是取得阶段性成果, 过来记录一下.]</p>
+<p><code>zOS</code>: 是本人一星期前开始的项目, 目标是做一个 stm32 平台上的非实时操作系统.</p>
+<h3 style="color: #080">features:</h3>
+
+<p>初期的想法是这样:</p>
+<p>(“应用”, 或” 应用程序” 指的是在 zOS 操作系统上运行的用户态程序)</p>
+<ol>
+<li>对于应用开发:</li>
+</ol>
+<p>多进程<br>应用程序 (用户态程序) 可以独立编译, 无需和操作系统代码一起编译<br>烧入芯片前用一个叫做 zImage 的工具 (我把操作系统和 app 合成之后的镜像叫做 zImage) 把 app 的 binary 和操作系统的 binary 合成为一个二进制 Image 文件. 之后烧入到芯片 flash 中<br>上面功能使用 pic(位置无关代码) 实现<br>调度器使用抢占式时间片轮转算法 (暂时还没实现基于优先级的调度)<br>向用户态程序提供 svc 系统调用 (供汇编程序调用), 同时提供 libc 形式的系统调用 (供 c 语言调用, 相当于对裸的 svc 加了一层 wrapper)<br>libc 中另外还提供 c 标准库 (newlib)<br>对于有 MPU 的器件使用内存保护<br>这么设计的好处是开发应用程序时就好像开发 PC 系统上的程序一样了, 不需要把 OS 的代码放到项目中去. 看着清新了很多.</p>
+<p>使用系统调用的方法使应用编写方便了很多, 而且还安全.</p>
+<ol start="2">
+<li>对于驱动开发:</li>
+</ol>
+<p>提供自旋锁, 信号量等设施<br>暂时不提供子系统 (因为现在只面向 stm32 平台, stm32 标准外设库的头文件可以直接引用. 以后考虑移植到其他平台时再提供一个统一界面的子系统层)<br>…. 还没想好<br>3. 对于用户:</p>
+<p>提供 shell(初步想法用 lua 实现, 不知可行性如何) [串口]<br>提供 GUI [液晶屏]</p>
+<h3 style="color: #080">关于 build:</h3>
+
+<p>zOS 使用 CooCox 开发环境开发 (因为比较熟悉 GNU 工具链, 而且 CooCox 调试也方便).</p>
+<p>现在只提供 CooCox 的项目文件, 以后会提供 Makefile. (关键我现在懒着写 -.-)</p>
+<p>可以现在这里下载:<a href="https://lengzzz.com/zOS/zOS-0.1-alpha.tar.gz">https://lengzzz.com/zOS/zOS-0.1-alpha.tar.gz</a> 写的还很烂 [掩面], 大神轻点喷 -.-</p>
+<p>如果手上有 stm32 的板子的话可以编译了烧上去看效果. 现在就是一个简单的调度器, 开启了两个进程, 一个让 led 闪烁, 一个让 led 常亮. 时间片设置的大了一些 (为 1 秒). 所以运行会看到 led 一秒闪烁一秒常亮.</p>
+<p>板子和我不一样的 (肯定不一样吧!) 需要把 Unit_Test/test_schedule.c 文件中关于 led 改成你的板子的 GPIO 端口. 这个估计难不倒大家.</p>
+<p>后续会写文章一步一步记录开发过程…</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/操作系统/">操作系统</a><a href="/tags/造轮子/">造轮子</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/04/10/自己造操作系统(1)–开篇,zOS/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/03/22/在keil中使用jlink/"><span>在 keil 中使用 jlink</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/22/在keil中使用jlink/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-22T00:00:00.000Z">
+          2014-03-22
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>在 keil 中使用 jlink</p>
+<p><a href="/notename/" title="archive 20140322"></a></p>
+<p>先安装 jlink 的工具包. 在官网下载需要输序列号, 鉴于国内大多使用盗版. 在本站放一个镜像供大家下载: <a href="https://lengzzz.com/download/Setup_JLinkARM_V480.zip">https://lengzzz.com/download/Setup_JLinkARM_V480.zip</a></p>
+<p>下载后安装</p>
+<p>安装好之后插上 jlink. 打开 keil</p>
+<p>点击 Target Option 按钮:<br><img src="http://static.zybuluo.com/zwh8800/7jgd86b8v29dssmfeya7paxn/image_1bl07o71mk7i521141i1rbr6nj9.png" alt="image_1bl07o71mk7i521141i1rbr6nj9.png-17kB"></p>
+<p>然后打开 Debug 选项卡, 选择右边的 use jlink<br><img src="http://static.zybuluo.com/zwh8800/pbkcy680p6wxoi54xk8gip7e/image_1bl07om2r1ecb7vtphf4bdpnjm.png" alt="image_1bl07om2r1ecb7vtphf4bdpnjm.png-24.1kB"></p>
+<p>然后点击 Utilities 选项卡, 也选择 jlink:<br><img src="http://static.zybuluo.com/zwh8800/s353yhzpofjn0l6la6cpj862/image_1bl07p8up16eg8n53951jbvk4s13.png" alt="image_1bl07p8up16eg8n53951jbvk4s13.png-18.1kB"></p>
+<p>接着点击 Settings 选择 add 然后在列表中选择我们的器件:<br><img src="http://static.zybuluo.com/zwh8800/p47bb6vw9z3eivk7mzjx2sy0/image_1bl07pm2ni37imc1vsi5tt9s61g.png" alt="image_1bl07pm2ni37imc1vsi5tt9s61g.png-30.3kB"></p>
+<p>之后勾选上 Reset and run:<br><img src="http://static.zybuluo.com/zwh8800/poxp24jgkqvkypwbo3w597mz/image_1bl07q50dkns1flb1hid1ffn19ot1t.png" alt="image_1bl07q50dkns1flb1hid1ffn19ot1t.png-20.2kB"><br>一路 ok 后, 应该可以下载和调试程序了</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/单片机/">单片机</a><a href="/tags/jlink/">jlink</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/03/22/在keil中使用jlink/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/03/21/CodeVisionAVRC编译器数据类型/"><span>CodeVisionAVR C 编译器数据类型</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/21/CodeVisionAVRC编译器数据类型/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-21T00:00:00.000Z">
+          2014-03-21
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>CodeVisionAVR C 编译器数据类型</p>
+<p><a href="/notename/" title="archive 20140321"></a></p>
+<p>| 类型        |关键字   |  大小 (位)  |     范围|<br>|    | | : |:|<br>| 位型     | bit |   1    |     0, 1|<br>| 字符型     | char |   8     | -128, 127|<br>| 无符号字符型     | unsigned char |   8  | 0, 255|<br>| 有符号字符型    | signed char |   8   | -128, 127 |<br>| 整型     | int |   <code>16</code>   | -32767, 32768|<br>| 无符号整型     | unsigned int |   <code>16</code>    | 0, 65536|<br>| 短整型        |   short int  |   16   | -32767, 32768 |<br>| 无符号短整型 |  unsigned short int    |  16  | 0, 65536 |<br>| 长整形 |  long int    |  32  |-2147483648, 2147483647|<br>| 无符号长整形 |  unsigned long int   |  32  |0, 4294967295|<br>| 浮点型 |  float  |  32|<br>| 双精度浮点型 |  double  | <code>32</code>|</p>
+<p>avr 是小端模式</p>
+<h1>麻痹的! 傻逼 CodeVisionAVR 改什么语言, 把 const 和 flash 等价. 艹, 移植麻烦死</h1>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/AVR/">AVR</a><a href="/tags/单片机/">单片机</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/03/21/CodeVisionAVRC编译器数据类型/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/03/12/arm-linux汇编(4)–函数调用规则/"><span>arm-linux 汇编 (4) – 函数调用规则</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/12/arm-linux汇编(4)–函数调用规则/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-12T00:00:00.000Z">
+          2014-03-12
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>arm-linux 汇编 (4) – 函数调用规则</p>
+<p><a href="/notename/" title="archive 20140312"></a></p>
+<p>本篇主要考虑整数 (更精确点是 32 位整数) 作为参数和函数返回值时的传递规则.</p>
+<p>网上很多资料都在说 arm 汇编中如果参数小于四个 (整数) 的话, 使用 r0, r1, r2, r3 来传递. 当大于 4 个时使用栈来传递. 但是究竟放到 sp 的上面还是下面, 顺序如何. 这次就来试一试到底是怎么样的.</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> a7(<span class="built_in">int</span> a, <span class="built_in">int</span> b, <span class="built_in">int</span> c, <span class="built_in">int</span> d, <span class="built_in">int</span> e, <span class="built_in">int</span> f, <span class="built_in">int</span> g)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">100</span> + a + b + c + d + e + f + g;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="built_in">int</span> test()</span><br><span class="line">&#123;</span><br><span class="line">	a7(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译以上代码 arm-linux-gnueabi-gcc -c arg.c 生成 arg.o 文件. 然后使用 arm-linux-gnueabi-objdump -d 来反编译. o 文件.</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">000001</span>b4 &lt;a7&gt;:</span><br><span class="line"> <span class="number">1</span>b4:	e52db004 	<span class="keyword">push	</span>&#123;<span class="built_in">fp</span>&#125;		<span class="comment">; (str fp, [sp, #-4]!)</span></span><br><span class="line"> <span class="number">1</span>b8:	e28db000 	<span class="keyword">add	</span><span class="built_in">fp</span>, <span class="built_in">sp</span>, <span class="number">#0</span></span><br><span class="line"> <span class="number">1</span>bc:	e24dd014 	<span class="keyword">sub	</span><span class="built_in">sp</span>, <span class="built_in">sp</span>, <span class="number">#20</span></span><br><span class="line"> <span class="number">1</span><span class="built_in">c0</span>:	e5<span class="number">0b000</span>8 	<span class="keyword">str	</span><span class="built_in">r0</span>, [<span class="built_in">fp</span>, #-<span class="number">8</span>]</span><br><span class="line"> <span class="number">1</span><span class="built_in">c4</span>:	e5<span class="number">0b100</span>c 	<span class="keyword">str	</span><span class="built_in">r1</span>, [<span class="built_in">fp</span>, #-<span class="number">12</span>]</span><br><span class="line"> <span class="number">1</span><span class="built_in">c8</span>:	e50b2010 	<span class="keyword">str	</span><span class="built_in">r2</span>, [<span class="built_in">fp</span>, #-<span class="number">16</span>]</span><br><span class="line"> <span class="number">1</span>cc:	e50b3014 	<span class="keyword">str	</span><span class="built_in">r3</span>, [<span class="built_in">fp</span>, #-<span class="number">20</span>]</span><br><span class="line"> <span class="number">1</span><span class="built_in">d0</span>:	e51b3008 	<span class="keyword">ldr	</span><span class="built_in">r3</span>, [<span class="built_in">fp</span>, #-<span class="number">8</span>]</span><br><span class="line"> <span class="number">1</span><span class="built_in">d4</span>:	e2832064 	<span class="keyword">add	</span><span class="built_in">r2</span>, <span class="built_in">r3</span>, <span class="number">#100</span>	<span class="comment">; 0x64</span></span><br><span class="line"> <span class="number">1</span><span class="built_in">d8</span>:	e51b300c 	<span class="keyword">ldr	</span><span class="built_in">r3</span>, [<span class="built_in">fp</span>, #-<span class="number">12</span>]</span><br><span class="line"> <span class="number">1</span>dc:	e0822003 	<span class="keyword">add	</span><span class="built_in">r2</span>, <span class="built_in">r2</span>, <span class="built_in">r3</span></span><br><span class="line"> <span class="number">1</span>e0:	e51b3010 	<span class="keyword">ldr	</span><span class="built_in">r3</span>, [<span class="built_in">fp</span>, #-<span class="number">16</span>]</span><br><span class="line"> <span class="number">1</span>e4:	e0822003 	<span class="keyword">add	</span><span class="built_in">r2</span>, <span class="built_in">r2</span>, <span class="built_in">r3</span></span><br><span class="line"> <span class="number">1</span>e8:	e51b3014 	<span class="keyword">ldr	</span><span class="built_in">r3</span>, [<span class="built_in">fp</span>, #-<span class="number">20</span>]</span><br><span class="line"> <span class="number">1</span>ec:	e0822003 	<span class="keyword">add	</span><span class="built_in">r2</span>, <span class="built_in">r2</span>, <span class="built_in">r3</span></span><br><span class="line"> <span class="number">1</span><span class="built_in">f0</span>:	e59b3004 	<span class="keyword">ldr	</span><span class="built_in">r3</span>, [<span class="built_in">fp</span>, <span class="number">#4</span>]</span><br><span class="line"> <span class="number">1</span><span class="built_in">f4</span>:	e0822003 	<span class="keyword">add	</span><span class="built_in">r2</span>, <span class="built_in">r2</span>, <span class="built_in">r3</span></span><br><span class="line"> <span class="number">1</span>f8:	e59b3008 	<span class="keyword">ldr	</span><span class="built_in">r3</span>, [<span class="built_in">fp</span>, <span class="number">#8</span>]</span><br><span class="line"> <span class="number">1</span>fc:	e0822003 	<span class="keyword">add	</span><span class="built_in">r2</span>, <span class="built_in">r2</span>, <span class="built_in">r3</span></span><br><span class="line"> <span class="number">200</span>:	e59b300c 	<span class="keyword">ldr	</span><span class="built_in">r3</span>, [<span class="built_in">fp</span>, <span class="number">#12</span>]</span><br><span class="line"> <span class="number">204</span>:	e0823003 	<span class="keyword">add	</span><span class="built_in">r3</span>, <span class="built_in">r2</span>, <span class="built_in">r3</span></span><br><span class="line"> <span class="number">208</span>:	e1a00003 	<span class="keyword">mov	</span><span class="built_in">r0</span>, <span class="built_in">r3</span></span><br><span class="line"> <span class="number">20</span>c:	e28bd000 	<span class="keyword">add	</span><span class="built_in">sp</span>, <span class="built_in">fp</span>, <span class="number">#0</span></span><br><span class="line"> <span class="number">210</span>:	e8bd0800 	<span class="keyword">ldmfd	</span><span class="built_in">sp</span>!, &#123;<span class="built_in">fp</span>&#125;</span><br><span class="line"> <span class="number">214</span>:	e12fff1e 	<span class="keyword">bx	</span><span class="built_in">lr</span></span><br><span class="line"> </span><br><span class="line"><span class="number">00000218</span> &lt;test&gt;:</span><br><span class="line"> <span class="number">218</span>:	e92d4800 	<span class="keyword">push	</span>&#123;<span class="built_in">fp</span>, <span class="built_in">lr</span>&#125;</span><br><span class="line"> <span class="number">21</span>c:	e28db004 	<span class="keyword">add	</span><span class="built_in">fp</span>, <span class="built_in">sp</span>, <span class="number">#4</span></span><br><span class="line"> <span class="number">220</span>:	e24dd010 	<span class="keyword">sub	</span><span class="built_in">sp</span>, <span class="built_in">sp</span>, <span class="number">#16</span></span><br><span class="line"> <span class="number">224</span>:	e3a03005 	<span class="keyword">mov	</span><span class="built_in">r3</span>, <span class="number">#5</span></span><br><span class="line"> <span class="number">228</span>:	e58d3000 	<span class="keyword">str	</span><span class="built_in">r3</span>, [<span class="built_in">sp</span>]</span><br><span class="line"> <span class="number">22</span>c:	e3a03006 	<span class="keyword">mov	</span><span class="built_in">r3</span>, <span class="number">#6</span></span><br><span class="line"> <span class="number">230</span>:	e58d3004 	<span class="keyword">str	</span><span class="built_in">r3</span>, [<span class="built_in">sp</span>, <span class="number">#4</span>]</span><br><span class="line"> <span class="number">234</span>:	e3a03007 	<span class="keyword">mov	</span><span class="built_in">r3</span>, <span class="number">#7</span></span><br><span class="line"> <span class="number">238</span>:	e58d3008 	<span class="keyword">str	</span><span class="built_in">r3</span>, [<span class="built_in">sp</span>, <span class="number">#8</span>]</span><br><span class="line"> <span class="number">23</span>c:	e3a00001 	<span class="keyword">mov	</span><span class="built_in">r0</span>, <span class="number">#1</span></span><br><span class="line"> <span class="number">240</span>:	e3a01002 	<span class="keyword">mov	</span><span class="built_in">r1</span>, <span class="number">#2</span></span><br><span class="line"> <span class="number">244</span>:	e3a02003 	<span class="keyword">mov	</span><span class="built_in">r2</span>, <span class="number">#3</span></span><br><span class="line"> <span class="number">248</span>:	e3a03004 	<span class="keyword">mov	</span><span class="built_in">r3</span>, <span class="number">#4</span></span><br><span class="line"> <span class="number">24</span>c:	ebfffffe 	<span class="keyword">bl	</span><span class="number">1</span>b4 &lt;a7&gt;</span><br><span class="line"> <span class="number">250</span>:	e1a00003 	<span class="keyword">mov	</span><span class="built_in">r0</span>, <span class="built_in">r3</span></span><br><span class="line"> <span class="number">254</span>:	e24bd004 	<span class="keyword">sub	</span><span class="built_in">sp</span>, <span class="built_in">fp</span>, <span class="number">#4</span></span><br><span class="line"> <span class="number">258</span>:	e8bd4800 	<span class="keyword">pop	</span>&#123;<span class="built_in">fp</span>, <span class="built_in">lr</span>&#125;</span><br><span class="line"> <span class="number">25</span>c:	e12fff1e 	<span class="keyword">bx	</span><span class="built_in">lr</span></span><br></pre></td></tr></table></figure>
+
+<p>得到以上文件</p>
+<p>下面来分析一下.</p>
+<p>在 test 函数中. 我们先不管 fp 寄存器, 只看 sp 寄存器. sp 寄存器一上来就向下移了 16 个字节 (4 个 int). 我们知道, arm 的栈是 FD 的 (Full decrease, 既 sp 指向栈顶元素, 栈向低地址增长). 所以就是说明新开辟了 4 个 int 的空间.</p>
+<p>然后 224 到 238 这段. 是将 5, 6, 7 这三个参数存到 sp 和 sp 上面. 使用了 3 个 int 的空间.</p>
+<p>之后, 又将 1, 2, 3, 4 这四个参数分别保存到 r0, r1, r2, r3 中.</p>
+<p>最后, bl 调用函数.</p>
+<p>由上面分析可知, 当我们调用一个函数前, 应当:</p>
+<p>前四个参数使用寄存器传递<br>后面的参数使用栈传递<br>使用栈传递时, 从后向前依次压入参数. 压栈完成后, sp 指向最后一个参数<br>sp 是 8 字节对齐的 [我猜想的]<br>刚刚的分析中, 我们只需要额外传递 3 个参数, 可是我们在栈上分配了 16 个字节, 另外我尝试传递 5 个参数时分配了 8 个字节 (也是多一个) 所以我猜想 sp 可能需要 8 字节对齐.</p>
+<p>然后对于被调用的函数来说, 它知道的信息就是: “我的前四个参数在寄存器中, 我的 sp 指针指向最后一个参数, 依次向上可以得到全部参数.”</p>
+<p>然后对于被调用函数来说, 它会将 fp 指向参数的后一个字. 让 sp 指向栈顶. fp 和 sp 之间保存断点信息 (保护上一函数的寄存器) 和自己的局部变量.</p>
+<p>[EOF]</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/arm-linux/">arm-linux</a><a href="/tags/汇编/">汇编</a><a href="/tags/asm/">asm</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/03/12/arm-linux汇编(4)–函数调用规则/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/03/06/真是好不容易才找到RK3066的手册啊赶快传服务器上备份/"><span>真是好不容易才找到 RK3066 的手册啊 赶快传服务器上备份</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/06/真是好不容易才找到RK3066的手册啊赶快传服务器上备份/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-06T00:00:00.000Z">
+          2014-03-06
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>真是好不容易才找到 RK3066 的手册啊 赶快传服务器上备份</p>
+<p><a href="/notename/" title="archive 20140306"></a></p>
+<p>下载地址:<a href="https://lengzzz.com/download/Rockchip%20RK30xx%20TRM%20V2.0.pdf">https://lengzzz.com/download/Rockchip%20RK30xx%20TRM%20V2.0.pdf</a></p>
+<p>网上搜到的 reference manual 都是十几页, 好不容易才从一个国外小网站找到这个 1000 + 页的. 估计是泄露出来的</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/闲扯/">闲扯</a><a href="/tags/RK3066/">RK3066</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/03/06/真是好不容易才找到RK3066的手册啊赶快传服务器上备份/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/03/06/这张图把unix时间相关函数全部说明了/"><span>这张图把 unix 时间相关函数全部说明了</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/06/这张图把unix时间相关函数全部说明了/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-06T00:00:00.000Z">
+          2014-03-06
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>这张图把 unix 时间相关函数全部说明了</p>
+<p><a href="/notename/" title="archive 20140306"></a></p>
+<p><img src="http://static.zybuluo.com/zwh8800/c7ngh26uo3ec5aizl3clh6dz/image_1bl08rk611v9b1v7f1565lla1ofp9.png" alt="在此输入正文"><br>简直赞！</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/unix/">unix</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/03/06/这张图把unix时间相关函数全部说明了/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/03/05/ARM核和ARM指令集大致是这样对应/"><span>ARM 核和 ARM 指令集大致是这样对应</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/05/ARM核和ARM指令集大致是这样对应/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-05T00:00:00.000Z">
+          2014-03-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>ARM 核和 ARM 指令集大致是这样对应</p>
+<p><a href="/notename/" title="archive 20140305"></a></p>
+<p>ARM7TDMI ARMv4T<br>ARM9E ARMv5TE<br>ARM11 ARMV6<br>cortex ARMv7</p>
+<p>下面是网上找的乱七八糟的列表 将就着看 反正 cortex 以前的都是老黄历了 唉<br>ARM7TDMI<br>v4T<br>ARM7TDMI-S<br>v4T<br>ARM7EJ-S<br>v5E<br>DSP,Jazelle<br>[译注 3]<br>ARM920T<br>v4T<br>MMU<br>ARM922T<br>v4T<br>MMU<br>ARM926EJ-S<br>v5E<br>MMU<br>DSP,Jazelle<br>ARM946E-S<br>v5E<br>MPU<br>DSP<br>ARM966E-S<br>v5E<br>DSP<br>ARM968E-S<br>v5E<br>DMA,DSP<br>ARM966HS<br>v5E<br>MPU（可选）<br>DSP<br>ARM1020E<br>v5E<br>MMU<br>DSP<br>ARM1022E<br>v5E<br>MMU<br>DSP<br>ARM1026EJ-S<br>v5E<br>MMU 或 MPU<br>[译注 2]<br>DSP, Jazelle<br>ARM1136J(F)-S<br>v6<br>MMU<br>DSP, Jazelle<br>ARM1176JZ(F)-S<br>v6<br>MMU+TrustZone<br>DSP, Jazelle<br>ARM11 MPCore<br>v6<br>MMU + 多处理器缓存支持<br>DSP<br>ARM1156T2(F)-S<br>v6<br>MPU<br>DSP<br>Cortex-M3<br>v7-M<br>MPU（可选）<br>NVIC<br>Cortex-R4<br>v7-R<br>MPU<br>DSP<br>Cortex-R4F<br>v7-R<br>MPU<br>DSP + 浮点运算<br>Cortex-A8<br>v7-A<br>MMU+TrustZone<br>DSP, Jazelle<br>［译注 2］：Jazelle 是 ARM 处理器的硬件 Java 加速器。<br>［译注 3］：MMU，存储器管理单元，用于实现虚拟内存和内存的分区保护，这是应用处理器与嵌入式处理器的分水岭。电脑和数码产品所使用的处理器几乎清一色地都带 MMU。但是 MMU 也引入了不确定性，这有时是嵌入式领域——尤其是实时系统不可接受的。然而对于安全关键（safety-critical）的嵌入式系统，还是不能没有内存的分区保护的。为解决矛盾，于是就有了 MPU。可以把 MPU 认为是 MMU 的功能子集，它只支持分区保护，不支持具有 “定位决定性” 的虚拟内存机制。<br>到了架构 7 时代，ARM 改革了一度使用的，冗长的、需要 “解码” 的数字命名法，转到另一种看起来比较整齐的命名法。比如，ARMv7 的三个款式都以 Cortex 作为主名。这不仅更加澄清并且 “精装” 了所使用的 ARM 架构，也避免了新手对架构号和系列号的混淆。例如，ARM7TDMI 并不是一款 ARMv7 的产品，而是辉煌起点——v4T 架构的产品。</p>
+<p>———————–update—————————-<br>补个表格 from <a href="https://en.wikipedia.org/wiki/List_of_ARM_microarchitectures" target="_blank" rel="noopener">wikipedia</a></p>
+<table class="wikitable" style="font-size: 85%; text-align: center;">
+<tbody>
+<tr>
+<th>ARM Family</th>
+<th>ARM Architecture</th>
+<th>ARM Core</th>
+<th>Feature</th>
+<th><a title="CPU cache" href="/wiki/CPU_cache">Cache</a> (I&nbsp;/&nbsp;D), <a title="Memory management unit" href="/wiki/Memory_management_unit">MMU</a></th>
+<th>Typical <a class="mw-redirect" title="Million instructions per second" href="/wiki/Million_instructions_per_second">MIPS</a> @ <a class="mw-redirect" title="MHz" href="/wiki/MHz">MHz</a></th>
+</tr>
+<tr>
+<th>ARM1</th>
+<td>ARMv1</td>
+<td>ARM1</td>
+<td>First implementation</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="2">ARM2</th>
+<td>ARMv2</td>
+<td>ARM2</td>
+<td>ARMv2 added the MUL (multiply) instruction</td>
+<td>None</td>
+<td>4&nbsp;MIPS @ 8&nbsp;MHz<p></p>
+<p>0.33 <a class="mw-redirect" title="DMIPS" href="/wiki/DMIPS">DMIPS</a>/MHz</p></td>
+</tr>
+<tr>
+<td>ARMv2a</td>
+<td>ARM250</td>
+<td>Integrated <a title="Memory controller" href="/wiki/Memory_controller">MEMC</a> (MMU), Graphics and IO processor. ARMv2a added the SWP and SWPB (swap) instructions.</td>
+<td>None, MEMC1a</td>
+<td>7&nbsp;MIPS @ 12&nbsp;MHz</td>
+</tr>
+<tr>
+<th>ARM3</th>
+<td>ARMv2a</td>
+<td>ARM3</td>
+<td>First integrated memory cache.</td>
+<td>4&nbsp;<a title="Kibibyte" href="/wiki/Kibibyte">KB</a> unified</td>
+<td>12&nbsp;MIPS @ 25&nbsp;MHz<p></p>
+<p>0.50 DMIPS/MHz</p></td>
+</tr>
+<tr>
+<th rowspan="3">ARM6</th>
+<td rowspan="3">ARMv3</td>
+<td>ARM60</td>
+<td>ARMv3 first to support 32-bit memory address space (previously 26-bit)</td>
+<td>None</td>
+<td>10&nbsp;MIPS @ 12&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM600</td>
+<td>As ARM60, cache and coprocessor bus (for FPA10 floating-point unit).</td>
+<td>4&nbsp;KB unified</td>
+<td>28&nbsp;MIPS @ 33&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM610</td>
+<td>As ARM60, cache, no coprocessor bus.</td>
+<td>4&nbsp;KB unified</td>
+<td>17&nbsp;MIPS @ 20&nbsp;MHz<p></p>
+<p>0.65 DMIPS/MHz</p></td>
+</tr>
+<tr>
+<th rowspan="3"><a title="ARM7" href="/wiki/ARM7">ARM7</a></th>
+<td rowspan="3">ARMv3</td>
+<td>ARM700</td>
+<td></td>
+<td>8&nbsp;KB unified</td>
+<td>40&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM710</td>
+<td>As ARM700, no coprocessor bus.</td>
+<td>8&nbsp;KB unified</td>
+<td>40&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM710a</td>
+<td>As ARM710</td>
+<td>8&nbsp;KB unified</td>
+<td>40&nbsp;MHz<p></p>
+<p>0.68 DMIPS/MHz</p></td>
+</tr>
+<tr>
+<th rowspan="4"><a class="mw-redirect" title="ARM7TDMI" href="/wiki/ARM7TDMI">ARM7TDMI</a></th>
+<td rowspan="4">ARMv4T</td>
+<td>ARM7TDMI(-S)</td>
+<td>3-stage pipeline, Thumb, ARMv4 first to drop legacy ARM <a title="26-bit" href="/wiki/26-bit">26-bit</a> <a title="Address space" href="/wiki/Address_space">addressing</a></td>
+<td>none</td>
+<td>15&nbsp;MIPS @ 16.8&nbsp;MHz<p></p>
+<p>63 DMIPS @ 70&nbsp;MHz</p></td>
+</tr>
+<tr>
+<td>ARM710T</td>
+<td>As ARM7TDMI, cache</td>
+<td>8&nbsp;KB unified, MMU</td>
+<td>36&nbsp;MIPS @ 40&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM720T</td>
+<td>As ARM7TDMI, cache</td>
+<td>8&nbsp;KB unified, MMU with Fast Context Switch Extension</td>
+<td>60&nbsp;MIPS @ 59.8&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM740T</td>
+<td>As ARM7TDMI, cache</td>
+<td><a title="Memory protection" href="/wiki/Memory_protection">MPU</a></td>
+<td></td>
+</tr>
+<tr>
+<th><a class="mw-redirect" title="ARM7EJ" href="/wiki/ARM7EJ">ARM7EJ</a></th>
+<td>ARMv5TEJ</td>
+<td>ARM7EJ-S</td>
+<td>5-stage pipeline, Thumb, Jazelle DBX, Enhanced DSP instructions</td>
+<td>none</td>
+<td></td>
+</tr>
+<tr>
+<th>ARM8</th>
+<td>ARMv4</td>
+<td>ARM810<sup class="reference" id="cite_ref-4"><a href="#cite_note-4"><span>[</span>4<span>]</span></a></sup><sup class="reference" id="cite_ref-eetimes_810_5-0"><a href="#cite_note-eetimes_810-5"><span>[</span>5<span>]</span></a></sup></td>
+<td>5-stage pipeline, static branch prediction, double-bandwidth memory</td>
+<td>8&nbsp;KB unified, MMU</td>
+<td>84&nbsp;MIPS @ 72&nbsp;MHz<p></p>
+<p>1.16 DMIPS/MHz</p></td>
+</tr>
+<tr>
+<th rowspan="4"><a title="ARM9" href="/wiki/ARM9">ARM9</a>TDMI</th>
+<td rowspan="4">ARMv4T</td>
+<td>ARM9TDMI</td>
+<td>5-stage pipeline, Thumb</td>
+<td>none</td>
+<td></td>
+</tr>
+<tr>
+<td>ARM920T</td>
+<td>As ARM9TDMI, cache</td>
+<td>16&nbsp;KB / 16&nbsp;KB, MMU with FCSE (Fast Context Switch Extension)<sup class="reference" id="cite_ref-6"><a href="#cite_note-6"><span>[</span>6<span>]</span></a></sup></td>
+<td>200&nbsp;MIPS @ 180&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARM922T</td>
+<td>As ARM9TDMI, caches</td>
+<td>8&nbsp;KB / 8&nbsp;KB, MMU</td>
+<td></td>
+</tr>
+<tr>
+<td>ARM940T</td>
+<td>As ARM9TDMI, caches</td>
+<td>4&nbsp;KB / 4&nbsp;KB, MPU</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="5"><a class="mw-redirect" title="ARM9E" href="/wiki/ARM9E">ARM9E</a></th>
+<td rowspan="3">ARMv5TE</td>
+<td>ARM946E-S</td>
+<td>Thumb, Enhanced DSP instructions, caches</td>
+<td>variable, tightly coupled memories, MPU</td>
+<td></td>
+</tr>
+<tr>
+<td>ARM966E-S</td>
+<td>Thumb, Enhanced DSP instructions</td>
+<td>no cache, TCMs</td>
+<td></td>
+</tr>
+<tr>
+<td>ARM968E-S</td>
+<td>As ARM966E-S</td>
+<td>no cache, TCMs</td>
+<td></td>
+</tr>
+<tr>
+<td>ARMv5TEJ</td>
+<td>ARM926EJ-S</td>
+<td>Thumb, Jazelle DBX, Enhanced DSP instructions</td>
+<td>variable, TCMs, MMU</td>
+<td>220&nbsp;MIPS @ 200&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARMv5TE</td>
+<td>ARM996HS</td>
+<td>Clockless processor, as ARM966E-S</td>
+<td>no caches, TCMs, MPU</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="3">ARM10E</th>
+<td rowspan="2">ARMv5TE</td>
+<td>ARM1020E</td>
+<td>6-stage pipeline, Thumb, Enhanced DSP instructions, (VFP)</td>
+<td>32&nbsp;KB / 32&nbsp;KB, MMU</td>
+<td></td>
+</tr>
+<tr>
+<td>ARM1022E</td>
+<td>As ARM1020E</td>
+<td>16&nbsp;KB / 16&nbsp;KB, MMU</td>
+<td></td>
+</tr>
+<tr>
+<td>ARMv5TEJ</td>
+<td>ARM1026EJ-S</td>
+<td>Thumb, Jazelle DBX, Enhanced DSP instructions, (VFP)</td>
+<td>variable, MMU or MPU</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="4"><a title="ARM11" href="/wiki/ARM11">ARM11</a></th>
+<td>ARMv6</td>
+<td>ARM1136J(F)-S<sup class="reference" id="cite_ref-7"><a href="#cite_note-7"><span>[</span>7<span>]</span></a></sup></td>
+<td>8-stage pipeline, <a title="SIMD" href="/wiki/SIMD">SIMD</a>, Thumb, Jazelle DBX, (VFP), Enhanced DSP instructions</td>
+<td>variable, MMU</td>
+<td>740 @ 532–665&nbsp;MHz (i.MX31 SoC), 400–528&nbsp;MHz</td>
+</tr>
+<tr>
+<td>ARMv6T2</td>
+<td>ARM1156T2(F)-S</td>
+<td>8-stage pipeline, <a title="SIMD" href="/wiki/SIMD">SIMD</a>, Thumb-2, (VFP), Enhanced DSP instructions</td>
+<td>variable, MPU</td>
+<td></td>
+</tr>
+<tr>
+<td>ARMv6Z</td>
+<td>ARM1176JZ(F)-S</td>
+<td>As ARM1136EJ(F)-S</td>
+<td>variable, MMU + TrustZone</td>
+<td>965 DMIPS @ 772&nbsp;MHz, up to 2 600 DMIPS with four processors<sup class="reference" id="cite_ref-8"><a href="#cite_note-8"><span>[</span>8<span>]</span></a></sup></td>
+</tr>
+<tr>
+<td>ARMv6K</td>
+<td>ARM11 MPCore</td>
+<td>As ARM1136EJ(F)-S, 1–4 core SMP</td>
+<td>variable, MMU</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="3">SecurCore</th>
+<td>ARMv6-M</td>
+<td>SC000</td>
+<td></td>
+<td></td>
+<td>0.9 DMIPS/MHz</td>
+</tr>
+<tr>
+<td>ARMv4T</td>
+<td>SC100</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ARMv7-M</td>
+<td>SC300</td>
+<td></td>
+<td></td>
+<td>1.25 DMIPS/MHz</td>
+</tr>
+<tr>
+<th rowspan="5"><a title="ARM Cortex-M" href="/wiki/ARM_Cortex-M">Cortex-M</a></th>
+<td rowspan="3">ARMv6-M</td>
+<td>Cortex-M0 <sup class="reference" id="cite_ref-M0-Spec_9-0"><a href="#cite_note-M0-Spec-9"><span>[</span>9<span>]</span></a></sup></td>
+<td>Microcontroller profile, Thumb + Thumb-2 subset (BL, MRS, MSR, ISB, DSB, DMB),<sup class="reference" id="cite_ref-M0-InstrSet_10-0"><a href="#cite_note-M0-InstrSet-10"><span>[</span>10<span>]</span></a></sup> hardware multiply instruction (optional small), optional system timer, optional bit-banding memory</td>
+<td>No cache, No TCM, No MPU</td>
+<td>0.84 DMIPS/MHz</td>
+</tr>
+<tr>
+<td>Cortex-M0+ <sup class="reference" id="cite_ref-M0.2B-Spec_11-0"><a href="#cite_note-M0.2B-Spec-11"><span>[</span>11<span>]</span></a></sup></td>
+<td>Microcontroller profile, Thumb + Thumb-2 subset (BL, MRS, MSR, ISB, DSB, DMB),<sup class="reference" id="cite_ref-M0-InstrSet_10-1"><a href="#cite_note-M0-InstrSet-10"><span>[</span>10<span>]</span></a></sup> hardware multiply instruction (optional small), optional system timer, optional bit-banding memory</td>
+<td>No cache, No TCM, optional MPU with 8 regions</td>
+<td>0.93 DMIPS/MHz</td>
+</tr>
+<tr>
+<td>Cortex-M1 <sup class="reference" id="cite_ref-M1-Spec_12-0"><a href="#cite_note-M1-Spec-12"><span>[</span>12<span>]</span></a></sup></td>
+<td>Microcontroller profile, Thumb + Thumb-2 subset (BL, MRS, MSR, ISB, DSB, DMB),<sup class="reference" id="cite_ref-M0-InstrSet_10-2"><a href="#cite_note-M0-InstrSet-10"><span>[</span>10<span>]</span></a></sup> hardware multiply instruction (optional small), OS option adds SVC / banked stack pointer, optional system timer, no bit-banding memory</td>
+<td>No cache, 0-1024&nbsp;KB I-TCM, 0-1024&nbsp;KB D-TCM, No MPU</td>
+<td>136 DMIPS @ 170&nbsp;MHz,<sup class="reference" id="cite_ref-13"><a href="#cite_note-13"><span>[</span>13<span>]</span></a></sup> (0.8 DMIPS/MHz FPGA-dependent)<sup class="reference" id="cite_ref-14"><a href="#cite_note-14"><span>[</span>14<span>]</span></a></sup></td>
+</tr>
+<tr>
+<td>ARMv7-M</td>
+<td><a class="mw-redirect" title="ARM Cortex-M3" href="/wiki/ARM_Cortex-M3#Cortex-M3">Cortex-M3</a> <sup class="reference" id="cite_ref-M3-Spec_15-0"><a href="#cite_note-M3-Spec-15"><span>[</span>15<span>]</span></a></sup></td>
+<td>Microcontroller profile, Thumb / Thumb-2, hardware multiply and divide instructions, optional bit-banding memory</td>
+<td>No cache, No TCM, optional MPU with 8 regions</td>
+<td>1.25 DMIPS/MHz</td>
+</tr>
+<tr>
+<td>ARMv7E-M</td>
+<td><a class="mw-redirect" title="ARM Cortex-M4" href="/wiki/ARM_Cortex-M4#Cortex-M4">Cortex-M4</a> <sup class="reference" id="cite_ref-M4-Spec_16-0"><a href="#cite_note-M4-Spec-16"><span>[</span>16<span>]</span></a></sup></td>
+<td>Microcontroller profile, Thumb / Thumb-2 / DSP / optional FPv4 single-precision <a title="Floating-point unit" href="/wiki/Floating-point_unit">FPU</a>, hardware multiply and divide instructions, optional bit-banding memory</td>
+<td>No cache, No TCM, optional MPU with 8 regions</td>
+<td>1.25 DMIPS/MHz</td>
+</tr>
+<tr>
+<th rowspan="3"><a title="ARM Cortex-R" href="/wiki/ARM_Cortex-R">Cortex-R</a></th>
+<td rowspan="3">ARMv7-R</td>
+<td>Cortex-R4 <sup class="reference" id="cite_ref-R4-Spec_17-0"><a href="#cite_note-R4-Spec-17"><span>[</span>17<span>]</span></a></sup></td>
+<td>Real-time profile, Thumb / Thumb-2 / DSP / optional VFPv3 <a title="Floating-point unit" href="/wiki/Floating-point_unit">FPU</a>, hardware multiply and optional divide instructions, optional parity &amp; ECC for internal buses / cache / TCM, 8-stage pipeline dual-core running <a title="Lockstep (computing)" href="/wiki/Lockstep_(computing)">lockstep</a> with fault logic</td>
+<td>0–64&nbsp;KB / 0–64&nbsp;KB, 0–2 of 0–8&nbsp;<a title="Mebibyte" href="/wiki/Mebibyte">MB</a> TCM, opt MPU with 8/12 regions</td>
+<td></td>
+</tr>
+<tr>
+<td>Cortex-R5 (MPCore) <sup class="reference" id="cite_ref-R5-Spec_18-0"><a href="#cite_note-R5-Spec-18"><span>[</span>18<span>]</span></a></sup></td>
+<td>Real-time profile, Thumb / Thumb-2 / DSP / optional VFPv3 FPU and precision, hardware multiply and optional divide instructions, optional parity &amp; ECC for internal buses / cache / TCM, 8-stage pipeline dual-core running lock-step with fault logic / optional as 2 independent cores, low-latency peripheral port (LLPP), accelerator coherency port (ACP) <sup class="reference" id="cite_ref-R5-PR_19-0"><a href="#cite_note-R5-PR-19"><span>[</span>19<span>]</span></a></sup></td>
+<td>0–64&nbsp;KB / 0–64&nbsp;KB, 0–2 of 0–8&nbsp;MB TCM, opt MPU with 12/16 regions</td>
+<td></td>
+</tr>
+<tr>
+<td>Cortex-R7 (MPCore) <sup class="reference" id="cite_ref-R7-Spec_20-0"><a href="#cite_note-R7-Spec-20"><span>[</span>20<span>]</span></a></sup></td>
+<td>Real-time profile, Thumb / Thumb-2 / DSP / optional VFPv3 FPU and precision, hardware multiply and optional divide instructions, optional parity &amp; ECC for internal buses / cache / TCM, 11-stage pipeline dual-core running lock-step with fault logic / out-of-order execution / dynamic <a title="Register renaming" href="/wiki/Register_renaming">register renaming</a> / optional as 2 independent cores, low-latency peripheral port (LLPP), ACP <sup class="reference" id="cite_ref-R5-PR_19-1"><a href="#cite_note-R5-PR-19"><span>[</span>19<span>]</span></a></sup></td>
+<td>0–64&nbsp;KB / 0–64&nbsp;KB,&nbsp;? of 0–128&nbsp;KB TCM, opt MPU with 16 regions</td>
+<td></td>
+</tr>
+<tr>
+<th rowspan="6"><a title="ARM Cortex-A" href="/wiki/ARM_Cortex-A">Cortex-A</a></th>
+<td rowspan="6">ARMv7-A</td>
+<td><a title="ARM Cortex-A5" href="/wiki/ARM_Cortex-A5">Cortex-A5</a> <sup class="reference" id="cite_ref-A5-Spec_21-0"><a href="#cite_note-A5-Spec-21"><span>[</span>21<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb / Thumb-2 / DSP / SIMD / Optional VFPv4-D16 <a title="Floating-point unit" href="/wiki/Floating-point_unit">FPU</a> / Optional NEON / Jazelle RCT and DBX, 1–4 cores / optional MPCore, snoop control unit (SCU), generic interrupt controller (GIC), accelerator coherence port (ACP)</td>
+<td>4-64&nbsp;KB / 4-64&nbsp;KB L1, MMU + TrustZone</td>
+<td>1.57&nbsp;DMIPS / MHz per core</td>
+</tr>
+<tr>
+<td><a title="ARM Cortex-A7 MPCore" href="/wiki/ARM_Cortex-A7_MPCore">Cortex-A7 MPCore</a> <sup class="reference" id="cite_ref-A7-Spec_22-0"><a href="#cite_note-A7-Spec-22"><span>[</span>22<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb / Thumb-2 / DSP / VFPv4-D16 FPU / NEON / Jazelle RCT and DBX / Hardware virtualization, in-order execution, <a title="Superscalar" href="/wiki/Superscalar">superscalar</a>, 1–4 SMP cores, Large Physical Address Extensions (LPAE), snoop control unit (SCU), generic interrupt controller (GIC), ACP, architecture and feature set are identical to A15, 8-10 stage pipeline, low-power design<sup class="reference" id="cite_ref-Article-A7_23-0"><a href="#cite_note-Article-A7-23"><span>[</span>23<span>]</span></a></sup></td>
+<td>32&nbsp;KB / 32&nbsp;KB L1, 0–4&nbsp;MB L2, MMU + TrustZone</td>
+<td>1.9 DMIPS / MHz per core</td>
+</tr>
+<tr>
+<td><a title="ARM Cortex-A8" href="/wiki/ARM_Cortex-A8">Cortex-A8</a> <sup class="reference" id="cite_ref-A8-Spec_24-0"><a href="#cite_note-A8-Spec-24"><span>[</span>24<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb / Thumb-2 / VFPv3 FPU / NEON / Jazelle RCT and DAC, 13-stage <a title="Superscalar" href="/wiki/Superscalar">superscalar</a> pipeline</td>
+<td>16-32&nbsp;KB / 16–32&nbsp;KB L1, 0–1&nbsp;MB L2 opt ECC, MMU + TrustZone</td>
+<td>up to 2000 (2.0 DMIPS/MHz in speed from 600&nbsp;MHz to greater than 1&nbsp;<a title="Hertz" href="/wiki/Hertz">GHz</a>)</td>
+</tr>
+<tr>
+<td><a title="ARM Cortex-A9 MPCore" href="/wiki/ARM_Cortex-A9_MPCore">Cortex-A9 MPCore</a> <sup class="reference" id="cite_ref-A9-Spec_25-0"><a href="#cite_note-A9-Spec-25"><span>[</span>25<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb / Thumb-2 / DSP / Optional VFPv3 FPU / Optional NEON / Jazelle RCT and DBX, <a title="Out-of-order execution" href="/wiki/Out-of-order_execution">out-of-order</a> <a title="Speculative execution" href="/wiki/Speculative_execution">speculative issue</a> <a title="Superscalar" href="/wiki/Superscalar">superscalar</a>, 1–4 SMP cores, snoop control unit (SCU), generic interrupt controller (GIC), accelerator coherence port (ACP)</td>
+<td>16–64&nbsp;KB / 16–64&nbsp;KB L1, 0–8&nbsp;MB L2 opt parity, MMU + TrustZone</td>
+<td>2.5 DMIPS/MHz per core, 10,000 DMIPS @ 2&nbsp;GHz on Performance Optimized TSMC <a class="mw-redirect" title="45 nm" href="/wiki/45_nm">40G</a> (dual core)</td>
+</tr>
+<tr>
+<td><a title="ARM Cortex-A12" href="/wiki/ARM_Cortex-A12">ARM Cortex-A12</a> <sup class="reference" id="cite_ref-A12-Spec_26-0"><a href="#cite_note-A12-Spec-26"><span>[</span>26<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb-2 / DSP / VFPv4 FPU / NEON / Hardware virtualization, <a title="Out-of-order execution" href="/wiki/Out-of-order_execution">out-of-order</a> <a title="Speculative execution" href="/wiki/Speculative_execution">speculative issue</a> <a title="Superscalar" href="/wiki/Superscalar">superscalar</a>, 1–4 SMP cores, Large Physical Address Extensions (LPAE), snoop control unit (SCU), generic interrupt controller (GIC), accelerator coherence port (ACP)</td>
+<td>32-64&nbsp;KB / 32&nbsp;KB L1, 256&nbsp;KB-8&nbsp;MB L2</td>
+<td>3.0 DMIPS / MHz per core</td>
+</tr>
+<tr>
+<td><a class="mw-redirect" title="ARM Cortex-A15 MPCore" href="/wiki/ARM_Cortex-A15_MPCore">Cortex-A15 MPCore</a> <sup class="reference" id="cite_ref-A15-Spec_27-0"><a href="#cite_note-A15-Spec-27"><span>[</span>27<span>]</span></a></sup></td>
+<td>Application profile, ARM / Thumb / Thumb-2 / DSP / VFPv4 FPU / NEON / Integer divide / Fused MAC / Jazelle RCT / Hardware virtualization, <a title="Out-of-order execution" href="/wiki/Out-of-order_execution">out-of-order</a> <a title="Speculative execution" href="/wiki/Speculative_execution">speculative issue</a> <a title="Superscalar" href="/wiki/Superscalar">superscalar</a>, 1–4 SMP cores, Large Physical Address Extensions (LPAE), snoop control unit (SCU), generic interrupt controller (GIC), ACP, 15-24 stage pipeline<sup class="reference" id="cite_ref-Article-A7_23-1"><a href="#cite_note-Article-A7-23"><span>[</span>23<span>]</span></a></sup></td>
+<td>32&nbsp;KB I$ w/parity / 32&nbsp;KB D$ w/<a title="ECC memory" href="/wiki/ECC_memory">ECC</a> L1, 0–4&nbsp;MB L2, L2 has ECC, MMU + TrustZone</td>
+<td>At least 3.5 DMIPS/MHz per core (Up to 4.01 DMIPS/MHz depending on implementation).<sup class="reference" id="cite_ref-A15-Performance_28-0"><a href="#cite_note-A15-Performance-28"><span>[</span>28<span>]</span></a></sup></td>
+</tr>
+<tr>
+<th rowspan="2">Cortex-A50</th>
+<td rowspan="2">ARMv8-A</td>
+<td>Cortex-A53<sup class="reference" id="cite_ref-29"><a href="#cite_note-29"><span>[</span>29<span>]</span></a></sup></td>
+<td>Application profile, AArch32 and AArch64, 1-4 SMP cores, Trustzone, NEON advanced SIMD, VFPv4, hardware virtualization, dual issue, in-order pipeline</td>
+<td>8-64&nbsp;KB w/parity / 8-64&nbsp;KB w/ECC L1 per core, 128&nbsp;KB-2&nbsp;MB L2 shared, 40-bit physical addresses</td>
+<td>2.3 DMIPS/MHz</td>
+</tr>
+<tr>
+<td><a title="ARM Cortex-A57" href="/wiki/ARM_Cortex-A57">Cortex-A57</a><sup class="reference" id="cite_ref-30"><a href="#cite_note-30"><span>[</span>30<span>]</span></a></sup></td>
+<td>Application profile, AArch32 and AArch64, 1-4 SMP cores, Trustzone, NEON advanced SIMD, VFPv4, hardware virtualization, multi-issue, deeply out-of-order pipeline</td>
+<td>48&nbsp;KB w/DED parity / 32&nbsp;KB w/ECC L1 per core, 512&nbsp;KB-2&nbsp;MB L2 shared, 44-bit physical addresses</td>
+<td>At least 4.1 DMIPS/MHz per core (Up to 4.76 DMIPS/MHz depending on implementation).</td>
+</tr>
+<tr>
+<th>ARM Family</th>
+<th>ARM Architecture</th>
+<th>ARM Core</th>
+<th>Feature</th>
+<th>Cache (I&nbsp;/&nbsp;D), <a title="Memory management unit" href="/wiki/Memory_management_unit">MMU</a></th>
+<th>Typical <a class="mw-redirect" title="Million instructions per second" href="/wiki/Million_instructions_per_second">MIPS</a> @ MHz</th>
+</tr>
+</tbody>
+</table>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/ARM/">ARM</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/03/05/ARM核和ARM指令集大致是这样对应/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/03/04/linux设备驱动程序(6)–阻塞型io、poll/"><span>linux 设备驱动程序 (6) – 阻塞型 io、poll</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/04/linux设备驱动程序(6)–阻塞型io、poll/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-04T00:00:00.000Z">
+          2014-03-04
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux 设备驱动程序 (6) – 阻塞型 io、poll</p>
+<p><a href="/notename/" title="archive 20140304"></a></p>
+<h3 id="阻塞型-IO"><a href="#阻塞型-IO" class="headerlink" title="阻塞型 IO"></a>阻塞型 IO</h3><p>上篇的例子中, 当资源不可获取时 (读写指针指向同一个位置) 我们提到了采取阻塞的方式. 这一篇展开叙述阻塞 io.</p>
+<p>在用户态程序中, 调用进程通常只会简单的调用 read 和 write, 不会考虑数据是否可用, 输出缓冲区是否已满之类的问题. 在我们的驱动程序中, 当遇见这种情况应当 [默认] 阻塞该进程, 直到数据可用.</p>
+<p>但在这之前, 先来讨论一下 unix 中的 io 模型. unix 中的 io 大概包括以下几类:</p>
+<ul>
+<li>阻塞型 IO</li>
+<li>非阻塞型 IO</li>
+<li>异步 IO<br>关于异步 IO 及异步通知机制在下一篇中讲述. 这一篇关注驱动程序如何处理阻塞型 IO 和非阻塞型 IO 的问题.</li>
+</ul>
+<h3 style="color: #080">非阻塞型 io 语义</h3>
+
+<p>非常简单, 当数据不可用时, read/write 函数返回 EAGAIN. 所以我们的驱动程序只需当数据不可用时返回 - EAGAIN 即可</p>
+<h3 style="color: #080">阻塞型 IO 语义</h3>
+
+<p>这是 unix 中最常见的的 IO. 对于阻塞型 IO 语义的总结如下:</p>
+<p>对于从设备读取数据:</p>
+<ul>
+<li>如果缓冲区中有数据, 并且驱动程序可以保证数据可以很快到达 (难以察觉的延迟), 那么即使就绪的数据比请求的少 read 函数也应返回</li>
+<li>如果缓冲区中无数据, 默认下 read 应当阻塞等待直到至少一个字节到达</li>
+<li>如果缓冲区中无数据, 并且设置了 O_NONBLOCK 标志, read 应立即返回 - EAGAIN</li>
+<li>如果缓冲区中无数据, poll 函数必须报告设备不可读, 直到至少一个字节到达</li>
+<li>如果到达文件尾, read 应立即返回 0, 无论 O_NONBLOCK 标志</li>
+<li>如果到达文件尾, poll 应报告 POLLHUP</li>
+</ul>
+<p>对于向设备写入数据:</p>
+<ul>
+<li>如果输出缓冲区中有空间, write 应立即返回即使可接收的数据比请求的数据少</li>
+<li>如果缓冲区已满, 默认下 write 应阻塞等待直到有空间被释放</li>
+<li>如果缓冲区已满, 并且设置了 O_NONBLOCK 标志, write 应立即返回 - EAGAIN</li>
+<li>如果缓冲区已满, poll 函数应报告文件不可写</li>
+<li>如果设备不能再接受任何数据, write 应返回 - ENOSPC</li>
+<li>不要在 write 中等待数据传输完成 [既数据传输到真正的硬件中]write 函数只需保证数据可靠写入输出缓冲区中</li>
+<li>如果使用设备的程序必须保证数据写入硬件, 则驱动必须提供 fsync 函数<br>[未完]</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/驱动开发/">驱动开发</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/03/04/linux设备驱动程序(6)–阻塞型io、poll/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  <a href="/page/5/" class="pagination-prev">上一页</a>
+  
+  
+  <a href="/page/7/" class="pagination-next">下一页</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

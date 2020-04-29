@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>屏幕终于显示了… | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="本身LCD1602挺好搞定的, 但就是太费IO口了. 于是用一块595做串口转并口. 设计电路+焊板子一共用了半节数据结构课+一中午. 终于焊好了, 准备试试效果. 结果…和想象的一样, 绝对不会让我一次成功.
+
+然后呢，用万用表测测是不是板子没焊好吧，没有呀，都焊的牢牢实实的，把代码中乱七八糟的东">
+  
+
+  
+  
+  <meta name="keywords" content="闲扯">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="屏幕终于显示了…"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>屏幕终于显示了…</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/12/28/屏幕终于显示了…/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-12-28T00:00:00.000Z">
+          2013-12-28
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>本身LCD1602挺好搞定的, 但就是太费IO口了. 于是用一块595做串口转并口. 设计电路+焊板子一共用了半节数据结构课+一中午. 终于焊好了, 准备试试效果. 结果…和想象的一样, <strong>绝对不会让我一次成功</strong>.</p>
+<p><a href="/notename/" title="archive 20131228"></a></p>
+<p>然后呢，用万用表测测是不是板子没焊好吧，没有呀，都焊的牢牢实实的，把代码中乱七八糟的东西删了，只输出8位数字到595，用万用表也测不出电压，所有引脚都是0。怒了，一天都没过好！第二天，重整心情，还以为是那块595有问题(唉芯片一般不坏的，怎么就脑子抽了)然后用最后一块595又做了一块板子，竟然还是一样的效果！唉，无语了，突然想到，做个led板专门用来测试电平吧，做好之后竟然发现，两个板子都没坏，595输出的很好！最后终于发现，原来又是代码中的bug，原来串行输出应该MSB优先T^T唉，白费了两天功夫。不过做了个LED测试板还挺有用呢</p>
+<p>怎么都今天了我还没发出这篇文章 前几天就写了一直在草稿箱里</p>
+<p><img src="http://static.zybuluo.com/zwh8800/r16pcjhvpjiiibydo369eadf/image_1bl057qaa12411tafrfdjaj2f89.png" alt="image_1bl057qaa12411tafrfdjaj2f89.png-272.2kB"></p>
+<p><img src="http://static.zybuluo.com/zwh8800/o4peou451tbmdri150tubekm/image_1bl0581l565iv9l2ji7q1jkvm.png" alt="image_1bl0581l565iv9l2ji7q1jkvm.png-733.7kB"></p>
+<p><img src="http://static.zybuluo.com/zwh8800/wvn4djt6ry5opxl5diykry65/image_1bl058eg41cq2mcp11oeeoo6bo13.png" alt="image_1bl058eg41cq2mcp11oeeoo6bo13.png-756.2kB"></p>
+<p><img src="http://static.zybuluo.com/zwh8800/jfa74776rwtlprpjhojjymae/image_1bl058llt13a8p9ed521bi14bm1g.png" alt="image_1bl058llt13a8p9ed521bi14bm1g.png-732.7kB"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/闲扯/">闲扯</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

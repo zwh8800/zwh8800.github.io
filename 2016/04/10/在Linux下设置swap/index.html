@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>在Linux下设置swap | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="今早起来发现博客的数据库挂了，赶紧用手机上的ConnectBot连上去把mysql启动。看了下日志大概是因为内存不够用且没设置swap，所以mysql进程申请不到内存挂了（小内存服务器桑不起）所以赶紧把swap搞上，这样至少能让服务不轻易挂掉。
+这里记录一下，以备遗忘。
+
+大概分三步
+
+生成一个空文">
+  
+
+  
+  
+  <meta name="keywords" content="linux">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="在Linux下设置swap"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>在Linux下设置swap</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/10/在Linux下设置swap/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-10T07:31:11.000Z">
+          2016-04-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>今早起来发现博客的数据库挂了，赶紧用手机上的ConnectBot连上去把mysql启动。看了下日志大概是因为内存不够用且没设置swap，所以mysql进程申请不到内存挂了（小内存服务器桑不起）所以赶紧把swap搞上，这样至少能让服务不轻易挂掉。</p>
+<p>这里记录一下，以备遗忘。</p>
+<p><a href="/notename/" title="add swap on linux"></a></p>
+<p>大概分三步</p>
+<ul>
+<li>生成一个空文件</li>
+<li>把文件格式化成swap格式</li>
+<li>挂载</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># create swap file</span></span><br><span class="line">sudo dd <span class="keyword">if</span>=/dev/zero of=/swapfile bs=128M count=4</span><br><span class="line"></span><br><span class="line"><span class="comment"># adjust permission</span></span><br><span class="line">sudo chmod 600 /swapfile</span><br><span class="line"></span><br><span class="line"><span class="comment"># format swap</span></span><br><span class="line">sudo mkswap /swapfile</span><br><span class="line"></span><br><span class="line"><span class="comment"># mount swap</span></span><br><span class="line">sudo swapon /swapfile</span><br><span class="line"></span><br><span class="line"><span class="comment"># see if ok</span></span><br><span class="line">sudo swapon -s</span><br></pre></td></tr></table></figure>
+
+<p>没问题的话，最后一个命令会显示</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Filename			<span class="built_in">	Type	</span>	Size	Used	Priority</span><br><span class="line">/swapfile               file		524284	0	    -1</span><br></pre></td></tr></table></figure>
+
+<p>另外，dd程序花的时间比较长，因为它确实写入东西了。但其实Linux的文件系统有个功能，它可以忽略（合并？）文件中的0，比如一个1G的文件，只有前面3个字节和后面3个字节写字了，其余都是0，那么在硬盘上只会记录几个字节，而不会把上G的0写到硬盘中，这样就能加快性能。</p>
+<p>所以可以使用 <code>fallocate</code> 程序。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo fallocate -l 512M /swapfile</span><br></pre></td></tr></table></figure>
+
+<p>这个应该会很快。</p>
+<p>最后，修改一下fstab，保证开机自动挂载：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="keyword">vim</span> /etc/fstab</span><br><span class="line"></span><br><span class="line"># <span class="keyword">write</span> this <span class="keyword">to</span> fstab</span><br><span class="line">/swapfile   none    swap    <span class="keyword">sw</span>    <span class="number">0</span>   <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

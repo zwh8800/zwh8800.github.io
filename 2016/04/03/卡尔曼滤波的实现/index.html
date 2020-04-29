@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>卡尔曼滤波的实现 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="卡尔曼滤波在数据采集中十分有用。本文介绍一下卡尔曼滤波的理论，然后给出一个实现。
+
+具体的理论性介绍可以在 这里 找到
+具体来说对于一维的卡尔曼滤波, 如果认为控制量为零的话卡尔曼滤波公式可以简化为以下 5 条:
+
+X(k|k-1)=X(k-1|k-1) ……… (6)P(k|k-1)=P(k-1|">
+  
+
+  
+  
+  <meta name="keywords" content="算法">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="卡尔曼滤波的实现"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>卡尔曼滤波的实现</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/03/卡尔曼滤波的实现/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-03T03:25:39.000Z">
+          2016-04-03
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>卡尔曼滤波在数据采集中十分有用。本文介绍一下卡尔曼滤波的理论，然后给出一个实现。</p>
+<p><a href="/notename/" title="implements of kalman filtering"></a></p>
+<p>具体的理论性介绍可以在 <a href="http://blog.chinaunix.net/uid-26694208-id-3184442.html" target="_blank" rel="noopener">这里</a> 找到</p>
+<p>具体来说对于一维的卡尔曼滤波, 如果认为控制量为零的话卡尔曼滤波公式可以简化为以下 5 条:</p>
+<blockquote>
+<p>X(k|k-1)=X(k-1|k-1) ……… (6)<br>P(k|k-1)=P(k-1|k-1) +Q ……… (7)<br>X(k|k)= X(k|k-1)+Kg(k) (Z(k)-X(k|k-1)) ……… (8)<br>Kg(k)= P(k|k-1) / (P(k|k-1) + R) ……… (9)<br>P(k|k)=（1-Kg(k)）P(k|k-1) ……… (10)</p>
+</blockquote>
+<p>其中, X(k|k-1) 这次的估计值, X(k-1|k-1) 是上次的最优值 (也就是上次计算结果)</p>
+<p>由于我们没有控制量, 所以假设这次的值和上次的相等, 所以令第 k 次估计值 = 第 k-1 次最优值</p>
+<p>公式 7 中 P(k|k-1) 是这次估计值的偏差 (协方差), 令其等于上次最优值的偏差加上一个参数 (因为系统总是越运行偏差越大, 所以每次都加上一个 Q)</p>
+<p>X(k|k)是本次的最优值 (也就是结果), Z(k) 是本次的测量值, Kg 是卡尔曼增益, 根据 (9) 计算出</p>
+<p>由 (8), (9) 可以计算出结果</p>
+<p>另外, 需要计算出这次最优值的偏差, 以便下次回归 (递归)</p>
+<p>代码写出来很简单, 但是完成的功能却很强大:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="keyword">uint16_t</span> adc_values[<span class="number">3</span>];		<span class="comment">//三个前方传感器</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Q 1e-6f</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> R 1e-1f</span></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">float</span> kalman_value[<span class="number">3</span>];</span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">float</span> kalman_p[<span class="number">3</span>];</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">kalman_filter</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">float</span> p;</span><br><span class="line">	<span class="keyword">float</span> x;</span><br><span class="line">	<span class="keyword">float</span> kg;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) </span><br><span class="line">	&#123;</span><br><span class="line">		x = kalman_value[i];		<span class="comment">//(6)</span></span><br><span class="line">		p = kalman_p[i] + Q;		<span class="comment">//(7)</span></span><br><span class="line">		kg = p / (p + R);			<span class="comment">//(9)</span></span><br><span class="line">		kalman_p[i] = (<span class="number">1</span> - kg) * p;	<span class="comment">//(10)</span></span><br><span class="line">		kalman_value[i] = x + kg * (adc_values[i] - x);		<span class="comment">//(8)</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/算法/">算法</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

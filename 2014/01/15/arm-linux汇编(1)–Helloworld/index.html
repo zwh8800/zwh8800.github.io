@@ -1,0 +1,202 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>arm-linux 汇编(1) – Helloworld | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="linux下一般使用c语言编程，但其实也可以直接使用汇编语言。谈谈在 Linux 下使用汇编编写应用程序。
+
+linux下一般使用c语言编程，但其实也可以直接使用汇编语言。
+linux下的汇编工具也是由GNU提供的，叫做as（汇编器）和ld（连接器，c语言也要用它）
+在写第一个汇编程序之前我们先看看">
+  
+
+  
+  
+  <meta name="keywords" content="arm-linux,汇编,系统编程">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="arm-linux 汇编(1) – Helloworld"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>arm-linux 汇编(1) – Helloworld</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/15/arm-linux汇编(1)–Helloworld/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-15T00:00:00.000Z">
+          2014-01-15
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux下一般使用c语言编程，但其实也可以直接使用汇编语言。谈谈在 Linux 下使用汇编编写应用程序。</p>
+<p><a href="/notename/" title="archive 20140115"></a></p>
+<p>linux下一般使用c语言编程，但其实也可以直接使用汇编语言。</p>
+<p>linux下的汇编工具也是由GNU提供的，叫做as（汇编器）和ld（连接器，c语言也要用它）</p>
+<p>在写第一个汇编程序之前我们先看看工具的使用：</p>
+<p>假如我们的汇编源码文件叫做hello.s，我们需要先将其汇编成hello.o，再将hello.o连接成hello</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">as hello.s -o hello.o</span><br><span class="line">ld hello.o -o hello</span><br></pre></td></tr></table></figure>
+
+<p>简单吧，和上文说的一样，需要两步。</p>
+<p>然后让我们先写第一个小程序，功能很简单，就是退出程序，并返回状态码1：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.section .text		@伪指令.section, 说明下面代码在text段</span><br><span class="line">.global _start			@伪指令.global或.globl, 向外部暴露出_start符号</span><br><span class="line">_start:				</span><br><span class="line">	mov r0, #1		@将立即数1存入寄存器r0, 作为_exit系统调用的参数</span><br><span class="line">	mov r7, #1		@将系统调用号存入r7</span><br><span class="line">	swi #0			@软中断, 陷入内核来调用系统调用</span><br></pre></td></tr></table></figure>
+
+<p>在arm-linux汇编中 <strong><code>.</code> 开头的表示伪指令</strong>, <strong><code>@</code> 表示单行注释</strong>. 代码的注释里已经把每一句的功能写的很清楚了, 现在说一些没说清楚的.</p>
+<p>在汇编中 <code>_start</code> 是一个<strong>程序的开始</strong>(貌似x86和arm都是从_start开始执行)所以不能像c语言中写main函数了, 要写_start标号.</p>
+<p>然后将我们要调用的系统调用的参数存入寄存器, 因为arm体系架构中, 寄存器的数量相当多, 所以当参数的个数不多时, <strong>一般使用寄存器来传递</strong>. 我们要调用的_exit只有一个参数, 就是程序的返回值, 所以我们把1存入r0中.</p>
+<p>第二步, 我们必须告知内核我们要调用哪个系统调用, <strong>每个系统调用都有一个系统调用号</strong>, 在arm-linux中, 系统调用号保存在/usr/include/arm-linux-gnueabifh/asm/unistd.h中可以看到有很多__NR开头的宏, 后面写着系统调用的名字, 然后就是我们要的系统调用号. 经过寻找, 我们发现_exit调用的调用号是1.所以我们把1存入<code>r7</code>中.</p>
+<p>最后一步, <strong>swi指令发起软中断(中断号为0)</strong>, 使程序陷入内核, 然后内核进行系统调用.</p>
+<p>这里要说一些arm-linux系统调用的历史, 在cortex之前吧(大概是), arm-linux系统调用的方式一直是这样, swi #(0x900000 + 系统调用号), 既在中断号中传递系统调用号(0x900000是一个magic number), 这种方式现在称作oabi(old ABI), 现在的方式就是在r7中传递系统调用号, 称作eabi. 现在的系统大多都是采用eabi的方式.</p>
+<p>好的, 现在汇编, 连接程序, 然后运行. 发现程序结束了, 然后使用<em>echo $?</em>可以查看刚刚结束的程序的返回值, 可以发现返回值为1. 说明程序没有问题.</p>
+<p>现在来看第二个例子, helloworld.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">.section .data		@data段</span><br><span class="line">hello:</span><br><span class="line">	.ascii &quot;hello world\n&quot;	@ascii伪指令,以ascii码格式来存储</span><br><span class="line">	.equ len, . - hello	@equ伪指令,令len&#x3D;.-hello .代表当前地址</span><br><span class="line">				@.-hello就代表hello字符串的长度</span><br><span class="line"> </span><br><span class="line">.section .text</span><br><span class="line">.global _start</span><br><span class="line"> </span><br><span class="line">_start:</span><br><span class="line">	mov r0, #1		@stdout</span><br><span class="line">	ldr r1, &#x3D;hello		@将hello的地址保存在r1</span><br><span class="line">	mov r2, #len		@将长度保存在r2</span><br><span class="line">	mov r7, #4		@系统调用号</span><br><span class="line">	swi #0			@发起系统调用</span><br><span class="line"> </span><br><span class="line">exit:</span><br><span class="line">	mov r0, #0</span><br><span class="line">	mov r7, #1</span><br><span class="line">	swi #0</span><br></pre></td></tr></table></figure>
+
+<p>这个的注释也比较清楚就不说明了, 汇编连接执行后会在屏幕上看见helloworld的大字.</p>
+<p>EOF</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/arm-linux/">arm-linux</a><a href="/tags/汇编/">汇编</a><a href="/tags/系统编程/">系统编程</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

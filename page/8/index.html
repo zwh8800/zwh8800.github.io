@@ -1,0 +1,1014 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第 8 页 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/25/到此刻为止,ztun终于勉强能用了!/"><span>到此刻为止, ztun终于勉强能用了!</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/25/到此刻为止,ztun终于勉强能用了!/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-25T00:00:00.000Z">
+          2014-01-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>撒花! 庆祝! 鼓掌! 欢迎!</p>
+<p><a href="/notename/" title="archive 20140125"></a></p>
+<p><img src="http://static.zybuluo.com/zwh8800/1sjrgb7nqqmla5pdr9ww6r5l/image_1bl0ma8d91eq8nqp8718oehht9.png" alt="image_1bl0ma8d91eq8nqp8718oehht9.png-335.7kB"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/闲扯/">闲扯</a><a href="/tags/网络编程/">网络编程</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/25/到此刻为止,ztun终于勉强能用了!/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/22/基本上找到问题了Connectionrefused/"><span>基本上找到问题了 Connection refused</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/22/基本上找到问题了Connectionrefused/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-22T00:00:00.000Z">
+          2014-01-22
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>对udp套接字执行read时一直报错: connection refused. 关键是udp还会报connection就太不正常了, udp可是无连接的.</p>
+<p><a href="/notename/" title="archive 20140122"></a></p>
+<p>对<strong>udp套接字</strong>执行read时一直报错: <strong>connection</strong> refused. 关键是udp还会报connection就太不正常了, udp可是无连接的.</p>
+<p>刚刚查到了这篇博文: <a href="https://blog.csdn.net/dog250/article/details/9569855" target="_blank" rel="noopener">UDP怎么会返回Connection refused</a>  原来是因为对端传来了一个ICMP包(传来一个port unreachable), 结果某些内核会把这个包为<strong>已连接</strong>(执行过connect函数)的udp套接字保存起来, 并在下一次操作时(读取, 写入)返回一个connection refused错误.</p>
+<p>但是到底为什么会有一个ICMP包, 刚刚做了些实验, 原因是 一台客户机和stun服务器建立udp连接之后, nat路由器会记录下这条路线[既保存下这个四元组], 如果有非stun服务器的主机向客户机端口发来udp包, 会返回一个ICMP错误. (想想你这路由器真够没事找事呢, 可能是为了安全性考虑?)</p>
+<p>现在的想法是, 客户机另开一个端口和另一台客户进行p2p通讯, 不再用和stun通讯的端口, 应该可以解决问题.</p>
+<p>具体做法是在向stun服务器登陆时, 报出另一条线路的端口.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Linux/">Linux</a><a href="/tags/网络编程/">网络编程</a><a href="/tags/错题本/">错题本</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/22/基本上找到问题了Connectionrefused/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/20/网络管理中的ioctl/"><span>网络管理中的ioctl</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/20/网络管理中的ioctl/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-20T00:00:00.000Z">
+          2014-01-20
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>ioctl函数传统上用于哪些不适合归入其他精细定义类别的特性的系统接口. 虽然POSIX一直在致力于创造特殊函数来取代ioctl函数, 但目前来说大多数网络编程相关的特性还需要用ioctl来实现. 特别是用于网络管理方面的相当之多(如设置ip, 获取接口, 访问路由表, 访问arp).</p>
+<p><a href="/notename/" title="archive 20140120"></a></p>
+<p>原型:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ioctl</span><span class="params">(<span class="keyword">int</span> d, <span class="keyword">int</span> request, ... <span class="comment">/* void *arg */</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>ioctl的具体用法就不说了, 熟悉linux编程的都或多或少用过. 现在具体说下在网络编程下request的可选值和对应arg指向的的数据类型(在网络编程中arg是一个指针, 下面给出的数据类型都是这个指针要指向的类型).</p>
+<p><img src="http://static.zybuluo.com/zwh8800/fu1zcw4n9u9mpcec1o2h65q1/image_1bl0lpcf75ua1ea638dn4f1oo89.png" alt="image_1bl0lpcf75ua1ea638dn4f1oo89.png-184kB"></p>
+<p>总结一下的话就是:</p>
+<ul>
+<li>除了文件相关的请求, 其他网络相关的都是<strong>SIOC为前缀</strong>(貌似是socket io control?).</li>
+<li>设置的请求在前缀后面跟一个<strong>S</strong>, 获取的请求在后面跟一个<strong>G</strong>.</li>
+<li>接口请求在SIOC[G/S]后面都跟一个<strong>IF</strong>(interface).</li>
+<li>接口请求除了SIOCGIFCONF(获取接口列表)的参数是<strong>struct ifconf</strong>以外, 其他所有的都是<strong>struct ifreq</strong>.</li>
+<li>arp请求的参数都是<strong>struct arpreq</strong>.</li>
+<li>路由的请求都是<strong>struct rtentry</strong> (route entry).</li>
+</ul>
+<p>下面重点学习一下接口请求:</p>
+<p>接口请求除了上面图上的, 还有很多. 具体的可以去参考ioctl_list(2)中. 文章最下面也有一个表, 有所有的接口相关的request.</p>
+<p>一般情况下, 进行网络配置时, 都会先获取所有网络接口列表, 从内核获取接口列表使用SIOCGIFCONF请求完成. 它会用到struct ifconf结构, 而ifconf结构又会用到ifreq结构:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* --&lt;net/if.h&gt;-- */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ifreq</span></span></span><br><span class="line"><span class="class">  &#123;</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> IFHWADDRLEN	6</span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> IFNAMSIZ	IF_NAMESIZE</span></span><br><span class="line">    <span class="keyword">union</span></span><br><span class="line">      &#123;</span><br><span class="line">	<span class="keyword">char</span> ifrn_name[IFNAMSIZ];	<span class="comment">/* Interface name, e.g. "en0".  */</span></span><br><span class="line">      &#125; ifr_ifrn;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">union</span></span><br><span class="line">      &#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> <span class="title">ifru_addr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> <span class="title">ifru_dstaddr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> <span class="title">ifru_broadaddr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> <span class="title">ifru_netmask</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> <span class="title">ifru_hwaddr</span>;</span></span><br><span class="line">	short <span class="keyword">int</span> ifru_flags;</span><br><span class="line">	<span class="keyword">int</span> ifru_ivalue;</span><br><span class="line">	<span class="keyword">int</span> ifru_mtu;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifmap</span> <span class="title">ifru_map</span>;</span></span><br><span class="line">	<span class="keyword">char</span> ifru_slave[IFNAMSIZ];	<span class="comment">/* Just fits the size */</span></span><br><span class="line">	<span class="keyword">char</span> ifru_newname[IFNAMSIZ];</span><br><span class="line">	<span class="keyword">__caddr_t</span> ifru_data;</span><br><span class="line">      &#125; ifr_ifru;</span><br><span class="line">  &#125;;</span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_name	ifr_ifrn.ifrn_name	<span class="comment">/* interface name 	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_hwaddr	ifr_ifru.ifru_hwaddr	<span class="comment">/* MAC address 		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_addr	ifr_ifru.ifru_addr	<span class="comment">/* address		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_dstaddr	ifr_ifru.ifru_dstaddr	<span class="comment">/* other end of p-p lnk	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_broadaddr	ifr_ifru.ifru_broadaddr	<span class="comment">/* broadcast address	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_netmask	ifr_ifru.ifru_netmask	<span class="comment">/* interface net mask	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_flags	ifr_ifru.ifru_flags	<span class="comment">/* flags		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_metric	ifr_ifru.ifru_ivalue	<span class="comment">/* metric		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_mtu	ifr_ifru.ifru_mtu	<span class="comment">/* mtu			*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_map	ifr_ifru.ifru_map	<span class="comment">/* device map		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_slave	ifr_ifru.ifru_slave	<span class="comment">/* slave device		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_data	ifr_ifru.ifru_data	<span class="comment">/* for use by interface	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_ifindex	ifr_ifru.ifru_ivalue    <span class="comment">/* interface index      */</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_bandwidth	ifr_ifru.ifru_ivalue	<span class="comment">/* link bandwidth	*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_qlen	ifr_ifru.ifru_ivalue	<span class="comment">/* queue length		*/</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifr_newname	ifr_ifru.ifru_newname	<span class="comment">/* New name		*/</span></span></span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ifconf</span></span></span><br><span class="line"><span class="class">  &#123;</span></span><br><span class="line">    <span class="keyword">int</span>	ifc_len;			<span class="comment">/* Size of buffer.  */</span></span><br><span class="line">    <span class="keyword">union</span></span><br><span class="line">      &#123;</span><br><span class="line">	<span class="keyword">__caddr_t</span> ifcu_buf;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifreq</span> *<span class="title">ifcu_req</span>;</span></span><br><span class="line">      &#125; ifc_ifcu;</span><br><span class="line">  &#125;;</span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifc_buf	ifc_ifcu.ifcu_buf	<span class="comment">/* Buffer address.  */</span></span></span><br><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ifc_req	ifc_ifcu.ifcu_req	<span class="comment">/* Array of structures.  */</span></span></span><br></pre></td></tr></table></figure>
+
+<p>另外给一个《unix网络编程》上的图:</p>
+<p><img src="http://static.zybuluo.com/zwh8800/e4t46c0hrrdj4htwbj3uva6h/image_1bl0ltenadtdr9f1ks21kiiiuqm.png" alt="image_1bl0ltenadtdr9f1ks21kiiiuqm.png-118.5kB"></p>
+<p>看起来很复杂, 实际上分开看就不很复杂.</p>
+<p>先看ifconf结构, 其实只有<strong>两个成员</strong>, 一个是<strong>ifc_len</strong>, 一个是<strong>ifc_ifcu</strong>, 这是一个联合所以名字以u结尾, 但是我们不会直接用ifc_ifcu, 直接用的话会很长很麻烦, 而是用下面定义的两个宏, <strong>ifc_buf和ifc_req</strong>. 当想使用联合的ifcu_buf时, 只需要写ifc.ifc_buf即可, 否则需要写ifc.ifc_ifcu.ifcu_buf. 同理, ifreq也是这样设计的.</p>
+<p>为什么要这样设计呢? 因为这个ifreq结构体需要供多个request使用, 当你请求获取ip地址时, 需要存在ifr_addr中, 当你获取子网掩码时需要存在ifr_netmask中, 但是因为需要保存在同一个结构中, 所以用联合比较方便(而且节省空间).</p>
+<p>现在继续看ifconf结构, 可以看到, 两个成员<strong>成员一</strong>ifc_len为缓冲区长度, <strong>成员二</strong>ifc_buf(既ifc_req)是一个指针, 当调用ioctl(sock, SIOCGIFCONF, &amp;ifc)之前, 需要把成员二当成ifc_buf, 既把它当成一个缓冲区, 所以我们需要自己申请出缓冲区空间, 并且把缓冲区的大小保存在ifc_len中. 当调用之后, 内核会把所有的接口信息保存在我们刚刚申请的ifc_buf缓冲区中. 此时, 缓冲区中的数据是有意义的了, 所以我们应当把成员二当成ifc_req(既当成一个指向struct ifreq的指针), 它指向一个ifreq结构数组, 保存着所有的接口信息. 同时, ifc_len也被更新, 保存着更改之后ifc_req的大小.</p>
+<p>上代码:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;net/if.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUF_SIZE 1024</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sock;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifconf</span> <span class="title">ifc</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifreq</span>* <span class="title">pifr</span>;</span></span><br><span class="line">	<span class="keyword">int</span> n, i;</span><br><span class="line">	<span class="keyword">if</span> ((sock = socket(AF_INET, SOCK_DGRAM, <span class="number">0</span>)) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"socket"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	bzero(&amp;ifc, <span class="keyword">sizeof</span>(ifc));</span><br><span class="line">	<span class="keyword">if</span> ((ifc.ifc_buf = <span class="built_in">malloc</span>(BUF_SIZE)) == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"malloc"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line">	ifc.ifc_len = BUF_SIZE;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> (ioctl(sock, SIOCGIFCONF, &amp;ifc) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"ioctl"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line">	n = ifc.ifc_len / <span class="keyword">sizeof</span>(struct ifreq);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d interfaces on your computer\n"</span>, n);</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>, pifr = ifc.ifc_req; i &lt; n; ++i, ++pifr)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\tinterface %d : %s\n"</span>, i, pifr-&gt;ifr_name);</span><br><span class="line">	<span class="built_in">free</span>(ifc.ifc_buf);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不用解释了吧, 先申请ifc.ifc_buf的空间, 调用ioctl之后, ifc.ifc_buf被填充, 然后把它当做ifc_req来读取.</p>
+<p>看图会更清晰:</p>
+<p>ioctl前: <img src="http://static.zybuluo.com/zwh8800/fg8xnfk3k89ko14f3ilt9kvk/image_1bl0lvsc41v0a13lv6un1pt810eo13.png" alt="image_1bl0lvsc41v0a13lv6un1pt810eo13.png-21.1kB"></p>
+<p>ioctl后: <img src="http://static.zybuluo.com/zwh8800/9oavqmtde9l8d9b187taivrz/image_1bl0m0e19ragkr17lcv8dt9s1g.png" alt="image_1bl0m0e19ragkr17lcv8dt9s1g.png-90.1kB"></p>
+<p>剩下的使用ifreq的用法就简单了, 直接上代码吧:</p>
+<p>这个是获取接口ip地址的函数, 可以和上面那个配合使用(在循环中输出接口ip)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">char</span>* <span class="title">getifaddr</span><span class="params">(<span class="keyword">int</span> sock, <span class="keyword">const</span> <span class="keyword">char</span>* ifname, <span class="keyword">char</span>* addr, <span class="keyword">size_t</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifreq</span> <span class="title">ifr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> *<span class="title">paddr</span>;</span></span><br><span class="line"> </span><br><span class="line">	bzero(&amp;ifr, <span class="keyword">sizeof</span>(ifr));</span><br><span class="line">	<span class="built_in">strncpy</span>(ifr.ifr_name, ifname, IFNAMSIZ);</span><br><span class="line">	<span class="keyword">if</span> (ioctl(sock, SIOCGIFADDR, &amp;ifr) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"ioctl"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	paddr = (struct sockaddr_in*)&amp;ifr.ifr_addr;</span><br><span class="line">	<span class="keyword">if</span> (inet_ntop(AF_INET, &amp;paddr-&gt;sin_addr, addr, n) == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"inet_ntop"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> addr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个是设置ip的实用程序(需要root)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* file: setip.c */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;net/if.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUF_SIZE 1024</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sock;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ifreq</span> <span class="title">ifr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> *<span class="title">sin</span>;</span></span><br><span class="line">	<span class="keyword">if</span> (argc != <span class="number">3</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	bzero(&amp;ifr, <span class="keyword">sizeof</span>(ifr));</span><br><span class="line">	<span class="built_in">strncpy</span>(ifr.ifr_name, argv[<span class="number">1</span>], IFNAMSIZ);</span><br><span class="line"> </span><br><span class="line">	<span class="built_in">sin</span> = (struct sockaddr_in*)&amp;ifr.ifr_addr;</span><br><span class="line">	<span class="built_in">sin</span>-&gt;sin_family = AF_INET;</span><br><span class="line">	<span class="keyword">if</span> (inet_pton(AF_INET, argv[<span class="number">2</span>], &amp;<span class="built_in">sin</span>-&gt;sin_addr) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"inet_pton"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> ((sock = socket(AF_INET, SOCK_DGRAM, <span class="number">0</span>)) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"socket"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> (ioctl(sock, SIOCSIFADDR, &amp;ifr) == <span class="number">-1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"ioctl"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(errno);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>附:所有接口相关request</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x00008910</span>  SIOCGIFNAME                 <span class="keyword">char</span> []</span><br><span class="line"><span class="number">0x00008911</span>  SIOCSIFLINK                 <span class="keyword">void</span></span><br><span class="line"><span class="number">0x00008912</span>  SIOCGIFCONF                 <span class="class"><span class="keyword">struct</span> <span class="title">ifconf</span> *         // <span class="title">MORE</span> // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008913</span>  <span class="title">SIOCGIFFLAGS</span>                <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008914</span>  <span class="title">SIOCSIFFLAGS</span>                <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008915</span>  <span class="title">SIOCGIFADDR</span>                 <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008916</span>  <span class="title">SIOCSIFADDR</span>                 <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008917</span>  <span class="title">SIOCGIFDSTADDR</span>              <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008918</span>  <span class="title">SIOCSIFDSTADDR</span>              <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008919</span>  <span class="title">SIOCGIFBRDADDR</span>              <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x0000891A</span>  <span class="title">SIOCSIFBRDADDR</span>              <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x0000891B</span>  <span class="title">SIOCGIFNETMASK</span>              <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x0000891C</span>  <span class="title">SIOCSIFNETMASK</span>              <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x0000891D</span>  <span class="title">SIOCGIFMETRIC</span>               <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x0000891E</span>  <span class="title">SIOCSIFMETRIC</span>               <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x0000891F</span>  <span class="title">SIOCGIFMEM</span>                  <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008920</span>  <span class="title">SIOCSIFMEM</span>                  <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008921</span>  <span class="title">SIOCGIFMTU</span>                  <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008922</span>  <span class="title">SIOCSIFMTU</span>                  <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008923</span>  <span class="title">OLD_SIOCGIFHWADDR</span>           <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008924</span>  <span class="title">SIOCSIFHWADDR</span>               <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *            // <span class="title">MORE</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008925</span>  <span class="title">SIOCGIFENCAP</span>                <span class="title">int</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008926</span>  <span class="title">SIOCSIFENCAP</span>                <span class="title">const</span> <span class="title">int</span> *</span></span><br><span class="line"><span class="class">0<span class="title">x00008927</span>  <span class="title">SIOCGIFHWADDR</span>               <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008929</span>  <span class="title">SIOCGIFSLAVE</span>                <span class="title">void</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008930</span>  <span class="title">SIOCSIFSLAVE</span>                <span class="title">void</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008970</span>  <span class="title">SIOCGIFMAP</span>                  <span class="title">struct</span> <span class="title">ifreq</span> *                  // <span class="title">I</span>-<span class="title">O</span></span></span><br><span class="line"><span class="class">0<span class="title">x00008971</span>  <span class="title">SIOCSIFMAP</span>                  <span class="title">const</span> <span class="title">struct</span> <span class="title">ifreq</span> *</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Linux/">Linux</a><a href="/tags/网络编程/">网络编程</a><a href="/tags/unix/">unix</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/20/网络管理中的ioctl/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/19/两条命令查找程序在哪个软件包/"><span>两条命令查找程序在哪个软件包</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/19/两条命令查找程序在哪个软件包/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-19T00:00:00.000Z">
+          2014-01-19
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>两条命令查找程序在哪个软件包</p>
+<p><a href="/notename/" title="archive 20140119"></a></p>
+<p>假如想查找ifconfig在那个软件包中.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ whereis ifconfig</span><br><span class="line">	ifconfig: /sbin/ifconfig /usr/share/man/man8/ifconfig.8.gz</span><br><span class="line">$ apt-file search /sbin/ifconfig </span><br><span class="line">	net-tools: /sbin/ifconfig</span><br></pre></td></tr></table></figure>
+
+<p>有缩进表示程序的输出. 先用whereis命令大致找出想查询的程序在路径的哪里, 再用apt-file search就可查出程序在哪个包中</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/运维/">运维</a><a href="/tags/备忘/">备忘</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/19/两条命令查找程序在哪个软件包/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/18/arm-linux汇编(3)–处理器模式寄存器/"><span>arm-linux 汇编(3) – 处理器模式 寄存器</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/18/arm-linux汇编(3)–处理器模式寄存器/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-18T00:00:00.000Z">
+          2014-01-18
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>上一篇中给出了在arm体系架构中[用户态]的寄存器, 共有16个通用寄存器r0-r15和一个通用程序状态寄存器(cpsr).</p>
+<p><a href="/notename/" title="archive 20140118"></a></p>
+<p>上一篇中给出了在arm体系架构中[用户态]的寄存器, 共有16个通用寄存器r0-r15和一个通用程序状态寄存器(cpsr).</p>
+<h6 id="1-这次接着说通用程序状态寄存器"><a href="#1-这次接着说通用程序状态寄存器" class="headerlink" title="1.这次接着说通用程序状态寄存器"></a>1.这次接着说通用程序状态寄存器</h6><p>先看图:</p>
+<p><img src="http://static.zybuluo.com/zwh8800/z5m5jxx45x7iy1qvaksufyf8/image_1bl0ld0ga1lkn16khh2rvg1j3a9.png" alt="image_1bl0ld0ga1lkn16khh2rvg1j3a9.png-116.9kB"></p>
+<p>cpsr分为4个域, 每个域8位, 分别是<strong>标志域</strong>, <strong>状态域</strong>, <strong>扩展域</strong>和<strong>控制域</strong>.(图上画的有点错误, 扩展域画大了, mode和I,F,T都是控制域的)</p>
+<p>其中标志域表示运算结果的标志. 控制域中, I为1表示屏蔽掉普通中断, F为1表示屏蔽掉快速中断, T为1表示当前为thumb模式.</p>
+<p>Mode域表示了当前CPU的处理器模式.</p>
+<h6 id="2-处理器模式"><a href="#2-处理器模式" class="headerlink" title="2.处理器模式"></a>2.处理器模式</h6><p>不算上最新安全扩展和虚拟化扩展新加上的模式的话, arm架构共有7个处理器模式:</p>
+<table>
+<tbody>
+<tr>
+<td>User mode</td>
+<td>FIQ mode</td>
+<td>IRQ mode</td>
+<td>Supervisor (svc) mode</td>
+</tr>
+<tr>
+<td>Abort mode</td>
+<td>Undefined mode</td>
+<td>System mode</td>
+</tr>
+</tbody>
+</table>
+
+<p>其中User mode为非特权模式以外, 剩下6个都为特权模式.</p>
+<p>当快速中断产生时进入FIQ模式.</p>
+<p>当中断产生时进入IRQ模式.</p>
+<p>当系统reset或swi(又称svc, 软中断)命令执行时进入svc模式.</p>
+<p>当访问内存失败时(分为prefetch abort和data abort)进入Abort模式.</p>
+<p>当执行的指令未定义时进入Undefined模式.</p>
+<p>是否为特权模式决定了那些寄存器是可用的, 以及cpsr本身的访问权限. 对于特权模式, 对cpsr有完全的访问权限(MSR和MRS指令), 对以非特权模式, 只能读控制域但可读写条件标志域.</p>
+<h6 id="3-寄存器"><a href="#3-寄存器" class="headerlink" title="3.寄存器"></a>3.寄存器</h6><p>arm架构共有37个寄存器但在不同时刻有20个寄存器是隐藏的(图中阴影部分), 只有当寄存器处于某种特定模式时, 才能访问特定的寄存器(如在abort模式才能访问r13_abt), 另外, 在不同的模式访问cpsr都是同一个, 而spsr_mode用来保存进入特权模式之前的cpsr以便保存异常之前的现场.</p>
+<p><img src="http://static.zybuluo.com/zwh8800/ksx9ajg9g1bzznq9qd8doqu7/image_1bl0lfomu104c13dd161112p81p89m.png" alt="image_1bl0lfomu104c13dd161112p81p89m.png-178.8kB"></p>
+<table class="wikitable">
+<caption>Registers across CPU modes</caption>
+<tbody>
+<tr>
+<th>usr</th>
+<th>sys</th>
+<th>svc</th>
+<th>abt</th>
+<th>und</th>
+<th>irq</th>
+<th>fiq</th>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R0</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R1</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R2</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R3</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R4</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R5</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R6</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R7</td>
+</tr>
+<tr align="center">
+<td colspan="6">R8</td>
+<td>R8_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="6">R9</td>
+<td>R9_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="6">R10</td>
+<td>R10_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="6">R11</td>
+<td>R11_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="6">R12</td>
+<td>R12_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="2">R13</td>
+<td>R13_svc</td>
+<td>R13_abt</td>
+<td>R13_und</td>
+<td>R13_irq</td>
+<td>R13_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="2">R14</td>
+<td>R14_svc</td>
+<td>R14_abt</td>
+<td>R14_und</td>
+<td>R14_irq</td>
+<td>R14_fiq</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R15</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">CPSR</td>
+</tr>
+<tr align="center">
+<td colspan="2"></td>
+<td>SPSR_svc</td>
+<td>SPSR_abt</td>
+<td>SPSR_und</td>
+<td>SPSR_irq</td>
+<td>SPSR_fiq</td>
+</tr>
+</tbody>
+</table>
+
+<p>从wiki上copy的一个寄存器的表格</p>
+<p>其实这些东西对于写用户程序的话都是透明的了, 但是有利于理解arm体系架构和看懂一些系统级的代码.</p>
+<p>下面想要学一学eabi相关的东西了除了指令集就是这个最重要了.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/arm-linux/">arm-linux</a><a href="/tags/汇编/">汇编</a><a href="/tags/系统编程/">系统编程</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/18/arm-linux汇编(3)–处理器模式寄存器/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/17/setuid和seteuid/"><span>setuid和seteuid</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/17/setuid和seteuid/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-17T00:00:00.000Z">
+          2014-01-17
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux下有4种uid, 真实uid(real user id), 有效uid(effective user id), 被保存的uid(saved user id)和文件系统的uid. 本文详细讲解一下相关内容。</p>
+<p><a href="/notename/" title="archive 20140117"></a></p>
+<p>linux下有4种uid, 真实uid(<em>real user id</em>), 有效uid(<em>effective user id</em>), 被保存的uid(<em>saved user id</em>)和文件系统的uid.</p>
+<p>先说下这两个系统调用, 再说这几种uid:</p>
+<ul>
+<li>setuid(uid)首先请求内核将本进程的[真实uid],[有效uid]和[被保存的uid]<strong>都</strong>设置成函数指定的uid, 若权限不够则请求<strong>只</strong>将effective uid设置成uid, 再不行则调用失败.</li>
+<li>seteuid(uid)仅请求内核将本进程的[有效uid]设置成函数指定的uid.</li>
+</ul>
+<p>再具体来说setuid函数的话是这样的规则:</p>
+<ul>
+<li>当用户<strong>具有超级用户权限</strong>的时候,setuid 函数设置的id对<strong>三者都</strong>起效.【规则一】</li>
+<li>否则,<strong>仅当该id为real user ID 或者saved user ID时,该id对effective user ID起效</strong>.【规则二】</li>
+<li>否则,setuid函数调用失败.</li>
+</ul>
+<p>现在说下前三种uid</p>
+<p>real uid表示进程的实际执行者, <strong>只有root才能更改real uid</strong>, effective uid用于检测进程在执行时所获得的访问文件的权限(既 但进程访问文件时, 检测effective uid有没有权限访问这个文件), saved uid用于保存effective uid, <strong>以便当effective uid设置成其他id时可以再设置回来</strong>(下面着重讲).</p>
+<p>一般情况下, 当一个程序执行时(既调用exec), <strong>进程的effective uid会和real uid一致</strong>, 但是可执行文件有一个set-user-ID位, 如果这个set-user-ID位被设置了, 那么执行exec后, <strong>进程的effective uid会设置成可执行文件的属主uid, 同时saved uid也会被设置成effective uid</strong>.</p>
+<p>举例说明: 用户zzz执行了文件a.out, a.out的属主为hzzz且设置了set-user-ID位. 现在本进程的real uid为zzz, effective uid = saved uid = hzzz.</p>
+<p>进程执行了一会之后, 突然想用zzz的权限访问一个文件, 于是进程可能会调用setuid(zzz), 此时检测进程的权限, 进程的effective uid是hzzz, 不是root, 所以不能更改real uid(只有root才能更改real uid[setuid规则一不满足]), 所以只能设置effective uid, 发现effective uid可以被设置为zzz(因为real uid是zzz[规则二满足]), 所以函数调用成功, 只将effective uid设置成zzz.</p>
+<p>现在进程访问完zzz的文件了, 又想回到hzzz的环境中执行, 所以有可能会调用setuid(hzzz), 这次saved uid的作用就表现出来了, 因为刚刚只是改变了effective uid, 而saved uid还保存着之前的effective uid, 所以可以调用setuid(hzzz)来要回原来的权限([规则二满足]).</p>
+<p>代码:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"real uid is %d\n"</span>, getuid());</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"effective uid is %d\n"</span>, geteuid());</span><br><span class="line">	getchar();</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> (seteuid(<span class="number">1001</span>) == <span class="number">-1</span>)	<span class="comment">/* zzz = 1001 */</span></span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"seteuid"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"real uid is %d\n"</span>, getuid());</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"effective uid is %d\n"</span>, geteuid());</span><br><span class="line">	getchar();</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">if</span> (seteuid(<span class="number">0</span>) == <span class="number">-1</span>)		<span class="comment">/* root = 1001 */</span></span><br><span class="line">	&#123;</span><br><span class="line">		perror(<span class="string">"seteuid"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"real uid is %d\n"</span>, getuid());</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"effective uid is %d\n"</span>, geteuid());</span><br><span class="line">	getchar();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后编译代码, 并把可执行文件的属主改为root, 然后添加上set-user-ID位:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gcc uid.c -o uid</span><br><span class="line">sudo chown root:root uid</span><br><span class="line">sudo chmod u+s uid</span><br></pre></td></tr></table></figure>
+
+<p>执行uid之后会打印出如下:</p>
+<blockquote>
+<p>real uid is 1001<br>effective uid is 0<br>real uid is 1001<br>effective uid is 1001<br>real uid is 1001<br>effective uid is 0</p>
+</blockquote>
+<p>可以看出, 我们先把effective uid改成了zzz. 之后又可以改回root.这就是saved uid的作用.<br>另外这个程序中使用的是seteuid而不是setuid, 这是因为如果改成setuid的话, 执行第一个setuid时, 因为当前effective uid为root, 第一个规则就满足, 所以把real uid, effective uid和saved uid都改成hzzz了, 因为这样更改了saved uid, 我们就回不去root了.</p>
+<p>所以, 从这里也可以看出来setuid和seteuid的区别, 分清什么时候用哪个.</p>
+<p>参考:</p>
+<p><a href="https://www.cppblog.com/converse/archive/2007/12/20/39166.html" target="_blank" rel="noopener">https://www.cppblog.com/converse/archive/2007/12/20/39166.html</a><br><a href="https://blog.csdn.net/buaalei/article/details/5344647" target="_blank" rel="noopener">https://blog.csdn.net/buaalei/article/details/5344647</a><br><a href="https://www.dutor.net/index.php/2010/08/cmd-chmod-set-user-id-set-group-id/" target="_blank" rel="noopener">https://www.dutor.net/index.php/2010/08/cmd-chmod-set-user-id-set-group-id/</a><br><a href="https://hi.baidu.com/zhujian0805/item/cf54470f0bec70c02f4c6b4e" target="_blank" rel="noopener">https://hi.baidu.com/zhujian0805/item/cf54470f0bec70c02f4c6b4e</a></p>
+<p><img src="http://static.zybuluo.com/zwh8800/z5vfopj00g0q8qt6dcme95yx/image_1bl0fnhvhft51tdk8q87491gkj9.png" alt="image_1bl0fnhvhft51tdk8q87491gkj9.png-268.8kB"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/系统编程/">系统编程</a><a href="/tags/unix/">unix</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/17/setuid和seteuid/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/16/arm-linux汇编(2)–调用c函数/"><span>arm-linux 汇编(2) – 调用c函数</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/16/arm-linux汇编(2)–调用c函数/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-16T00:00:00.000Z">
+          2014-01-16
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>上一篇学习了armlinux汇编的helloworld，用到了arm汇编的一些基本指令，如mov、ldr、swi，需要详细的arm体系架构的信息可以去arm官网下载arm_architecture_reference_manual.pdf文件，上面有很详细的信息。本文接着上次，继续讲一下如何用汇编调用c函数。</p>
+<p><a href="/notename/" title="archive 20140116"></a></p>
+<p>另外，如果觉得那个手册太冗长，或者是英文苦手的话，可以在本站下载这个短小精悍的reference card（中文版哦）：</p>
+<p><a href="https://lengzzz.com/download/QRC0001_UAL.pdf">https://lengzzz.com/download/QRC0001_UAL.pdf</a></p>
+<p>现在进入正题：</p>
+<p>上一篇中，重点讲述了在arm-linux下的<strong>系统调用</strong>的方法，但是更多时候，我们可能会与一些c库进行交互，今天学习了<strong>汇编调用c库函数</strong>的方法。</p>
+<p>先上例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.section .rodata</span><br><span class="line">fmt:</span><br><span class="line">	.asciz &quot;2 * 4 &#x3D; %d\n&quot;	@.asciz以NULL结尾的字符串</span><br><span class="line"> </span><br><span class="line">.section .text</span><br><span class="line">.global _start</span><br><span class="line"> </span><br><span class="line">_start:</span><br><span class="line">	mov r2, #2</span><br><span class="line">	mov r3, #4</span><br><span class="line">	mul r1, r2, r3		@乘法指令, r1&#x3D;r2*r3</span><br><span class="line">	ldr r0, &#x3D;fmt</span><br><span class="line">	bl printf		@bl为函数调用, 跳转到printf并将当前pc保存到lr寄存器</span><br><span class="line">exit:</span><br><span class="line">	mov r0, #1</span><br><span class="line">	mov r7, #1</span><br><span class="line">	swi #0</span><br></pre></td></tr></table></figure>
+
+<p>例子很简单, 功能就是计算2<em>4并输出2 * 4 = 8. 先使用mul指令计算出2</em>4的值放在r1寄存器中, 然后将printf的格式串fmt放到r0中, 然后调用printf函数.</p>
+<p>要汇编这个程序不能用昨天简单的指令了. 因为, printf是libc库中的函数, 必须要和c库进行连接:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">as mul.s -o mul.o</span><br><span class="line">ld -dynamic-linker /lib/ld-linux-armhf.so.3 mul.o -o mul -lc</span><br></pre></td></tr></table></figure>
+
+<p>相比较上一篇中的连接指令, 多了两条, 一个是<strong>-dynamic-linker /lib/ld-linux-armhf.so.3`</strong>另一个是<strong>-lc</strong></p>
+<p>第一个是指令在man pages中的介绍是:</p>
+<blockquote>
+<p>–dynamic-linker=file<br>Set the name of the dynamic linker.  This is only meaningful when<br>generating dynamically linked ELF executables.  The default dynamic<br>linker is normally correct; don’t use this unless you know what you<br>are doing.</p>
+</blockquote>
+<p>是用来设置<strong>动态链接器</strong>的, 在不同的设备上ld-linux-armhf.so.3的名字可能都不一样, 但一般都在lib文件夹中并且以ld开头. 如果没有这条指令的话, 运行程序的时候会提示file not found</p>
+<p>第二条是-lc, 和gcc的用法一样, <strong>表示连接libc库</strong>. 如果不加这个指令的话连接时会提示undefined “printf”.</p>
+<p>现在介绍一下bl指令. bl是<em>branch</em>(分支) <em>link</em>(连接)的缩写(和x86架构的call ret相比意思太含糊了), branch的意思就是<strong>跳转(分支)到其他地方执行</strong>, link的意思是<strong>将当前的pc(Program Counter程序计数器, 保存着当前程序运行到哪里了)寄存器保存到lr(Link Register连接寄存器)</strong>, 以便调用函数之后函数可以返回回来. 当printf函数运行结束时, 会调用<strong>mov pc, lr</strong>来返回.</p>
+<p>再来说一说arm的寄存器吧. 在<strong>用户态</strong>, arm的寄存器一共有这几个:</p>
+<table>
+<tbody>
+<tr>
+<td>r0</td>
+<td>r1</td>
+<td>r2</td>
+<td>r3</td>
+<td>r4</td>
+<td>r5</td>
+<td>r6</td>
+<td>r7</td>
+</tr>
+<tr>
+<td>r8</td>
+<td>r9</td>
+<td>r10</td>
+<td>r11</td>
+<td>r12</td>
+<td>r13(sp)</td>
+<td>r14(lr)</td>
+<td>r15(pc)</td>
+</tr>
+<tr>
+<td>CPSR</td>
+</tr>
+</tbody>
+</table>
+
+<p>算是比较多的. 其中sp表示堆栈指针(Stack Pointer), lr代表连接寄存器(Link Register), pc表示程序计数器(Program Counter).</p>
+<p>具体函数调用时参数传递和返回值用那些寄存器在eabi中都有介绍. 之后将会进行学习.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/arm-linux/">arm-linux</a><a href="/tags/汇编/">汇编</a><a href="/tags/系统编程/">系统编程</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/16/arm-linux汇编(2)–调用c函数/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/15/arm-linux汇编(1)–Helloworld/"><span>arm-linux 汇编(1) – Helloworld</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/15/arm-linux汇编(1)–Helloworld/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-15T00:00:00.000Z">
+          2014-01-15
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux下一般使用c语言编程，但其实也可以直接使用汇编语言。谈谈在 Linux 下使用汇编编写应用程序。</p>
+<p><a href="/notename/" title="archive 20140115"></a></p>
+<p>linux下一般使用c语言编程，但其实也可以直接使用汇编语言。</p>
+<p>linux下的汇编工具也是由GNU提供的，叫做as（汇编器）和ld（连接器，c语言也要用它）</p>
+<p>在写第一个汇编程序之前我们先看看工具的使用：</p>
+<p>假如我们的汇编源码文件叫做hello.s，我们需要先将其汇编成hello.o，再将hello.o连接成hello</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">as hello.s -o hello.o</span><br><span class="line">ld hello.o -o hello</span><br></pre></td></tr></table></figure>
+
+<p>简单吧，和上文说的一样，需要两步。</p>
+<p>然后让我们先写第一个小程序，功能很简单，就是退出程序，并返回状态码1：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.section .text		@伪指令.section, 说明下面代码在text段</span><br><span class="line">.global _start			@伪指令.global或.globl, 向外部暴露出_start符号</span><br><span class="line">_start:				</span><br><span class="line">	mov r0, #1		@将立即数1存入寄存器r0, 作为_exit系统调用的参数</span><br><span class="line">	mov r7, #1		@将系统调用号存入r7</span><br><span class="line">	swi #0			@软中断, 陷入内核来调用系统调用</span><br></pre></td></tr></table></figure>
+
+<p>在arm-linux汇编中 <strong><code>.</code> 开头的表示伪指令</strong>, <strong><code>@</code> 表示单行注释</strong>. 代码的注释里已经把每一句的功能写的很清楚了, 现在说一些没说清楚的.</p>
+<p>在汇编中 <code>_start</code> 是一个<strong>程序的开始</strong>(貌似x86和arm都是从_start开始执行)所以不能像c语言中写main函数了, 要写_start标号.</p>
+<p>然后将我们要调用的系统调用的参数存入寄存器, 因为arm体系架构中, 寄存器的数量相当多, 所以当参数的个数不多时, <strong>一般使用寄存器来传递</strong>. 我们要调用的_exit只有一个参数, 就是程序的返回值, 所以我们把1存入r0中.</p>
+<p>第二步, 我们必须告知内核我们要调用哪个系统调用, <strong>每个系统调用都有一个系统调用号</strong>, 在arm-linux中, 系统调用号保存在/usr/include/arm-linux-gnueabifh/asm/unistd.h中可以看到有很多__NR开头的宏, 后面写着系统调用的名字, 然后就是我们要的系统调用号. 经过寻找, 我们发现_exit调用的调用号是1.所以我们把1存入<code>r7</code>中.</p>
+<p>最后一步, <strong>swi指令发起软中断(中断号为0)</strong>, 使程序陷入内核, 然后内核进行系统调用.</p>
+<p>这里要说一些arm-linux系统调用的历史, 在cortex之前吧(大概是), arm-linux系统调用的方式一直是这样, swi #(0x900000 + 系统调用号), 既在中断号中传递系统调用号(0x900000是一个magic number), 这种方式现在称作oabi(old ABI), 现在的方式就是在r7中传递系统调用号, 称作eabi. 现在的系统大多都是采用eabi的方式.</p>
+<p>好的, 现在汇编, 连接程序, 然后运行. 发现程序结束了, 然后使用<em>echo $?</em>可以查看刚刚结束的程序的返回值, 可以发现返回值为1. 说明程序没有问题.</p>
+<p>现在来看第二个例子, helloworld.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">.section .data		@data段</span><br><span class="line">hello:</span><br><span class="line">	.ascii &quot;hello world\n&quot;	@ascii伪指令,以ascii码格式来存储</span><br><span class="line">	.equ len, . - hello	@equ伪指令,令len&#x3D;.-hello .代表当前地址</span><br><span class="line">				@.-hello就代表hello字符串的长度</span><br><span class="line"> </span><br><span class="line">.section .text</span><br><span class="line">.global _start</span><br><span class="line"> </span><br><span class="line">_start:</span><br><span class="line">	mov r0, #1		@stdout</span><br><span class="line">	ldr r1, &#x3D;hello		@将hello的地址保存在r1</span><br><span class="line">	mov r2, #len		@将长度保存在r2</span><br><span class="line">	mov r7, #4		@系统调用号</span><br><span class="line">	swi #0			@发起系统调用</span><br><span class="line"> </span><br><span class="line">exit:</span><br><span class="line">	mov r0, #0</span><br><span class="line">	mov r7, #1</span><br><span class="line">	swi #0</span><br></pre></td></tr></table></figure>
+
+<p>这个的注释也比较清楚就不说明了, 汇编连接执行后会在屏幕上看见helloworld的大字.</p>
+<p>EOF</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/arm-linux/">arm-linux</a><a href="/tags/汇编/">汇编</a><a href="/tags/系统编程/">系统编程</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/15/arm-linux汇编(1)–Helloworld/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/14/linux下整数尺寸/"><span>linux下整数尺寸</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/14/linux下整数尺寸/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-14T00:00:00.000Z">
+          2014-01-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux 分为 ILP32 和 LP64 两种</p>
+<p><a href="/notename/" title="archive 20140114"></a></p>
+<p>ILP32体系：int = long = pointer = 32<br>LP64体系：long = pointer = 64</p>
+<p>在我的电脑上（64位ubuntu，Xeon E3处理器）是LP64体系</p>
+<p>结果如下:</p>
+<p><img src="http://static.zybuluo.com/zwh8800/br8l645t4yu1lqcvxyo5xksn/image_1bl0ehvba19urh6r19i8df11mjc9.png" alt="image_1bl0ehvba19urh6r19i8df11mjc9.png-45.3kB"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/系统编程/">系统编程</a><a href="/tags/体系架构/">体系架构</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/14/linux下整数尺寸/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/01/13/netstat命令help翻译/"><span>netstat命令help翻译</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/13/netstat命令help翻译/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-13T00:00:00.000Z">
+          2014-01-13
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>翻译了一下 netstat –help 的提示信息</p>
+<p><a href="/notename/" title="archive 20140113"></a></p>
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">zzz@</span><span class="string">lengzzz:</span>~$ <span class="string">netstat </span><span class="built_in">--help</span></span><br><span class="line"><span class="built_in">usage:</span> <span class="string">netstat </span>[-<span class="string">vWeenNcCF]</span> [&lt;<span class="string">Af&gt;</span>] -r         <span class="string">netstat </span>&#123;-V|<span class="built_in">--version|-h|--help&#125;</span></span><br><span class="line"><span class="built_in"></span>       <span class="string">netstat </span>[-<span class="string">vWnNcaeol]</span> [&lt;<span class="string">Socket&gt;</span> ...]</span><br><span class="line">       <span class="string">netstat </span>&#123; [-<span class="string">vWeenNac]</span> -i | [-<span class="string">cWnNe]</span> -M | -s &#125;</span><br><span class="line"></span><br><span class="line">        -r, <span class="built_in">--route</span>			显示路由表</span><br><span class="line">        -i, <span class="built_in">--interfaces</span>		显示接口列表</span><br><span class="line">        -g, <span class="built_in">--groups</span>		显示组播组成员</span><br><span class="line">        -s, <span class="built_in">--statistics</span>		显示网络统计数据（类似<span class="string">SNMP）</span></span><br><span class="line">        -M, <span class="built_in">--masquerade</span>	显示伪装连接</span><br><span class="line"></span><br><span class="line">        -v, <span class="built_in">--verbose</span>		显示详细信息</span><br><span class="line">        -W, <span class="built_in">--wide</span>			不截断<span class="string">IP地</span>址</span><br><span class="line">        -n, <span class="built_in">--numeric</span>		不解析名字</span><br><span class="line">        <span class="built_in">--numeric-hosts</span>		不解析主机名</span><br><span class="line">        <span class="built_in">--numeric-ports</span>		不解析端口名</span><br><span class="line">        <span class="built_in">--numeric-users</span>		不解析用户名</span><br><span class="line">        -N, <span class="built_in">--symbolic</span>		解析硬件名</span><br><span class="line">        -e, <span class="built_in">--extend</span>		显示更多信息</span><br><span class="line">        -p, <span class="built_in">--programs</span>		显示套接字的<span class="string">PID/</span>程序名</span><br><span class="line">        -c, <span class="built_in">--continuous</span>		刷屏显示</span><br><span class="line"></span><br><span class="line">        -l, <span class="built_in">--listening</span>		显示监听套接字</span><br><span class="line">        -a, <span class="built_in">--all,</span> <span class="built_in">--listening</span>	显示所有套接字（默认：只显示连接套接字）</span><br><span class="line">        -o, <span class="built_in">--timers</span>		显示套接字定时器状态</span><br><span class="line">        -F, <span class="built_in">--fib</span>			显示前导路由信息（默认启用）</span><br><span class="line">        -C, <span class="built_in">--cache</span>			显示路由<span class="string">cache中</span>的前导路由信息</span><br><span class="line"></span><br><span class="line">  &lt;<span class="string">Socket&gt;</span>=&#123;-t|<span class="built_in">--tcp&#125;</span> &#123;-u|<span class="built_in">--udp&#125;</span> &#123;-w|<span class="built_in">--raw&#125;</span> &#123;-x|<span class="built_in">--unix&#125;</span> <span class="built_in">--ax25</span> <span class="built_in">--ipx</span> <span class="built_in">--netrom</span></span><br><span class="line"><span class="built_in"></span>  &lt;<span class="string">AF&gt;</span>=<span class="string">Use </span><span class="string">'-6|-4'</span> <span class="string">or </span><span class="string">'-A &lt;af&gt;'</span> <span class="string">or </span><span class="string">'--&lt;af&gt;'</span>; <span class="string">default:</span> <span class="string">inet</span></span><br><span class="line"><span class="string"> </span> 可以使用的地址族列表 (支持路由的):</span><br><span class="line">    <span class="string">inet </span>(<span class="string">DARPA </span><span class="string">Internet)</span> <span class="string">inet6 </span>(<span class="string">IPv6)</span> <span class="string">ax25 </span>(<span class="string">AMPR </span><span class="string">AX.</span><span class="string">25)</span> </span><br><span class="line">    <span class="string">netrom </span>(<span class="string">AMPR </span><span class="string">NET/</span><span class="string">ROM)</span> <span class="string">ipx </span>(<span class="string">Novell </span><span class="string">IPX)</span> <span class="string">ddp </span>(<span class="string">Appletalk </span><span class="string">DDP)</span> </span><br><span class="line">    <span class="string">x25 </span>(<span class="string">CCITT </span>X.<span class="string">25)</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/系统编程/">系统编程</a><a href="/tags/unix/">unix</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/13/netstat命令help翻译/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  <a href="/page/7/" class="pagination-prev">上一页</a>
+  
+  
+  <a href="/page/9/" class="pagination-next">下一页</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

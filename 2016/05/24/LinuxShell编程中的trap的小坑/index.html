@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Linux Shell 编程中的 trap 的小坑 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="在 Shell 编程中，为了脚本的健壮性，一般会用到 trap 这个 builtin command。trap 命令类似 c 语言中的 signal 函数，可以注册一个函数，当程序收到信号时执行函数。但是 trap 命令也有一些比较坑的小细节，比如 trap 的执行时机。
+
+在 c 语言中，程序收到">
+  
+
+  
+  
+  <meta name="keywords" content="linux,bash,shell,trap">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="Linux Shell 编程中的 trap 的小坑"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>Linux Shell 编程中的 trap 的小坑</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/05/24/LinuxShell编程中的trap的小坑/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-05-24T10:58:33.000Z">
+          2016-05-24
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>在 Shell 编程中，为了脚本的健壮性，一般会用到 <code>trap</code> 这个 builtin command。trap 命令类似 c 语言中的 <code>signal</code> 函数，可以注册一个函数，当程序收到信号时执行函数。但是 trap 命令也有一些比较坑的小细节，比如 trap 的执行时机。</p>
+<p><a href="/notename/" title="trap&#39;s trap in linux shell programing"></a></p>
+<p>在 c 语言中，程序收到信号之后会立即执行 signal 注册的信号处理函数。那么在 shell 程序中呢，信号究竟什么时候被 trap 处理？是像 c 程序一样停下程序立即执行，还是等待当前程序执行之后再执行？</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">trap</span> <span class="string">'echo "signal received!"; exit'</span> INT</span><br><span class="line">sleep 100</span><br></pre></td></tr></table></figure>
+
+<p>我们先写一段程序做个实验。在 bash 中执行它，然后按 <code>control + c</code> 发现程序立即停止了，然后打印了 signal received，似乎 trap 是类似 c 程序一样立即处理信号的。但其实是被表面现象蒙骗了。</p>
+<p>我们再次执行这个 shell 程序，然后打开另一个 shell，在里面执行 <code>kill -SIGINT xxx</code> 发现 shell 程序并没有退出，等待了 100 秒之后才打印 signal received 退出。</p>
+<p>因为第一次在键盘上按 <code>control + c</code> 后，sleep 程序和 shell 程序同属一个进程组，所以也接到了 int 信号退出了，而第二次只有 shell 程序收到信号，所以造成了两者的差异。我第一次也被蒙骗了，傻乎乎的以为 trap 能在 sleep 时也处理信号。</p>
+<p>那么问题来了，我们如果需要在 sleep 时处理信号，并且及时退出怎么办呢？国外一篇文章给了例子<a href="http://mywiki.wooledge.org/SignalTrap" target="_blank" rel="noopener">^sample</a>，我就负责搬运一下了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pid=</span><br><span class="line"><span class="built_in">trap</span> <span class="string">'[[ $pid ]] &amp;&amp; kill $pid'</span> EXIT</span><br><span class="line">sleep 10000 &amp; pid=$!</span><br><span class="line"><span class="built_in">wait</span></span><br><span class="line">pid=</span><br></pre></td></tr></table></figure>
+
+<p>利用了 bash 的 builtin 命令 wait。wait 是一个 shell 内部的命令，而不是一个外部程序，所以它没有前面的限制。另外，要记得退出时 kill 掉 sleep 进程，擦好屁股。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/bash/">bash</a><a href="/tags/shell/">shell</a><a href="/tags/trap/">trap</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

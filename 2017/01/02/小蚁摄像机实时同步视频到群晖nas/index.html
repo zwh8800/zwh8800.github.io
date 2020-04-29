@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>小蚁摄像机实时同步视频到群晖 nas | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="之前买了个小蚁智能摄像机，原生只支持向小米路由器里同步视频，我只有一个群晖 nas 做网络存储，所以元旦放假在家研究了下怎么样“破解”小蚁摄像头使它能同步视频到 nas 上。本质上，小蚁摄像头也是一个 Linux 服务器，只不过是运行在 arm 上的嵌入式 Linux，所以 Linux 的整个生态环">
+  
+
+  
+  
+  <meta name="keywords" content="linux,折腾,嵌入式,交叉编译">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="小蚁摄像机实时同步视频到群晖 nas"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>小蚁摄像机实时同步视频到群晖 nas</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/01/02/小蚁摄像机实时同步视频到群晖nas/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-01-02T14:28:14.000Z">
+          2017-01-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>之前买了个小蚁智能摄像机，原生只支持向小米路由器里同步视频，我只有一个群晖 nas 做网络存储，所以元旦放假在家研究了下怎么样“破解”小蚁摄像头使它能同步视频到 nas 上。本质上，小蚁摄像头也是一个 Linux 服务器，只不过是运行在 arm 上的嵌入式 Linux，所以 Linux 的整个生态环境都可以利用的上。我这次的解决方案是使用 Linux 上著名的 <a href="https://rsync.samba.org/" target="_blank" rel="noopener">rsync</a> 做同步工具，但是必须编译出一个在 arm 上能用使用的 rsync。所以这篇文章的重点是 <strong>交叉编译</strong>。</p>
+<p><a href="/notename/" title="sync video from Yi Camera to Synology nas"></a></p>
+<h2 id="拿到小蚁摄像头的-shell"><a href="#拿到小蚁摄像头的-shell" class="headerlink" title="拿到小蚁摄像头的 shell"></a>拿到小蚁摄像头的 shell</h2><p>据说某些系统版本的小蚁摄像头默认没关闭 telnet 服务，那么在做以下事情之前可以先试试你的摄像头是不是已经开启了 telnet 。在终端里运行 <code>telnet xxx.xxx.xxx.xxx</code> xxx.xxx.xxx.xxx 是你摄像头的 ip 地址，可以在路由器管理界面中查到。如果出现 <code>(none) login:</code> 字样，说明你已经拿到了 shell，就不用做下面的操作了，直接跳到<a href="#jumpto-1">这里</a>。</p>
+<ul>
+<li>把小蚁摄像头里的内存卡取出来，在内存卡根目录建立一个文件夹 test</li>
+<li>在 test 目录下创建文件 <code>equip_test.sh</code> 粘贴以下内容。</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment"># Telnet</span></span><br><span class="line"><span class="keyword">if</span> [ ! -f <span class="string">"/etc/init.d/S88telnet"</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"#!/bin/sh"</span> &gt; /etc/init.d/S88telnet</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"telnetd &amp;"</span> &gt;&gt; /etc/init.d/S88telnet</span><br><span class="line">    chmod 755 /etc/init.d/S88telnet</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">dr=`dirname <span class="variable">$0</span>`</span><br><span class="line"><span class="comment"># fix bootcycle</span></span><br><span class="line">mv <span class="variable">$dr</span>/equip_test.sh <span class="variable">$dr</span>/equip_test.sh.moved</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<p>根据网上的说法，<code>equip_test.sh</code> 会在开机的时候自动运行。</p>
+<p>这个脚本的内容很简单，第一步创建 <code>/etc/init.d/S88telnet</code> 这个文件，内容如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">telnetd &amp;</span><br></pre></td></tr></table></figure>
+
+<p>这个文件相当于创建了一个 busybox-init 的 <code>服务</code> [^ref3]，和 ubuntu、CentOS 的服务类似，不过功能更简单一些，直接就是一个 shell 脚本。这个 shell 脚本开启了 telnetd 后台程序。</p>
+<p>第二步是把自身重命名并且重启，避免每次摄像头开机重复运行。</p>
+<div id="jumpto-1"></div>
+
+<p>现在，可以把内存卡查到摄像头中开机，不出意外的话现在再次在终端里输入 <code>telnet xxx.xxx.xxx.xxx</code> 就可以看到 <code>(none) login:</code> 了，现在输入用户名 <code>root</code> 按回车，再输入密码 <code>1234qwer</code> 就可以进入小蚁摄像头的 shell 界面了。</p>
+<h2 id="交叉编译-rsync"><a href="#交叉编译-rsync" class="headerlink" title="交叉编译 rsync"></a>交叉编译 rsync</h2><p>拿到 shell 之后先进去看了看系统信息，没想到这个小蚁摄像头的配置这么寒酸。。。? cpu 是 N 年前的 arm9 ，内存只有 32MiB ，你没看错，就是 32MiB，一点都不夸张，root 文件系统只有 3.5MiB 的空间，毛都放不了，只能想办法把东西放内存卡上。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">uname</span> <span class="string">-a</span></span><br><span class="line"><span class="string">Linux</span> <span class="string">(none)</span> <span class="number">3.0</span><span class="number">.8</span> <span class="comment">#1 Wed Apr 30 16:56:49 CST 2014 armv5tejl GNU/Linux</span></span><br><span class="line"><span class="string">$</span> <span class="string">cat</span> <span class="string">/proc/cpuinfo</span></span><br><span class="line"><span class="attr">Processor       :</span> <span class="string">ARM926EJ-S</span> <span class="string">rev</span> <span class="number">5</span> <span class="string">(v5l)</span></span><br><span class="line"><span class="attr">BogoMIPS        :</span> <span class="number">218.72</span></span><br><span class="line"><span class="attr">Features        :</span> <span class="string">swp</span> <span class="string">half</span> <span class="string">thumb</span> <span class="string">fastmult</span> <span class="string">edsp</span> <span class="string">java</span></span><br><span class="line"><span class="attr">CPU implementer :</span> <span class="number">0x41</span></span><br><span class="line"><span class="attr">CPU architecture:</span> <span class="string">5TEJ</span></span><br><span class="line"><span class="attr">CPU variant     :</span> <span class="number">0x0</span></span><br><span class="line"><span class="attr">CPU part        :</span> <span class="number">0x926</span></span><br><span class="line"><span class="attr">CPU revision    :</span> <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Hardware        :</span> <span class="string">hi3518</span></span><br><span class="line"><span class="attr">Revision        :</span> <span class="number">0000</span></span><br><span class="line"><span class="attr">Serial          :</span> <span class="number">0000000000000000</span></span><br><span class="line"><span class="string">$</span> <span class="string">cat</span> <span class="string">/proc/meminfo</span></span><br><span class="line"><span class="attr">MemTotal:</span>          <span class="number">35212</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">MemFree:</span>            <span class="number">1044</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Buffers:</span>             <span class="number">268</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Cached:</span>            <span class="number">10016</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">SwapCached:</span>            <span class="number">0</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Active:</span>            <span class="number">11536</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Inactive:</span>           <span class="number">5432</span> <span class="string">kB</span></span><br><span class="line"><span class="string">Active(anon):</span>       <span class="number">6996</span> <span class="string">kB</span></span><br><span class="line"><span class="string">Inactive(anon):</span>     <span class="number">2944</span> <span class="string">kB</span></span><br><span class="line"><span class="string">Active(file):</span>       <span class="number">4540</span> <span class="string">kB</span></span><br><span class="line"><span class="string">Inactive(file):</span>     <span class="number">2488</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Unevictable:</span>           <span class="number">0</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Mlocked:</span>               <span class="number">0</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">SwapTotal:</span>             <span class="number">0</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">SwapFree:</span>              <span class="number">0</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Dirty:</span>               <span class="number">600</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Writeback:</span>             <span class="number">0</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">AnonPages:</span>          <span class="number">6708</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Mapped:</span>             <span class="number">5344</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Shmem:</span>              <span class="number">3256</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Slab:</span>               <span class="number">8152</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">SReclaimable:</span>       <span class="number">1192</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">SUnreclaim:</span>         <span class="number">6960</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">KernelStack:</span>         <span class="number">808</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">PageTables:</span>          <span class="number">692</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">NFS_Unstable:</span>          <span class="number">0</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Bounce:</span>                <span class="number">0</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">WritebackTmp:</span>          <span class="number">0</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">CommitLimit:</span>       <span class="number">17604</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">Committed_AS:</span>     <span class="number">312508</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">VmallocTotal:</span>     <span class="number">966656</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">VmallocUsed:</span>       <span class="number">23856</span> <span class="string">kB</span></span><br><span class="line"><span class="attr">VmallocChunk:</span>     <span class="number">935280</span> <span class="string">kB</span></span><br><span class="line"><span class="string">$</span> <span class="string">df</span> <span class="string">-h</span></span><br><span class="line"><span class="string">Filesystem</span>                <span class="string">Size</span>      <span class="string">Used</span> <span class="string">Available</span> <span class="string">Use%</span> <span class="string">Mounted</span> <span class="string">on</span></span><br><span class="line"><span class="string">/dev/root</span>                 <span class="number">3.</span><span class="string">5M</span>      <span class="number">2.</span><span class="string">7M</span>    <span class="number">844.</span><span class="string">0K</span>  <span class="number">76</span><span class="string">%</span> <span class="string">/</span></span><br><span class="line"><span class="string">tmpfs</span>                    <span class="number">17.</span><span class="string">2M</span>     <span class="number">16.</span><span class="string">0K</span>     <span class="number">17.</span><span class="string">2M</span>   <span class="number">0</span><span class="string">%</span> <span class="string">/dev</span></span><br><span class="line"><span class="string">/dev/mtdblock5</span>            <span class="number">8.</span><span class="string">9M</span>      <span class="number">8.</span><span class="string">1M</span>    <span class="number">784.</span><span class="string">0K</span>  <span class="number">91</span><span class="string">%</span> <span class="string">/home</span></span><br><span class="line"><span class="string">tmpfs</span>                    <span class="number">32.</span><span class="string">0M</span>    <span class="number">164.</span><span class="string">0K</span>     <span class="number">31.</span><span class="string">8M</span>   <span class="number">1</span><span class="string">%</span> <span class="string">/tmp</span></span><br><span class="line"><span class="string">/dev/hd1</span>                 <span class="number">14.</span><span class="string">8G</span>      <span class="number">4.</span><span class="string">1G</span>     <span class="number">10.</span><span class="string">8G</span>  <span class="number">27</span><span class="string">%</span> <span class="string">/tmp/hd1</span></span><br><span class="line"><span class="string">tmpfs</span>                   <span class="number">512.</span><span class="string">0K</span>     <span class="number">16.</span><span class="string">0K</span>    <span class="number">496.</span><span class="string">0K</span>   <span class="number">3</span><span class="string">%</span> <span class="string">/home/mmap_tmpfs</span></span><br><span class="line"><span class="string">tmpfs</span>                    <span class="number">16.</span><span class="string">0M</span>     <span class="number">36.</span><span class="string">0K</span>     <span class="number">16.</span><span class="string">0M</span>   <span class="number">0</span><span class="string">%</span> <span class="string">/home/tmpfs</span></span><br><span class="line"><span class="string">tmpfs</span>                    <span class="number">16.</span><span class="string">0M</span>      <span class="number">3.</span><span class="string">0M</span>     <span class="number">13.</span><span class="string">0M</span>  <span class="number">19</span><span class="string">%</span> <span class="string">/home/jrview</span></span><br></pre></td></tr></table></figure>
+
+<p>soc 用的好像是屁眼公司的 hi3518，小米在手机行业和华为干架那么厉害，芯片还是得用菊花厂的啊。</p>
+<p>回归正题，我们开始交叉编译 rsync。一开始我用的是 ubuntu 上自带的交叉工具链 <code>gcc-arm-linux-gnueabi</code> 折腾半天编译出来的东西没法用，这才发现这个摄像头用的 libc 是 uClibc， 这种低端错误都犯了，之前自己做嵌入式的时候最常用的就是 uClibc 都忘记了?。</p>
+<p>后来想办法下载一个 <code>arm-linux-uclibc-gcc</code> ubuntu 上好像没有现成的源可以下，Google 一下发现了这个 maillist <a href="http://lists.busybox.net/pipermail/buildroot/2010-January/031634.html。" target="_blank" rel="noopener">http://lists.busybox.net/pipermail/buildroot/2010-January/031634.html。</a></p>
+<p>这个帖子讨论的是一个叫 <a href="https://buildroot.org/" target="_blank" rel="noopener">buildroot</a> 的东西。我研究了一下这个项目，它竟然可以一键 build 出整个嵌入式系统，包括 host 上运行的交叉工具链、bootloader、kernel、root filesystem甚至是各种软件包，其中就包括 rsync。那我还费心找什么工具链啊，直接用它就好了。</p>
+<p>现在要做的就是找一台 Linux 机器，在上面运行以下命令，编译出 rsync。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget https://buildroot.org/downloads/buildroot-2016.11.1.tar.gz</span><br><span class="line">tar xvf buildroot-2016.11.1.tar.gz</span><br><span class="line"><span class="built_in">cd</span> buildroot-2016.11.1</span><br><span class="line">make menuconfig</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<p>执行 <code>make menuconfig</code> 之后会出现一个菜单（和编译内核的菜单用的同一个）。</p>
+<ul>
+<li>进入 <code>Target options</code> 再进入 <code>Target Architecture</code> 菜单，选择 <code>ARM (little endian)</code></li>
+<li>进入 <code>Target Architecture Variant</code> 选择 <code>arm926t</code> 其他选项不用动，按两下 esc 退出来</li>
+<li>进入 <code>Toolchain</code> 菜单，<code>C library</code> 选择 <code>uClibc-ng</code></li>
+<li>进入 <code>Kernel Headers</code>，貌似没有 <code>3.0.8</code> 选个最低的 <code>Linux 3.2.x kernel headers</code> 吧</li>
+<li>退出来进入 <code>Target packages</code>，在 <code>Networking applications</code> 里找到 <code>rsync</code> 按空格键打上勾</li>
+<li>退出来进入 <code>Shell and utilities</code> 把 <code>inotify-tools</code> 打上勾，这个我们也要用到</li>
+<li>按 tab 键，使光标移动到 <code>Save</code>，回车存盘退出。</li>
+</ul>
+<p>之后执行 make，经过漫长的等待，终于编译好了。进入到 buildroot-2016.11.1/output/target 文件夹可以看到整个根目录，在 <code>/usr/bin</code> 可以看到编译好的 rsync 。不过只把这个文件放到摄像头是不行的，因为还有 rsync 的动态链接库 so 文件也得放进去。</p>
+<p>我直接 <code>tar zxcf target.tgz ./target</code> 把根目录打包，放到摄像头内。然后摄像头开机进入 shell，执行 <code>tar xvf target.tgz</code> 解包到内存卡里。然饿。。。现在也不能运行，因为必须把链接库的目录设置好，在 shell 里再执行一下 </p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/tmp/hd1/target/bin:/tmp/hd1/target/usr/bin</span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$LD_LIBRARY_PATH</span>:/tmp/hd1/target/lib:/tmp/hd1/target/usr/lib</span><br></pre></td></tr></table></figure>
+
+<p>这个是把动态库的搜索路径设置好，具体可以看我<a href="https://lengzzz.com/note/linux-so-search-path">这篇文章</a>，现在，执行 rsync，竟然报错 <code>libz.so.1 not found</code> 。我进入发现只有 <code>libz.so.1.2.8</code> 并没有 <code>libz.so.1</code> 原来是因为内存卡是 fat32，不支持软连接，只好复制一份了?。<code>cp libz.so.1.2.8 libz.so.1</code> 这也是没有办法的事。</p>
+<p>最后，执行一下 rsync，可以看到久违的帮助信息了，真不容易。</p>
+<h2 id="自动同步脚本"><a href="#自动同步脚本" class="headerlink" title="自动同步脚本"></a>自动同步脚本</h2><p>rsync 只能同步一次文件，当文件保持同步之后就会退出，怎么样想个方法能让两端文件实时同步呢？答案是利用 <a href="https://github.com/rvoicilas/inotify-tools" target="_blank" rel="noopener">inotify-tool</a>。这个工具利用了内核的通知系统，当文件进行改动之后，就会发出一个通知，此时再调用 rsync 进行同步就可以了。</p>
+<p>所以把它写成了一个脚本[^ref4]：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$LD_LIBRARY_PATH</span>:/tmp/hd1/target/lib:/tmp/hd1/target/usr/lib</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/tmp/hd1/target/bin:/tmp/hd1/target/usr/bin</span><br><span class="line"><span class="built_in">export</span> RSYNC_PASSWORD=<span class="string">"xxxxx"</span></span><br><span class="line"></span><br><span class="line">SRC=/tmp/hd1/record/</span><br><span class="line">DST=rsync://YiCamera@10.0.0.222/YiCamera/</span><br><span class="line">nowtime=$(date +%s)</span><br><span class="line">inotifywait -mrq --timefmt <span class="string">'%s'</span> --format <span class="string">'%T'</span> -e modify,delete,create,attrib,move <span class="variable">$SRC</span> | <span class="keyword">while</span></span><br><span class="line"><span class="built_in">read</span> timestamp</span><br><span class="line"><span class="keyword">do</span>  </span><br><span class="line">    diffnow=$((<span class="variable">$nowtime</span> - <span class="variable">$timestamp</span>))</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$nowtime</span> <span class="variable">$timestamp</span> <span class="variable">$diffnow</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> [ <span class="variable">$diffnow</span> -lt 5 ]</span><br><span class="line">    <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">'start rsync'</span></span><br><span class="line">        rsync -vzrtopg --delete <span class="variable">$SRC</span> <span class="variable">$DST</span></span><br><span class="line">        nowtime=$(date +%s)</span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p>解释一下这个脚本。前两句不用说了，第三局是导出一个系统变量，rsync 会读取这个变量拿到 rsync 的密码[^ref2]。之后是调用 inotifywait，当他发现文件的修改、删除、创建、修改属性时，会输出到标准输出中。</p>
+<p>标准输出被重定向到管道中，<code>read files</code> 当接不到数据时会 block，当接收到数据之后会向下执行 rsync。</p>
+<p>rsync 的参数 <code>-vzrtopg</code> 里的v是verbose，z是压缩，r是recursive，topg都是保持文件原有属性如属主、时间的参数，–delete参数会把原有getfile目录下的文件删除以保持客户端和服务器端文件系统完全一致<a href="[Rsync安全配置](http://wps2015.org/drops/drops/Rsync%E5%AE%89%E5%85%A8%E9%85%8D%E7%BD%AE.html)">^ref1</a>。</p>
+<p>然后，在 <code>/etc/init.d</code> 创建一个服务：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/init.d/S90nasync</span><br><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">/tmp/hd1/nasync.sh &gt;&gt; /tmp/hd1/nasync.log &amp;</span><br></pre></td></tr></table></figure>
+
+<p>重启摄像头，你会发现，nas 里有自动同步过来的视频了。</p>
+<p>[^ref2]: <a href="http://unix.stackexchange.com/questions/111526/rsync-without-prompt-for-password" target="_blank" rel="noopener">rsync without prompt for password</a></p>
+<p>[^ref3]: <a href="http://unix.stackexchange.com/questions/59018/create-and-control-start-up-scripts-in-busybox" target="_blank" rel="noopener">Create and control start up scripts in BusyBox</a></p>
+<p>[^ref4]: <a href="http://miaocbin.blog.51cto.com/689091/1662466" target="_blank" rel="noopener">Linux-rsync+inotify 文件实时同步</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/折腾/">折腾</a><a href="/tags/嵌入式/">嵌入式</a><a href="/tags/交叉编译/">交叉编译</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

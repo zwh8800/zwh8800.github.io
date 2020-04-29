@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>小蚁摄像头实时同步视频到群晖 nas（2）—— 使用 rtsp 协议同步 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="上一篇 blog 我利用 inotify-tools 和 rsync 两个工具实现了自动同步小蚁摄像机里拍摄的视频。不过今天翻网络又发现了另一种自动同步的解决方案，这个可以利用到群晖 nas 的 Surveillance Station 功能，使用效果更佳一些。这篇博客记录一下这次折腾过程。
+
+Su">
+  
+
+  
+  
+  <meta name="keywords" content="linux,折腾,嵌入式">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="小蚁摄像头实时同步视频到群晖 nas（2）—— 使用 rtsp 协议同步"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>小蚁摄像头实时同步视频到群晖 nas（2）—— 使用 rtsp 协议同步</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/01/04/小蚁摄像头实时同步视频到群晖nas（2）——使用rtsp协议同步/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-01-04T07:27:55.000Z">
+          2017-01-04
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p><a href="https://lengzzz.com/note/sync-video-from-yi-camera-to-synology-nas" title="小蚁摄像头实时同步视频到群晖 nas">上一篇 blog</a> 我利用 inotify-tools 和 rsync 两个工具实现了自动同步小蚁摄像机里拍摄的视频。不过今天翻网络又发现了另一种自动同步的解决方案，这个可以利用到群晖 nas 的 Surveillance Station 功能，使用效果更佳一些。这篇博客记录一下这次折腾过程。</p>
+<p><a href="/notename/" title="sync video from yi camera to synology nas 2"></a></p>
+<p>Surveillance Station 是群晖上的一个功能套件，可以管理网络摄像机，功能十分强大，而且原生支持很多品牌的网络摄像机，但是不支持小蚁摄像机。不过还好的是 Surveillance Station 支持 rtsp 协议，只要能在小蚁上开启 rtsp 服务就可以了。</p>
+<center width="80%">
+![QQ20170104-1@2x.png-4220.7kB][1]
+<small>功能很强的Surveillance Station</small>
+</center>
+
+<p>这次没有自己编译 rtsp 服务，一是因为没有找到一个好用又轻量的，二是因为刚好找到一个俄罗斯的国际友人做的 <a href="https://github.com/fritz-smh/yi-hack" target="_blank" rel="noopener">“小蚁Hack”项目</a> 里面正好有我想要的 rtsp 服务，我就直接拿来用了。</p>
+<p>我们只需要用到他项目里的一个文件，叫做 rtspsvrM 可以在 <a href="https://raw.githubusercontent.com/fritz-smh/yi-hack/master/sd/test/rtspsvrM" target="_blank" rel="noopener">https://raw.githubusercontent.com/fritz-smh/yi-hack/master/sd/test/rtspsvrM</a> 下载到。如果小蚁的系统版本比较老，可能需要 rtspsvrK 或者 rtspsvrI。我用的最新的 1.8.6.1 所以使用 M 版本的。具体的规则可以在 <a href="https://github.com/fritz-smh/yi-hack/blob/master/sd/test/equip_test.sh#L216" target="_blank" rel="noopener">https://github.com/fritz-smh/yi-hack/blob/master/sd/test/equip_test.sh#L216</a> 这个脚本里找到，我就不赘述了。</p>
+<p>下载好 rtspsvrM 文件后，放到 sd 卡根目录，然后再创建一个服务。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">/tmp/hd1/rtspsvrM &gt;&gt; /tmp/hd1/rtspsvrM.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+
+<p>然后重启，执行下 <code>netstat -tuanp</code> ，可以看到 rtspsvrM 已经监听 554 端口了。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># netstat -tuanp</span></span><br><span class="line">Active Internet connections (servers and established)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name</span><br><span class="line">tcp        0      0 0.0.0.0:38888           0.0.0.0:*               LISTEN      1266/goolink</span><br><span class="line">tcp        0      0 0.0.0.0:8554            0.0.0.0:*               LISTEN      1214/rtspsvrM</span><br><span class="line">tcp        0      0 0.0.0.0:554             0.0.0.0:*               LISTEN      1214/rtspsvrM</span><br><span class="line">tcp        0      0 0.0.0.0:21              0.0.0.0:*               LISTEN      1197/tcpsvd</span><br><span class="line">tcp        0      0 0.0.0.0:18554           0.0.0.0:*               LISTEN      1214/rtspsvrM</span><br><span class="line">tcp        0      0 10.0.0.224:49016        120.25.66.121:28622     ESTABLISHED 1266/goolink</span><br><span class="line">tcp        0      1 10.0.0.224:53621        10.0.0.1:56688          LAST_ACK    -</span><br><span class="line">tcp        0  36200 10.0.0.224:35958        10.0.0.222:873          ESTABLISHED 1837/rsync</span><br><span class="line">tcp        0      0 10.0.0.224:554          10.0.0.222:53007        ESTABLISHED 1214/rtspsvrM</span><br><span class="line">tcp        0      0 10.0.0.224:42065        42.62.94.185:80         ESTABLISHED 1629/cloud</span><br><span class="line">tcp        0      0 :::80                   :::*                    LISTEN      1141/server</span><br><span class="line">tcp        0      0 :::23                   :::*                    LISTEN      1204/telnetd</span><br><span class="line">tcp        0   1087 ::ffff:10.0.0.224:23    ::ffff:10.0.0.220:46884 ESTABLISHED 1204/telnetd</span><br><span class="line">udp        0      0 0.0.0.0:6970            0.0.0.0:*                           1214/rtspsvrM</span><br><span class="line">udp        0      0 0.0.0.0:6972            0.0.0.0:*                           1214/rtspsvrM</span><br><span class="line">udp        0      0 0.0.0.0:23887           0.0.0.0:*                           2596/p2p_tnp</span><br><span class="line">udp        0      0 0.0.0.0:32108           0.0.0.0:*                           2596/p2p_tnp</span><br><span class="line">udp        0      0 0.0.0.0:56944           0.0.0.0:*                           1266/goolink</span><br><span class="line">udp        0      0 0.0.0.0:56501           0.0.0.0:*                           1266/goolink</span><br><span class="line">udp        0      0 0.0.0.0:1500            0.0.0.0:*                           1266/goolink</span><br></pre></td></tr></table></figure>
+
+<p>说明服务已经起来了。另外这个 rtspsvrM 虽然没有开源，但是他好像没有建立什么乱七八糟的网络连接，姑且认为它不会泄漏用户信息。</p>
+<p>现在回到 nas 的管理界面中，打开 Surveillance Station，点击网络摄像机点新增。</p>
+<p><img src="http://static.zybuluo.com/zwh8800/fdsn1kae71w3krm42sn58ede/image_1b5k8dc0o19jf8bt1fe1abrtjr17.png" alt="image_1b5k8dc0o19jf8bt1fe1abrtjr17.png-48.3kB"></p>
+<p>之后把 IP、端口号填写上，品牌选择最上面的用户自定义。最后一个视频原路径很关键，需要填写成 <code>rtsp://10.0.0.224:554/ch0_0.h264</code> 把其中的 IP 地址替换成你摄像机的 IP 就可以了。</p>
+<p>之后，就可以好好享受 Surveillance Station 的强大功能了。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/折腾/">折腾</a><a href="/tags/嵌入式/">嵌入式</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

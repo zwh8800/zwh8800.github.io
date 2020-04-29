@@ -1,0 +1,907 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第 4 页 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2016/04/07/docker中设置时区/"><span>docker 中设置时区</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/07/docker中设置时区/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-07T05:15:31.000Z">
+          2016-04-07
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>昨天使用 docker 时遇到一个问题，应用输出的时间永远是utc时间，一开始我检查了服务器的时区，发现没问题。然后我就以为是代码中的bug，寻找了很久bug后突然想起docker中的时区应该和宿主机不一致。修改了一下果然好了。</p>
+<p><a href="/notename/" title="timezone in docker"></a></p>
+<p>修改docker镜像时区的方法和修改普通Linux系统时区的方法一致。具体方法要看使用的是什么发行版。</p>
+<p>比如我使用的alpine方法如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">apk add tzdata </span><br><span class="line">ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime </span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Asia/Shanghai"</span> &gt; /etc/timezone</span><br></pre></td></tr></table></figure>
+<p>写到Dockerfile里就是：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">RUN</span><span class="bash"> apk update &amp;&amp; apk add ca-certificates &amp;&amp; \</span></span><br><span class="line"><span class="bash">    apk add tzdata &amp;&amp; \</span></span><br><span class="line"><span class="bash">    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &amp;&amp; \</span></span><br><span class="line"><span class="bash">    <span class="built_in">echo</span> <span class="string">"Asia/Shanghai"</span> &gt; /etc/timezone</span></span><br></pre></td></tr></table></figure>
+
+<p>update: </p>
+<p>在ubuntu中，设置好时区之后需要执行一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dpkg-reconfigure -f noninteractive tzdata</span><br></pre></td></tr></table></figure>
+<p>否则不会生效</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/docker/">docker</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2016/04/07/docker中设置时区/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2016/04/05/色彩化你Mac下的bash/"><span>色彩化你Mac下的bash</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/05/色彩化你Mac下的bash/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-05T13:23:37.000Z">
+          2016-04-05
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><p>最近发现很多同事使用的terminal还是mac自带的，灰常不人性化，比如不显示git状态也不能多tab。所以在这里给大家分享一下色彩化你的bash的小技巧。首先可以下载一个支持多tab的终端：<a href="https://www.item2.com" target="_blank" rel="noopener">iTerm2</a>。</p>
+<p><a href="/notename/" title="color your bash on mac"></a></p>
+<p><img src="http://static.zybuluo.com/zwh8800/b5u3rmn57t6u0uypxk4tv1z7/QQ20160405-0.png" alt="iTerm2图标"></p>
+<p>打开你刚刚下载的item2，执行如下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">brew install xz coreutils <span class="comment"># 把基础命令行工具换成gnu版本</span></span><br><span class="line">gdircolors --<span class="built_in">print</span>-database &gt; ~/.dir_colors <span class="comment"># 生成ls的色彩数据库</span></span><br><span class="line">brew install bash bash-completion <span class="comment"># 安装bash-completion和最新版bash（mac的bash不支持conpletion）</span></span><br><span class="line">sudo sh -c <span class="string">'echo "/usr/local/bin/bash" &gt;&gt; /etc/shells'</span> <span class="comment"># 把新版bash安装到系统shell中</span></span><br><span class="line">chsh -s /usr/<span class="built_in">local</span>/bin/bash <span class="comment"># 切换当前用户的shell为新安装bash</span></span><br><span class="line">brew link git <span class="comment"># 重新配置git，使git的自动完成生效</span></span><br><span class="line">vim ~/.bash_profile <span class="comment"># 打开.bash_profile，进行下一步配置</span></span><br></pre></td></tr></table></figure>
+
+<p>.bash_profile可以如下参考</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># bash补全</span></span><br><span class="line"><span class="keyword">if</span> [ -f $(brew --prefix)/etc/bash_completion ]; <span class="keyword">then</span></span><br><span class="line">  . $(brew --prefix)/etc/bash_completion;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">if</span> [ -f <span class="variable">$HOME</span>/.npm_completion ]; <span class="keyword">then</span></span><br><span class="line">  . <span class="variable">$HOME</span>/.npm_completion;</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ls的颜色</span></span><br><span class="line"><span class="keyword">if</span> brew list | grep coreutils &gt; /dev/null ; <span class="keyword">then</span></span><br><span class="line">  PATH=<span class="string">"<span class="variable">$(brew --prefix coreutils)</span>/libexec/gnubin:<span class="variable">$PATH</span>"</span></span><br><span class="line">  <span class="built_in">alias</span> ls=<span class="string">'ls -F --show-control-chars --color=auto'</span></span><br><span class="line">  <span class="built_in">eval</span> `gdircolors -b <span class="variable">$HOME</span>/.dir_colors`</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ls快捷键</span></span><br><span class="line"><span class="built_in">alias</span> ll=<span class="string">'ls -l'</span></span><br><span class="line"><span class="built_in">alias</span> la=<span class="string">'ls -A'</span></span><br><span class="line"><span class="built_in">alias</span> l=<span class="string">'ls -CF'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 提示符的格式</span></span><br><span class="line"><span class="built_in">export</span> GIT_PS1_SHOWDIRTYSTATE=1</span><br><span class="line"><span class="built_in">export</span> PS1=<span class="string">'\[\e]0;\u@\h: \w\a\]$&#123;debian_chroot:+($debian_chroot)&#125;\[\033[01;32m\]\u@\h\[\033[00m\] \[\033[01;34m\]\w\033[01;33m$(__git_ps1)\033[01;34m\n\$\[\033[00m\] '</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># grep高亮</span></span><br><span class="line"><span class="built_in">alias</span> grep=<span class="string">'grep --color'</span></span><br><span class="line"><span class="built_in">alias</span> egrep=<span class="string">'egrep --color'</span></span><br><span class="line"><span class="built_in">alias</span> fgrep=<span class="string">'fgrep --color'</span></span><br></pre></td></tr></table></figure>
+
+<p>最后执行一下 <code>source ~/.bash_profile</code> 可以立即看到效果。不行的话关了重新开。</p>
+<h2 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h2><p><img src="http://static.zybuluo.com/zwh8800/peskdj249yup1sjlk5qvjd41/QQ20160405-1.png" alt="效果图"></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://my.oschina.net/tsl0922/blog/178775" target="_blank" rel="noopener">http://my.oschina.net/tsl0922/blog/178775</a><br><a href="http://segmentfault.com/q/1010000000636402" target="_blank" rel="noopener">http://segmentfault.com/q/1010000000636402</a><br><a href="http://linfan.info/blog/2012/02/27/colorful-terminal-in-mac/" target="_blank" rel="noopener">http://linfan.info/blog/2012/02/27/colorful-terminal-in-mac/</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/mac技巧/">mac技巧</a><a href="/tags/terminal/">terminal</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2016/04/05/色彩化你Mac下的bash/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2016/04/03/卡尔曼滤波的实现/"><span>卡尔曼滤波的实现</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/03/卡尔曼滤波的实现/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-03T03:25:39.000Z">
+          2016-04-03
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>卡尔曼滤波在数据采集中十分有用。本文介绍一下卡尔曼滤波的理论，然后给出一个实现。</p>
+<p><a href="/notename/" title="implements of kalman filtering"></a></p>
+<p>具体的理论性介绍可以在 <a href="http://blog.chinaunix.net/uid-26694208-id-3184442.html" target="_blank" rel="noopener">这里</a> 找到</p>
+<p>具体来说对于一维的卡尔曼滤波, 如果认为控制量为零的话卡尔曼滤波公式可以简化为以下 5 条:</p>
+<blockquote>
+<p>X(k|k-1)=X(k-1|k-1) ……… (6)<br>P(k|k-1)=P(k-1|k-1) +Q ……… (7)<br>X(k|k)= X(k|k-1)+Kg(k) (Z(k)-X(k|k-1)) ……… (8)<br>Kg(k)= P(k|k-1) / (P(k|k-1) + R) ……… (9)<br>P(k|k)=（1-Kg(k)）P(k|k-1) ……… (10)</p>
+</blockquote>
+<p>其中, X(k|k-1) 这次的估计值, X(k-1|k-1) 是上次的最优值 (也就是上次计算结果)</p>
+<p>由于我们没有控制量, 所以假设这次的值和上次的相等, 所以令第 k 次估计值 = 第 k-1 次最优值</p>
+<p>公式 7 中 P(k|k-1) 是这次估计值的偏差 (协方差), 令其等于上次最优值的偏差加上一个参数 (因为系统总是越运行偏差越大, 所以每次都加上一个 Q)</p>
+<p>X(k|k)是本次的最优值 (也就是结果), Z(k) 是本次的测量值, Kg 是卡尔曼增益, 根据 (9) 计算出</p>
+<p>由 (8), (9) 可以计算出结果</p>
+<p>另外, 需要计算出这次最优值的偏差, 以便下次回归 (递归)</p>
+<p>代码写出来很简单, 但是完成的功能却很强大:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="keyword">uint16_t</span> adc_values[<span class="number">3</span>];		<span class="comment">//三个前方传感器</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Q 1e-6f</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> R 1e-1f</span></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">float</span> kalman_value[<span class="number">3</span>];</span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">float</span> kalman_p[<span class="number">3</span>];</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">kalman_filter</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">float</span> p;</span><br><span class="line">	<span class="keyword">float</span> x;</span><br><span class="line">	<span class="keyword">float</span> kg;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) </span><br><span class="line">	&#123;</span><br><span class="line">		x = kalman_value[i];		<span class="comment">//(6)</span></span><br><span class="line">		p = kalman_p[i] + Q;		<span class="comment">//(7)</span></span><br><span class="line">		kg = p / (p + R);			<span class="comment">//(9)</span></span><br><span class="line">		kalman_p[i] = (<span class="number">1</span> - kg) * p;	<span class="comment">//(10)</span></span><br><span class="line">		kalman_value[i] = x + kg * (adc_values[i] - x);		<span class="comment">//(8)</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/算法/">算法</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2016/04/03/卡尔曼滤波的实现/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2016/04/02/docker初心者教程/"><span>docker 初心者教程</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/02/docker初心者教程/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-02T12:03:06.000Z">
+          2016-04-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>换了博客系统之后，好有写博客的欲望。先来一篇docker的。</p>
+<p><a href="/notename/" title="docker for beginners"></a></p>
+<p>[toc]</p>
+<h2 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h2><p>先谈一下我对docker的理解吧。docker这个东西和微服务是离不来的，目前各大互联网企业都实践微服务，催生了docker的出现。我现在所在的公司也不例外，现在公司的技术大方向就是把老系统一步一步拆分成微服务，同时新系统直接做成微服务。身在其中，吃的屎多了，自然感到了微服务的种种优势。</p>
+<p>对于微服务的优点我感觉最明显的有两点:</p>
+<ul>
+<li><strong>思维上</strong>解耦了</li>
+<li>团队的工作更具体明确了。</li>
+</ul>
+<p>因为现在同时在做新系统（微服务）的同时还需要在老系统上加功能，对第一点感觉就十分明显。在老系统那40万行屎山一样的代码上改东西时，整个人的心智负担就会很重，生怕哪一行把整个app拖慢了。新系统因为它足够微，所以理解整体业务逻辑就比较容易，应用做了什么事情大家都心知肚明，所以写代码的时候就可以随意一些啦wwww</p>
+<p>第二点感觉也很明显是因为几个月前公司才做了一次调整，由之前的按照技术栈分团队改为了按产品线分团队。这样一个团队中既有做web的也有iOS、android的还有懂运维的，大家组成一个团队共同来开发一个（或几个）产品，这样大家对一个产品会理解的更深刻，不会出现之前那种每部分都摸过，但是哪部分业务都不熟的情况。而且现在大家职责更分明，出了问题也能第一时间找到人来处理。</p>
+<h2 id="docker-解决的问题"><a href="#docker-解决的问题" class="headerlink" title="docker 解决的问题"></a>docker 解决的问题</h2><p>但是，微服务也会带来很多部署上的问题。以前发布只用build、deploy一个项目，现在需要搞10+个项目。这不把运维给累死啦？最麻烦的是每个项目依赖的东西不一样，可能项目A用的库是1.5.0，但项目B用的是1.6.0。这部署到一台机器还是两台机器呢，一台出错两台费钱。出问题的更多的是两个项目的依赖的依赖的依赖有冲突（不是直接冲突，两个项目的依赖树上有冲突）。另外程序员们总喜欢用最新的库，天天催运维升级系统。这样运维老爷们就会很头疼，大喊<code>老子不干啦！你们程序员事真多，自己搭环境自己玩吧！</code>。</p>
+<p>因此，docker就腾空出世了。由上面可见，docker解决的最大的问题就是<code>定制的运行环境持久化，使应用或服务无论最终在哪里运行都有同样可预测的行为，尽量减少环境导致问题的可能性</code>。</p>
+<p>另外，docker统一了由于操作系统不同而带来的服务接口不一致，比如应用部署上线后通常配合系统的initctl或upstart之类的写一个服务脚本。但是不同的系统甚至不同版本的系统都不互相兼容。用docker的话大家都统一<code>docker restart</code>了。爽歪歪。</p>
+<h2 id="docker-使用"><a href="#docker-使用" class="headerlink" title="docker 使用"></a>docker 使用</h2><p>第一次用docker给人的感觉像用一个速度超快的虚拟机，但是比虚拟机牛逼在没有开机关机过程。docker中也有两个概念：<strong>image</strong>、<strong>container</strong>。container就相当于VBox里的一个虚拟机了，而image可以认为是container的一个备份（系统快照）。</p>
+<p>基本的helloworld咱们就不跑了，就拿今天写好的博客系统来讲吧。这个和纯的微服务不一样，并不以接口形式向外提供服务，而是使用了模版引擎提供页面服务，以及向下访问数据库，和抓取cmd markdown的数据（类似于服务间调用接口啦233）。</p>
+<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>首先你需要把你的项目编译打包，这一步一般会在持续集成里去做。但是我们就手动搞啦。我这里的项目是golang的所以是一些go的编译命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># golang交叉编译</span></span><br><span class="line">GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build</span><br><span class="line">tar zcvf</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h3><p>准备工作完成后，下面来安装docker。Mac下的安装过程比较蛋疼，我看了下就放弃了。手边的Linux机器不少，再不济的也能用virtual box。不过前几天据说发布了测试的原生Mac版 <a href="http://www.oschina.net/news/71885/docker-to-mac-windows" target="_blank" rel="noopener">Docker 终于有 Windows 和 Mac 版了</a> 喜大普奔。</p>
+<p>Linux下安装就比较方便的，我用的ubuntu，直接用get.docker.com的安装脚本就能一键安装。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"></span><br><span class="line">apt-get update -y</span><br><span class="line">apt-get install -y curl</span><br><span class="line">curl -fsSL https://get.docker.com/ | sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="先拉个操作系统"><a href="#先拉个操作系统" class="headerlink" title="先拉个操作系统"></a>先拉个操作系统</h3><p>装好之后现在可以做我们自己的镜像了。docker的特点是你的镜像可以基于已有的镜像构建。所以我们可以先从docker hub（类似github一样的东西）拉一个基础的操作系统镜像下来，然后在其之上来构建我们的镜像。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拉取alpine系统</span></span><br><span class="line">docker pull alpine:3.3</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者习惯ubuntu的可以拉ubuntu</span></span><br><span class="line">docker pull ubuntu:15.10</span><br></pre></td></tr></table></figure>
+<p>在进行docker pull命令的完整语法是 <code>docker pull [registry]/[username]/[image]:[version]</code> 分为四个部分，registry代表拉取的服务器地址，username是被拉取的镜像所有者的用户名，image是镜像名，version是版本tag。</p>
+<p>其中，registry被省去代表拉取官方registry，username被省去代表拉去官方镜像，version被省去代表拉去latest镜像，也就是最新镜像。</p>
+<p>所以上面的命令的意思是把官方的alpine3.3拉过来。docker官方的registry里维护了一些最基本的镜像和比较常用的镜像。官方维护的品质一般都是比较可以信赖的，所以制作镜像可以基于官方镜像来build。</p>
+<p>pull好之后可以执行一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">zzz@ubuntu-server ~ $ docker images</span><br><span class="line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">zwh8800/xware          latest              9426e8b48edc        4 days ago          176.8 MB</span><br><span class="line">gogs/gogs              latest              40ce39eb7c4b        9 days ago          81.17 MB</span><br><span class="line">zwh8800/starbucks      latest              15fbd0099e0c        12 days ago         17.22 MB</span><br><span class="line">zwh8800/douyu-notify   latest              48ee382f41b8        2 weeks ago         12.01 MB</span><br><span class="line">dperson/samba          latest              a09a77b57057        2 weeks ago         250.3 MB</span><br><span class="line">nginx                  1.9.12              af4b3d7d5401        3 weeks ago         190.5 MB</span><br><span class="line">ubuntu                 15.10               79cfbe2a4950        4 weeks ago         135.9 MB</span><br><span class="line">jenkins                latest              c2cac236cd93        4 weeks ago         708.7 MB</span><br><span class="line">golang                 1.6.0-alpine        c40da134e949        4 weeks ago         238 MB</span><br><span class="line">alpine                 3.3                 70c557e50ed6        4 weeks ago         4.798 MB</span><br><span class="line">golang                 1.6                 bb6cd5033ad2        4 weeks ago         744 MB</span><br></pre></td></tr></table></figure>
+<p>看一下所有本地的镜像</p>
+<h3 id="执行一下试试"><a href="#执行一下试试" class="headerlink" title="执行一下试试"></a>执行一下试试</h3><p>既然已经拉下来镜像了，不玩一下就工作实在是可惜。所以我们先试着运行一下官方的镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zzz@ubuntu-server ~ $ docker run --rm -ti ubuntu:15.10 /bin/bash</span><br><span class="line">root@8b94129944d0:/<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>你会发现你好像回到了命令行，但有一些不同，你的hostname好像变了。如果你像我一样配置了prompt的颜色的话，发现颜色没了。其实我们已经进入容器（<strong>container</strong>）了，但完全没想到会是这么快，就像运行一个程序一样根本不需要开机的时间。在这个bash里你可以尽情的 <code>apt-get install</code> 甚至 <code>rm / -rf</code> 完全不会影响你的宿主机。docker就像一个虚拟机一样，他有独立的文件系统，独立的网络。所以 <code>解开安全带吧</code> <code>大家一起飙车</code></p>
+<p>玩开心了要退出的话直接 <code>exit</code> 就好了。我们在运行的时候使用了 <code>--rm</code> 选项所以退出 container 的时候会自动删除 container。如果我们不加这个选项的话，可以在退出之后执行一下 <code>docker ps -a</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES</span><br><span class="line">2f9dd61f8a18        ubuntu:15.10        <span class="string">"/bin/bash"</span>         40 seconds ago      Exited (0) 35 seconds ago                       desperate_bartik</span><br></pre></td></tr></table></figure>
+<p>会看到我们的容器还存在，你可以再次 <code>docker start</code> 它。</p>
+<h3 id="在容器中运行应用"><a href="#在容器中运行应用" class="headerlink" title="在容器中运行应用"></a>在容器中运行应用</h3><p>下面，我们真正运行一下应用。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm -ti -p 80:3336 -v ~/go/src/github.com/zwh8800/md-blog-gen:/app ubuntu:15.10 bash</span><br><span class="line">root@8b94129944d0:/<span class="comment"># cd /app</span></span><br><span class="line">root@8b94129944d0:/<span class="comment"># ./md-blog-gen -log_dir log</span></span><br></pre></td></tr></table></figure>
+<p>现在在浏览器里输入 <code>http://docker所在机器ip/</code> 看看是不是已经开始运行了？</p>
+<p>在docker中，<code>-v</code> 是类似挂载的选项，可以把宿主机的目录挂载到容器中。可以看见，在使用docker时，大家都是很粗犷的，直接把app放到根目录下wwww。</p>
+<h3 id="把容器打上-tag"><a href="#把容器打上-tag" class="headerlink" title="把容器打上 tag"></a>把容器打上 tag</h3><p>刚才执行过命令之后，我们可以把这个状态下的容器打一个tag，它就可以变成一个镜像（<strong>image</strong>）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -m <span class="string">"Release md-blog-gen image"</span> -a <span class="string">"zwh8800"</span> 15b042d970c9 zwh8800/md-blog-gen:latest</span><br></pre></td></tr></table></figure>
+<p>现在执行一下 <code>docker images</code> 是不是多了一个镜像？</p>
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>有了个直观认识之后大家又会感觉 <code>不给力啊老湿</code> 着我每次都得手动执行还不如我以前呢。</p>
+<center>
+![坑爹呢这是][1]
+</center>
+
+<p>所以docker还有法宝一件Dockerfile。这个东西不仅简化而且统一了大家的部署流程。</p>
+<p>先看看md-blog-gen的Dockerfile</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine:<span class="number">3.3</span></span><br><span class="line"><span class="keyword">MAINTAINER</span> zwh8800 &lt;<span class="number">496781108</span>@qq.com&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apk update &amp;&amp; apk add ca-certificates</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> ./md-blog-gen /app</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> ./template /app/template</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">VOLUME</span><span class="bash"> /app/<span class="built_in">log</span></span></span><br><span class="line"><span class="keyword">VOLUME</span><span class="bash"> /app/config</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">3336</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">"./md-blog-gen"</span>, <span class="string">"-log_dir"</span>, <span class="string">"log"</span>, <span class="string">"-config"</span>, <span class="string">"config/md-blog-gen.gcfg"</span>]</span></span><br></pre></td></tr></table></figure>
+<p>非常之 <code>短小</code> </p>
+<p>所以逐句解释一下</p>
+<ul>
+<li>以alpine:3.3为基础构建镜像</li>
+<li>维护者是我</li>
+<li>当前目录设置为/app</li>
+<li>安装一下我需要的依赖</li>
+<li>把需要的文件放到容器里（ADD命令可以直接ADD一个tar.gz，可以自动解压）</li>
+<li>指明镜像的挂载点</li>
+<li>指明镜像暴漏的端口</li>
+<li>镜像的默认执行命令</li>
+</ul>
+<p>把Dockerfile放到项目的目录下面，执行一下 <code>docker build -t zwh8800/md-blog-gen:latest .</code> 就开始构建</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Step 1 : FROM alpine:3.3</span><br><span class="line">d7a513a663c1</span><br><span class="line">Step 2 : MAINTAINER zwh8800 &lt;496781108@qq.com&gt;</span><br><span class="line">Using cache</span><br><span class="line">dcf2dbbf66e2</span><br><span class="line">Step 3 : WORKDIR /app</span><br><span class="line">Using cache</span><br><span class="line">d8aa8ad0b356</span><br><span class="line">Step 4 : RUN apk update &amp;&amp; apk add ca-certificates</span><br><span class="line">Using cache</span><br><span class="line">9260849655f9</span><br><span class="line">Step 5 : ADD ./md-blog-gen /app</span><br><span class="line">Using cache</span><br><span class="line">1a21d6e13904</span><br><span class="line">Step 6 : ADD ./template /app/template</span><br><span class="line">Using cache</span><br><span class="line">449e6a44d38b</span><br><span class="line">Step 7 : VOLUME /app/<span class="built_in">log</span></span><br><span class="line">Using cache</span><br><span class="line">402f6b0dc5b3</span><br><span class="line">Step 8 : VOLUME /app/config</span><br><span class="line">Using cache</span><br><span class="line">5d0b036a04d7</span><br><span class="line">Step 9 : EXPOSE 3336</span><br><span class="line">Using cache</span><br><span class="line">87a65b9eff28</span><br><span class="line">Step 10 : CMD ./md-blog-gen -log_dir <span class="built_in">log</span> -config config/md-blog-gen.gcfg</span><br><span class="line">Using cache</span><br><span class="line">e43ef3612d6b</span><br><span class="line">Successfully built e43ef3612d6b</span><br></pre></td></tr></table></figure>
+
+<p>成功了，赶紧的 <code>docker run --name blog -d -v log:/app/log -v config:/app/config zwh8800/md-blog-gen</code> 啊，这次我们加上了 <code>-d</code> 选项，这个可以让container后台运行，另外加上了一个 <code>--name</code> 可以给容器起个名字。现在，它真的像一个服务了。</p>
+<h3 id="管理容器"><a href="#管理容器" class="headerlink" title="管理容器"></a>管理容器</h3><p>最常用的肯定是操作肯定是启停</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用容器名</span></span><br><span class="line">docker start blog</span><br><span class="line"><span class="comment"># 使用容器id</span></span><br><span class="line">docker stop e43ef3612d6b</span><br><span class="line"><span class="comment"># 容器id不用打全部，前几位就可以</span></span><br><span class="line">docker restart e43e</span><br></pre></td></tr></table></figure>
+<p>其他要做的就是在 <code>/etc/rc.local</code> 里加一句 <code>docker star blog</code> 就好了，保证开机时服务启动。</p>
+<h2 id="database"><a href="#database" class="headerlink" title="database"></a>database</h2><p>另外比较关心的是，我们的服务依赖的服务应当放在哪里。首当其冲的问题就是数据库怎么办。</p>
+<p>具体有这三种方式吧。</p>
+<h3 id="应用＋数据库组成镜像"><a href="#应用＋数据库组成镜像" class="headerlink" title="应用＋数据库组成镜像"></a>应用＋数据库组成镜像</h3><p>就是在镜像里安装上数据库，优势是部署方便，劣势就是不同应用无法共享数据库了。而且这样不很符合现在 <strong>immutable server</strong> 的概念。</p>
+<h3 id="应用数据库单独为镜像"><a href="#应用数据库单独为镜像" class="headerlink" title="应用数据库单独为镜像"></a>应用数据库单独为镜像</h3><p>这样保证了共享数据库，使用docker link或者其他工具来打通容器。</p>
+<h3 id="数据库独立出来"><a href="#数据库独立出来" class="headerlink" title="数据库独立出来"></a>数据库独立出来</h3><p>有些公司的数据库是单独部署的，或使用云服务，这样就没必要放在docker中了。</p>
+<h3 id="关于docker容器之间相互打通"><a href="#关于docker容器之间相互打通" class="headerlink" title="关于docker容器之间相互打通"></a>关于docker容器之间相互打通</h3><p>docker默认有 <code>--link</code> 选项，但是现在已经不推荐了。目前有一些集群方案可供使用</p>
+<ul>
+<li><a href="http://kubernetes.io/" target="_blank" rel="noopener">kubernetes</a></li>
+<li><a href="https://github.com/docker/swarm" target="_blank" rel="noopener">docker swarm</a></li>
+<li><a href="https://docs.docker.com/compose/" target="_blank" rel="noopener">docker compose</a></li>
+</ul>
+<p>具体的坑大家自己踩啦233</p>
+<h2 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h2><p>上次同事的分享会上谈了一些使用docker过程中的大坑，有空再谈。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/docker/">docker</a><a href="/tags/运维/">运维</a><a href="/tags/DevOps/">DevOps</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2016/04/02/docker初心者教程/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2016/04/02/linux共享库搜索路径/"><span>linux 共享库搜索路径</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/02/linux共享库搜索路径/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-02T08:02:31.000Z">
+          2016-04-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux 中, 在执行一个可执行文件时，搜索动态库路径一共有 5 种，有优先级，会从上到下依次进行搜索。当执行一个程序上发现报错 <code>No such file or directory</code> 可以由此顺序来查错。</p>
+<p><a href="/notename/" title="linux so search path"></a></p>
+<ul>
+<li>在 ELF 文件的动态段 DT_RPATH 所指定的路径，可以在编译本文件时通过 “-Wl,rpath” 来指定 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -Wl,-rpath,/usr/<span class="built_in">local</span>/lib,-rpath,/home/zzz/opensource/lib test.c</span><br></pre></td></tr></table></figure></li>
+<li>环境变量 LD_LIBRARY_PATH</li>
+<li>/etc/ld.so.cache 中缓存的路径，可以通过修改配置文件 / etc/ld.so.conf 并执行 ldconf 命令来修改</li>
+<li>默认路径 /lib</li>
+<li>默认路径 /usr/lib</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2016/04/02/linux共享库搜索路径/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2016/04/01/Helloworld/"><span>Hello world</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/01/Helloworld/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-01T05:59:00.000Z">
+          2016-04-01
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>我把wordpress抛弃啦，旧的数据一会搞一个归档，url应该还不会变。扔掉旧系统真是一身轻松啊！</p>
+<p><a href="/notename/" title="helloworld"></a></p>
+<p>老数据的链接：<a href="https://hzzz.lengzzz.com/blog/i" target="_blank" rel="noopener">https://hzzz.lengzzz.com/blog/i</a></p>
+<p>新的博客系统堪称相当轻量，花1天时间用golang写了个爬虫＋简单的博客系统。主要功能就是从cmd markdown上把我公开的文章爬过来存到本地。如果cmd markdown的作者能早日<a href="https://github.com/ghosert/cmd-editor/issues/795" target="_blank" rel="noopener">开放API</a>就好了。</p>
+<p>另外话说cmd markdown真是宇宙最好的markdown编辑器，用着太舒服了，再次给作者点赞。</p>
+<p>最后，这个爬虫我开源了，可能还会有希望基于markdown做博客系统的人。可以尝试一下。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">go get -u -v github.com/zwh8800/md-blog-gen</span><br><span class="line">md-blog-gen -log_dir <span class="built_in">log</span>/ [-config &lt;config.gcfg&gt;]</span><br><span class="line">open http://localhost:3336/</span><br></pre></td></tr></table></figure>
+
+<p>配置文件可以这么写</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[dbConf]</span></span><br><span class="line"><span class="attr">driver</span>=<span class="string">"mysql"</span></span><br><span class="line"><span class="attr">dsn</span>=<span class="string">"username:password@tcp(mysql:3306)/mdblog?charset=utf8mb4&amp;parseTime=true"</span></span><br><span class="line"></span><br><span class="line"><span class="section">[env]</span></span><br><span class="line"><span class="attr">prod</span>=<span class="literal">true</span> <span class="comment"># 区分生产环境和测试环境</span></span><br><span class="line"><span class="attr">serverPort</span>=<span class="number">3336</span></span><br><span class="line"></span><br><span class="line"><span class="section">[spider]</span></span><br><span class="line"><span class="attr">startUrl</span>=<span class="string">"https://www.zybuluo.com/zwh8800/note/332154"</span> <span class="comment"># 你的随便一篇发布在cmd markdown的文章</span></span><br><span class="line"><span class="attr">spiderTag</span>=<span class="string">"blog"</span> <span class="comment"># 你要抓取的tag</span></span><br><span class="line"></span><br><span class="line"><span class="section">[urlPush]</span></span><br><span class="line"><span class="attr">baidu</span>=<span class="string">"http://data.zz.baidu.com/urls?site=lengzzz.com&amp;token=xxxxxxx"</span> <span class="comment"># 向百度搜索推送url收录的url</span></span><br><span class="line"></span><br><span class="line"><span class="section">[site]</span></span><br><span class="line"><span class="attr">name</span>=<span class="string">"水能载舟 亦可赛艇"</span> <span class="comment"># 网站名称</span></span><br><span class="line"><span class="attr">baseUrl</span>=<span class="string">"https://lengzzz.com/"</span> <span class="comment"># 网站首页</span></span><br><span class="line"><span class="attr">noteUrl</span>=<span class="string">"note"</span> <span class="comment"># 文字的url</span></span><br><span class="line"><span class="attr">tagUrl</span>=<span class="string">"tag"</span> <span class="comment"># tag的url</span></span><br><span class="line"><span class="attr">pageUrl</span>=<span class="string">"page"</span> <span class="comment"># page的url</span></span><br><span class="line"><span class="attr">staticUrl</span>=<span class="string">"static"</span> <span class="comment"># 静态文件的url</span></span><br></pre></td></tr></table></figure>
+<p>记着把注释删掉哦</p>
+<p>另外最近用docker比较多，我正在把我所有用到的东西向docker上迁。所以这个爬虫也写了Dockerfile。你用docker的话可以这样部署。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/zwh8800/md-blog-gen</span><br><span class="line"><span class="built_in">cd</span> md-blog-gen/</span><br><span class="line">CGO_ENABLED=0 go build</span><br><span class="line">docker build -t zwh8800/md-blog-gen .</span><br><span class="line">docker run -d -v <span class="built_in">log</span>:/app/<span class="built_in">log</span> -v config:/app/config --name blog zwh8800/md-blog-gen</span><br></pre></td></tr></table></figure>
+<p>图省事可以从docker hub上拉</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker pull zwh8800/md-blog-gen/ </span><br><span class="line"><span class="comment"># 国内可以拉这个 速度快一些</span></span><br><span class="line">docker pull registry.aliyuncs.com/zwh8800/md-blog-gen</span><br><span class="line">docker run -d -v <span class="built_in">log</span>:/app/<span class="built_in">log</span> -v config:/app/config --name blog zwh8800/md-blog-gen</span><br></pre></td></tr></table></figure>
+
+<p>服务启停使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker start blog</span><br><span class="line">docker stop blog</span><br><span class="line">docker restart blog</span><br></pre></td></tr></table></figure>
+
+<p>另外，最近换上了http2和let’s encrypt的https证书。一个字，爽。<br>基本参照一位<a href="https://imququ.com/" target="_blank" rel="noopener">大神的博客</a>搞得。另外这个博客里干货很多，值得一看。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/闲扯/">闲扯</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2016/04/01/Helloworld/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2015/10/15/最近做了个小玩意/"><span>最近做了个小玩意</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2015/10/15/最近做了个小玩意/" rel="bookmark">
+        <time class="entry-date published" datetime="2015-10-15T00:00:00.000Z">
+          2015-10-15
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>lua 版的 nodejs</p>
+<p><a href="/notename/" title="archive 20151015"></a></p>
+<p>都听说过 nodejs 吧，最近做了个 lua 版的 nodejs。</p>
+<p><a href="https://github.com/zwh8800/lua-libuv" target="_blank" rel="noopener">https://github.com/zwh8800/lua-libuv</a></p>
+<p>上个栗子：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> server = uv.createServer()</span><br><span class="line"><span class="built_in">print</span>(server)</span><br><span class="line"><span class="keyword">local</span> count = <span class="number">1</span></span><br><span class="line">server:listen(<span class="string">'0.0.0.0'</span>, <span class="number">8080</span>, </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="params">(socket, err)</span></span> </span><br><span class="line">        <span class="keyword">if</span> socket <span class="keyword">then</span></span><br><span class="line">            <span class="built_in">print</span>(count .. <span class="string">': '</span>)</span><br><span class="line">            count = count + <span class="number">1</span></span><br><span class="line">            <span class="built_in">print</span>(socket)</span><br><span class="line">            socket:<span class="built_in">write</span>(<span class="string">'hello lua-uv\n'</span>)</span><br><span class="line"> </span><br><span class="line">            socket:onData(</span><br><span class="line">                <span class="function"><span class="keyword">function</span><span class="params">(socket, nread, data)</span></span></span><br><span class="line">                    <span class="keyword">if</span> (nread &gt;= <span class="number">0</span>) <span class="keyword">then</span></span><br><span class="line">                        <span class="built_in">print</span>(<span class="string">'received: '</span> .. data)</span><br><span class="line">                        <span class="keyword">if</span> data == <span class="string">'exit\n'</span> <span class="keyword">then</span></span><br><span class="line">                            socket:finish(<span class="string">'bye'</span>)</span><br><span class="line">                        <span class="keyword">end</span></span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        <span class="built_in">print</span>(<span class="string">'error: '</span> .. socket .. <span class="string">': '</span> .. data)</span><br><span class="line">                    <span class="keyword">end</span></span><br><span class="line"> </span><br><span class="line">                <span class="keyword">end</span></span><br><span class="line">            )</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">'got nil'</span> .. err)</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line">uv.loop()</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/lua/">lua</a><a href="/tags/node/">node</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2015/10/15/最近做了个小玩意/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2015/08/14/最近一直在做前端，很多想法都改变了。/"><span>最近一直在做前端，很多想法都改变了。</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2015/08/14/最近一直在做前端，很多想法都改变了。/" rel="bookmark">
+        <time class="entry-date published" datetime="2015-08-14T00:00:00.000Z">
+          2015-08-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>关于前端的一些思考</p>
+<p><a href="/notename/" title="archive 20150814"></a></p>
+<p>今年年初 3 月份，自己开始找工作。虽然自己之前的研究方向一直在底层，诸如嵌入式，驱动，操作系统方面的。但不得不说互联网公司对这方面的需求算是比较少的。我个人来讲的话，比较混搭，只要是计算机沾边的的东西都感兴趣。属于兴趣广泛的，所以各个方面都有所研究，另外加上基础扎实（这点尤其重要），所以在北京找一份不错的工作还是很轻松的（虽然我才大三，哈哈）</p>
+<p>从 3 月到现在的 7 月也算工作了 4 个月左右了，经历还算挺丰富的，不过也确实因为太忙而顾不上更新这里了（工作上倒是不忙，处理各种生活琐事太让人心累了）。最近平稳下来了，大概总结一下吧。</p>
+<p>工作以来，大概做了三个项目。第一个是纯 web 的应用，也因为它驱动着我学习了一直有所耳闻的 MVC。项目中使用的是 Phalcon，大概用两天左右的时间搞清楚了框架的用法。确实领会到了 MVC 的一些神奇之处。但其实感觉 MVC 只是其中的一小点，很重要的整个框架的完整程度。从数据库方面，有优秀的 ORM，视图方面有易用的模板引擎。</p>
+<p>尤其说下 ORM，真的让我耳目一新，以前自己的见识都很短浅了，以为 orm 还是得写很多配置文件，需要静态生成 ORM 模型类。现在这些东西都不需要，只需要你按照自己的想法写代码就 OK 了。我也终于明白现在的语言为什么都急着加入反射和动态特性。C# 在这方面这的尤其好。</p>
+<p>比如：数据库中有一个表</p>
+<table>
+     <caption>User</caption>
+    <tr>
+        <th>username</th>
+        <th>password</th>
+        <th>token</th>
+    </tr>
+</table>
+
+<p>你只需要这样写：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> \<span class="title">Phalcon</span>\<span class="title">Mvc</span>\<span class="title">Model</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    public <span class="function"><span class="keyword">function</span> <span class="title">initialize</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        parent::initialize();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    public $username;</span><br><span class="line">    public $password;</span><br><span class="line">    public $token;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后你就可以直接使用了！什么都无需配置，ORM 框架会默认以类名在数据库中找对应的表名，字段也会自动对应成员变量这简直太棒了！<br>ORM 就应该这样，这些配置上的问题就应该交给框架去做，而且就算要配置，不是让程序员写 XML 这种东西，而是应该用程序语言来描述。</p>
+<p>因此，我的想法改变了，我不再去一味地追求底层而是更喜欢去思考一种编程模式，一种让程序员更轻松的模式去编程的模式。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/闲扯/">闲扯</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2015/08/14/最近一直在做前端，很多想法都改变了。/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2015/05/26/寒假写了个JSON解析器/"><span>寒假写了个 JSON 解析器</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2015/05/26/寒假写了个JSON解析器/" rel="bookmark">
+        <time class="entry-date published" datetime="2015-05-26T00:00:00.000Z">
+          2015-05-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>一个 JSON 解析器</p>
+<p><a href="/notename/" title="archive 20150526"></a></p>
+<p>使用方法:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> data = File.<span class="constructor">ReadAllText(@<span class="string">"f:\1.Json"</span>)</span>;</span><br><span class="line">dynamic obj = Json.<span class="constructor">Parse(<span class="params">data</span>)</span>;</span><br><span class="line"> </span><br><span class="line">Console.<span class="constructor">WriteLine(<span class="params">obj</span>.<span class="params">employees</span>[0].<span class="params">firstName</span>)</span>;</span><br><span class="line"> </span><br><span class="line">foreach (var it <span class="keyword">in</span> obj.employees)</span><br><span class="line">&#123;</span><br><span class="line">    Console.<span class="constructor">WriteLine(<span class="params">it</span>.<span class="params">lastName</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设 json 文件如下:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"employees"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"firstName"</span>: <span class="string">"Bill"</span>,</span><br><span class="line">            <span class="attr">"lastName"</span>: <span class="string">"Gates"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"firstName"</span>: <span class="string">"George"</span>,</span><br><span class="line">            <span class="attr">"lastName"</span>: <span class="string">"Bush"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"firstName"</span>: <span class="string">"Thomas"</span>,</span><br><span class="line">            <span class="attr">"lastName"</span>: <span class="string">"Carter"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用了 c#4.0 的动态特性, c# 越来越像动态语言了, 用着真舒服.<br>代码如下, 就是个递归下降:</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.Linq;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"><span class="keyword">using</span> System.Dynamic;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Json</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Json</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">class</span> <span class="title">JsonObject</span> : <span class="title">DynamicObject</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="title">JsonObject</span>(<span class="params">Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">dynamic</span>&gt; member</span>)</span></span><br><span class="line"><span class="function"></span>            &#123;</span><br><span class="line">                <span class="keyword">this</span>.member = member;</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">bool</span> <span class="title">TryGetMember</span>(<span class="params">GetMemberBinder binder, <span class="keyword">out</span> <span class="keyword">object</span> result</span>)</span></span><br><span class="line"><span class="function"></span>            &#123;</span><br><span class="line">                <span class="keyword">if</span> (member.ContainsKey(binder.Name))</span><br><span class="line">                &#123;</span><br><span class="line">                    result = member[binder.Name];</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    result = <span class="literal">null</span>;</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">private</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">dynamic</span>&gt; member;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">CharToInt</span>(<span class="params"><span class="keyword">char</span> c</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="keyword">switch</span> (c)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'0'</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'1'</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'2'</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'3'</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">3</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'4'</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">4</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'5'</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">5</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'6'</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">6</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'7'</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">7</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'8'</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">8</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'9'</span>:</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">9</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"c不是一个数字字符"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">enum</span> TokenType</span><br><span class="line">        &#123;</span><br><span class="line">            LBrace, RBrace,</span><br><span class="line">            LBracket, RBracket,</span><br><span class="line">            Colon, Comma,</span><br><span class="line">            True, False,</span><br><span class="line">            Null, String,</span><br><span class="line">            Number</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">struct</span> Token</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">public</span> TokenType type;</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">dynamic</span> <span class="keyword">value</span>;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">enum</span> NumberState</span><br><span class="line">        &#123;</span><br><span class="line">            Start, MinusRead, ZeroRead, InInt, DotRead, InFraction, ERead, InExponent, End</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Token <span class="title">GetToken</span>(<span class="params"><span class="keyword">string</span> json, <span class="keyword">ref</span> <span class="keyword">int</span> i</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="keyword">while</span> (i &lt; json.Length &amp;&amp; <span class="keyword">char</span>.IsWhiteSpace(json[i]))</span><br><span class="line">                i++;</span><br><span class="line"> </span><br><span class="line">            Token token = <span class="keyword">new</span> Token();</span><br><span class="line">            <span class="keyword">string</span> sub = json.Substring(i);</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">if</span> (json[i] == <span class="string">'&#123;'</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                token.type = TokenType.LBrace;</span><br><span class="line">                i = i + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">'&#125;'</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                token.type = TokenType.RBrace;</span><br><span class="line">                i = i + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">'['</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                token.type = TokenType.LBracket;</span><br><span class="line">                i = i + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">']'</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                token.type = TokenType.RBracket;</span><br><span class="line">                i = i + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">':'</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                token.type = TokenType.Colon;</span><br><span class="line">                i = i + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">','</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                token.type = TokenType.Comma;</span><br><span class="line">                i = i + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (sub.StartsWith(<span class="string">"true"</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                token.type = TokenType.True;</span><br><span class="line">                i = i + <span class="number">4</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (sub.StartsWith(<span class="string">"false"</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                token.type = TokenType.False;</span><br><span class="line">                i = i + <span class="number">4</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (sub.StartsWith(<span class="string">"null"</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                token.type = TokenType.Null;</span><br><span class="line">                i = i + <span class="number">4</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">'"'</span>)        <span class="comment">//string</span></span><br><span class="line">            &#123;</span><br><span class="line">                StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">                i++;</span><br><span class="line"> </span><br><span class="line">                <span class="keyword">while</span> (i &lt; json.Length)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">                    <span class="keyword">while</span> (i + len &lt; json.Length &amp;&amp; json[i + len] != <span class="string">'"'</span> &amp;&amp; json[i + len] != <span class="string">'\\'</span>)</span><br><span class="line">                        len++;</span><br><span class="line"> </span><br><span class="line">                    sb.Append(json.Substring(i, len));</span><br><span class="line"> </span><br><span class="line">                    <span class="keyword">if</span> (i + len &gt;= json.Length)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"未找到匹配的引号"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span> <span class="keyword">if</span> (json[i + len] == <span class="string">'"'</span>)</span><br><span class="line">                    &#123;</span><br><span class="line">                        i += len + <span class="number">1</span>;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line"> </span><br><span class="line">                    i += len + <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">switch</span> (json[i])</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'"'</span>:</span><br><span class="line">                            sb.Append(<span class="string">'"'</span>);</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'\\'</span>:</span><br><span class="line">                            sb.Append(<span class="string">'\\'</span>);</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'/'</span>:</span><br><span class="line">                            sb.Append(<span class="string">'/'</span>);</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'b'</span>:</span><br><span class="line">                            sb.Append(<span class="string">'\b'</span>);</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'f'</span>:</span><br><span class="line">                            sb.Append(<span class="string">'\f'</span>);</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'n'</span>:</span><br><span class="line">                            sb.Append(<span class="string">'\n'</span>);</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'r'</span>:</span><br><span class="line">                            sb.Append(<span class="string">'\r'</span>);</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'t'</span>:</span><br><span class="line">                            sb.Append(<span class="string">'\t'</span>);</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'u'</span>:</span><br><span class="line">                            <span class="keyword">string</span> hex = json.Substring(i + <span class="number">1</span>, <span class="number">4</span>);</span><br><span class="line">                            <span class="keyword">ushort</span> code = Convert.ToUInt16(hex, <span class="number">16</span>);</span><br><span class="line">                            <span class="keyword">char</span> c = (<span class="keyword">char</span>)code;</span><br><span class="line">                            sb.Append(c);</span><br><span class="line">                            i += <span class="number">5</span>;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"> </span><br><span class="line">                token.<span class="keyword">value</span> = sb.ToString();</span><br><span class="line">                token.type = TokenType.String;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">'-'</span> || <span class="keyword">char</span>.IsNumber(json[i]))    <span class="comment">//nubmer</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">dynamic</span> <span class="keyword">value</span> = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">bool</span> isMinus = <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">int</span> frac = <span class="number">10</span>;</span><br><span class="line">                <span class="keyword">bool</span> isExponentNegative = <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">int</span> exponent = <span class="number">0</span>;</span><br><span class="line"> </span><br><span class="line">                NumberState state = NumberState.Start;</span><br><span class="line"> </span><br><span class="line">                <span class="keyword">while</span> (state != NumberState.End)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">switch</span> (state)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">case</span> NumberState.Start:</span><br><span class="line">                            <span class="keyword">if</span> (json[i] == <span class="string">'-'</span>)</span><br><span class="line">                            &#123;</span><br><span class="line">                                isMinus = <span class="literal">true</span>;</span><br><span class="line"> </span><br><span class="line">                                state = NumberState.MinusRead;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">'0'</span>)</span><br><span class="line">                            &#123;</span><br><span class="line">                                state = NumberState.ZeroRead;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">char</span>.IsNumber(json[i]))</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="keyword">value</span> = CharToInt(json[i]);</span><br><span class="line">                                state = NumberState.InInt;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span></span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"不能识别的字符‘"</span> + json[i] + <span class="string">"’"</span>);</span><br><span class="line">                            &#125;</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> NumberState.MinusRead:</span><br><span class="line">                            <span class="keyword">if</span> (json[i] == <span class="string">'0'</span>)</span><br><span class="line">                            &#123;</span><br><span class="line">                                state = NumberState.ZeroRead;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">char</span>.IsNumber(json[i]))</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="keyword">value</span> = CharToInt(json[i]);</span><br><span class="line">                                state = NumberState.InInt;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span></span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"不能识别的字符‘"</span> + json[i] + <span class="string">"’"</span>);</span><br><span class="line">                            &#125;</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> NumberState.InInt:</span><br><span class="line">                            <span class="keyword">if</span> (<span class="keyword">char</span>.IsNumber(json[i]))</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="keyword">value</span> *= <span class="number">10</span>;</span><br><span class="line">                                <span class="keyword">value</span> += CharToInt(json[i]);</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">'.'</span>)</span><br><span class="line">                            &#123;</span><br><span class="line">                                state = NumberState.DotRead;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">'e'</span> || json[i] == <span class="string">'E'</span>)</span><br><span class="line">                            &#123;</span><br><span class="line">                                state = NumberState.ERead;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span></span><br><span class="line">                            &#123;</span><br><span class="line">                                i--;</span><br><span class="line">                                state = NumberState.End;</span><br><span class="line">                            &#125;</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> NumberState.ZeroRead:</span><br><span class="line">                            <span class="keyword">if</span> (json[i] == <span class="string">'.'</span>)</span><br><span class="line">                            &#123;</span><br><span class="line">                                state = NumberState.DotRead;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">'e'</span> || json[i] == <span class="string">'E'</span>)</span><br><span class="line">                            &#123;</span><br><span class="line">                                state = NumberState.ERead;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span></span><br><span class="line">                            &#123;</span><br><span class="line">                                i--;</span><br><span class="line">                                state = NumberState.End;</span><br><span class="line">                            &#125;</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> NumberState.DotRead:</span><br><span class="line">                            <span class="keyword">if</span> (<span class="keyword">char</span>.IsNumber(json[i]))</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="keyword">value</span> += (<span class="keyword">double</span>)CharToInt(json[i]) / frac;</span><br><span class="line">                                frac *= <span class="number">10</span>;</span><br><span class="line">                                state = NumberState.InFraction;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span></span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"不能识别的字符‘"</span> + json[i] + <span class="string">"’"</span>);</span><br><span class="line">                            &#125;</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> NumberState.InFraction:</span><br><span class="line">                            <span class="keyword">if</span> (<span class="keyword">char</span>.IsNumber(json[i]))</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="keyword">value</span> += (<span class="keyword">double</span>)CharToInt(json[i]) / frac;</span><br><span class="line">                                frac *= <span class="number">10</span>;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">'e'</span> || json[i] == <span class="string">'E'</span>)</span><br><span class="line">                            &#123;</span><br><span class="line">                                state = NumberState.ERead;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span></span><br><span class="line">                            &#123;</span><br><span class="line">                                i--;</span><br><span class="line">                                state = NumberState.End;</span><br><span class="line">                            &#125;</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> NumberState.ERead:</span><br><span class="line">                            <span class="keyword">if</span> (<span class="keyword">char</span>.IsNumber(json[i]))</span><br><span class="line">                            &#123;</span><br><span class="line">                                exponent = CharToInt(json[i]);</span><br><span class="line">                                state = NumberState.InExponent;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">'+'</span>)</span><br><span class="line">                            &#123;</span><br><span class="line">                                state = NumberState.InExponent;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span> <span class="keyword">if</span> (json[i] == <span class="string">'-'</span>)</span><br><span class="line">                            &#123;</span><br><span class="line">                                isExponentNegative = <span class="literal">true</span>;</span><br><span class="line">                                state = NumberState.InExponent;</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span></span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"不能识别的字符‘"</span> + json[i] + <span class="string">"’"</span>);</span><br><span class="line">                            &#125;</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> NumberState.InExponent:</span><br><span class="line">                            <span class="keyword">if</span> (<span class="keyword">char</span>.IsNumber(json[i]))</span><br><span class="line">                            &#123;</span><br><span class="line">                                exponent *= <span class="number">10</span>;</span><br><span class="line">                                exponent = CharToInt(json[i]);</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span></span><br><span class="line">                            &#123;</span><br><span class="line">                                i--;</span><br><span class="line">                                state = NumberState.End;</span><br><span class="line">                            &#125;</span><br><span class="line">                            i++;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> (i &gt;= json.Length)</span><br><span class="line">                        state = NumberState.End;</span><br><span class="line">                &#125;</span><br><span class="line"> </span><br><span class="line">                <span class="keyword">if</span> (exponent != <span class="number">0</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span> (isExponentNegative)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">value</span> = <span class="keyword">value</span> * Math.Pow(<span class="number">10</span>, -exponent);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">value</span> = <span class="keyword">value</span> * Math.Pow(<span class="number">10</span>, exponent);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (isMinus)</span><br><span class="line">                    token.<span class="keyword">value</span> = -<span class="keyword">value</span>;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    token.<span class="keyword">value</span> = <span class="keyword">value</span>;</span><br><span class="line">                token.type = TokenType.Number;</span><br><span class="line"> </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"不能识别的字符‘"</span> + json[i] + <span class="string">"’"</span>);</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">while</span> (i &lt; json.Length &amp;&amp; <span class="keyword">char</span>.IsWhiteSpace(json[i]))</span><br><span class="line">                i++;</span><br><span class="line">            <span class="keyword">return</span> token;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">dynamic</span> <span class="title">Value</span>(<span class="params"><span class="keyword">string</span> json, <span class="keyword">ref</span> <span class="keyword">int</span> i</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            Token token = GetToken(json, <span class="keyword">ref</span> i);</span><br><span class="line">            <span class="keyword">if</span> (token.type == TokenType.Null)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (token.type == TokenType.False)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (token.type == TokenType.True)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (token.type == TokenType.Number)</span><br><span class="line">                <span class="keyword">return</span> token.<span class="keyword">value</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (token.type == TokenType.String)</span><br><span class="line">                <span class="keyword">return</span> token.<span class="keyword">value</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (token.type == TokenType.LBrace)</span><br><span class="line">            &#123;</span><br><span class="line">                Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">dynamic</span>&gt; member = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">dynamic</span>&gt;();</span><br><span class="line"> </span><br><span class="line">                <span class="keyword">bool</span> first = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span> (first)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">int</span> tmpi = i;</span><br><span class="line">                        token = GetToken(json, <span class="keyword">ref</span> i);</span><br><span class="line">                        <span class="keyword">if</span> (token.type == TokenType.RBrace)</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">else</span></span><br><span class="line">                            i = tmpi;</span><br><span class="line"> </span><br><span class="line">                        first = <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line"> </span><br><span class="line">                    token = GetToken(json, <span class="keyword">ref</span> i);</span><br><span class="line">                    <span class="keyword">if</span> (token.type != TokenType.String)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"出乎意料的Token: "</span> + token.type);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">string</span> name = token.<span class="keyword">value</span>;</span><br><span class="line"> </span><br><span class="line">                    token = GetToken(json, <span class="keyword">ref</span> i);</span><br><span class="line">                    <span class="keyword">if</span> (token.type != TokenType.Colon)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"出乎意料的Token: "</span> + token.type);</span><br><span class="line">                    &#125;</span><br><span class="line"> </span><br><span class="line">                    <span class="keyword">dynamic</span> val = Value(json, <span class="keyword">ref</span> i);</span><br><span class="line">                    member[name] = val;</span><br><span class="line"> </span><br><span class="line">                    token = GetToken(json, <span class="keyword">ref</span> i);</span><br><span class="line">                    <span class="keyword">if</span> (token.type == TokenType.Comma)</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    <span class="keyword">else</span> <span class="keyword">if</span> (token.type == TokenType.RBrace)</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"出乎意料的Token: "</span> + token.type);</span><br><span class="line">                &#125;</span><br><span class="line"> </span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> JsonObject(member);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (token.type == TokenType.LBracket)</span><br><span class="line">            &#123;</span><br><span class="line">                List&lt;<span class="keyword">dynamic</span>&gt; list = <span class="keyword">new</span> List&lt;<span class="keyword">dynamic</span>&gt;();</span><br><span class="line">                <span class="keyword">bool</span> first = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span> (first)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">int</span> tmpi = i;</span><br><span class="line">                        token = GetToken(json, <span class="keyword">ref</span> i);</span><br><span class="line">                        <span class="keyword">if</span> (token.type == TokenType.RBracket)</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">else</span></span><br><span class="line">                            i = tmpi;</span><br><span class="line"> </span><br><span class="line">                        first = <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line"> </span><br><span class="line">                    list.Add(Value(json, <span class="keyword">ref</span> i));</span><br><span class="line">                    token = GetToken(json, <span class="keyword">ref</span> i);</span><br><span class="line">                    <span class="keyword">if</span> (token.type == TokenType.Comma)</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    <span class="keyword">else</span> <span class="keyword">if</span> (token.type == TokenType.RBracket)</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"出乎意料的Token: "</span> + token.type);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> list.ToArray();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"出乎意料的Token: "</span> + token.type);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">dynamic</span> <span class="title">Parse</span>(<span class="params"><span class="keyword">string</span> json</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">return</span> Value(json, <span class="keyword">ref</span> i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/JSON/">JSON</a><a href="/tags/解析器/">解析器</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2015/05/26/寒假写了个JSON解析器/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/12/26/[转]一个CSS3的自定义滚动条/"><span>[转]一个 CSS3 的自定义滚动条</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/12/26/[转]一个CSS3的自定义滚动条/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-12-26T00:00:00.000Z">
+          2014-12-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>转载一个 css3 的自定义滚动条~</p>
+<p><a href="/notename/" title="archive 20141226"></a></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-pseudo">::-webkit-scrollbar</span> &#123;</span><br><span class="line">    <span class="attribute">height</span>:<span class="number">11px</span>;</span><br><span class="line">    <span class="attribute">width</span>:<span class="number">11px</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-button</span> &#123;</span><br><span class="line">    <span class="attribute">height</span>:<span class="number">0</span>;</span><br><span class="line">    <span class="attribute">width</span>:<span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-button</span><span class="selector-pseudo">:start</span><span class="selector-pseudo">:decrement</span>,<span class="selector-pseudo">::-webkit-scrollbar-button</span><span class="selector-pseudo">:end</span><span class="selector-pseudo">:increment</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>:block</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-button</span><span class="selector-pseudo">:vertical</span><span class="selector-pseudo">:start</span><span class="selector-pseudo">:increment</span>,<span class="selector-pseudo">::-webkit-scrollbar-button</span><span class="selector-pseudo">:vertical</span><span class="selector-pseudo">:end</span><span class="selector-pseudo">:decrement</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>:none</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:horizontal</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:horizontal</span>,<span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:horizontal</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:horizontal</span> &#123;</span><br><span class="line">    <span class="attribute">border-style</span>:solid;</span><br><span class="line">    <span class="attribute">border-color</span>:transparent</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:vertical</span><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:horizontal</span>&#123;</span><br><span class="line">    <span class="attribute">background-clip</span>:padding-box;</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="number">#fff</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-thumb</span> &#123;</span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>:inset <span class="number">1px</span> <span class="number">1px</span> <span class="number">0</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">1</span>),inset <span class="number">0</span> -<span class="number">1px</span> <span class="number">0</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">07</span>);</span><br><span class="line">    <span class="attribute">background-clip</span>:padding-box;</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">2</span>);</span><br><span class="line">    <span class="attribute">min-height</span>:<span class="number">28px</span>;</span><br><span class="line">    <span class="attribute">padding-top</span>:<span class="number">100</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>:inset <span class="number">1px</span> <span class="number">1px</span> <span class="number">1px</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">25</span>);</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">4</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:active</span> &#123;</span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>:inset <span class="number">1px</span> <span class="number">1px</span> <span class="number">3px</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">35</span>);</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">5</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:horizontal</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:horizontal</span> &#123;</span><br><span class="line">    <span class="attribute">border-width</span>:<span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>:inset <span class="number">1px</span> <span class="number">0</span> <span class="number">0</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">1</span>);</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">05</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:active</span> &#123;</span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>:inset <span class="number">1px</span> <span class="number">0</span> <span class="number">0</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">14</span>),inset -<span class="number">1px</span> -<span class="number">1px</span> <span class="number">0</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">07</span>);</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">05</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/CSS3/">CSS3</a><a href="/tags/滚动条/">滚动条</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/12/26/[转]一个CSS3的自定义滚动条/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  <a href="/page/3/" class="pagination-prev">上一页</a>
+  
+  
+  <a href="/page/5/" class="pagination-next">下一页</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

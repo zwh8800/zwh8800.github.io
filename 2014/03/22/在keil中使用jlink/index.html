@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>在 keil 中使用 jlink | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="在 keil 中使用 jlink
+
+先安装 jlink 的工具包. 在官网下载需要输序列号, 鉴于国内大多使用盗版. 在本站放一个镜像供大家下载: https://lengzzz.com/download/Setup_JLinkARM_V480.zip
+下载后安装
+安装好之后插上 jlink. 打开">
+  
+
+  
+  
+  <meta name="keywords" content="单片机,jlink">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="在 keil 中使用 jlink"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>在 keil 中使用 jlink</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/22/在keil中使用jlink/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-22T00:00:00.000Z">
+          2014-03-22
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>在 keil 中使用 jlink</p>
+<p><a href="/notename/" title="archive 20140322"></a></p>
+<p>先安装 jlink 的工具包. 在官网下载需要输序列号, 鉴于国内大多使用盗版. 在本站放一个镜像供大家下载: <a href="https://lengzzz.com/download/Setup_JLinkARM_V480.zip">https://lengzzz.com/download/Setup_JLinkARM_V480.zip</a></p>
+<p>下载后安装</p>
+<p>安装好之后插上 jlink. 打开 keil</p>
+<p>点击 Target Option 按钮:<br><img src="http://static.zybuluo.com/zwh8800/7jgd86b8v29dssmfeya7paxn/image_1bl07o71mk7i521141i1rbr6nj9.png" alt="image_1bl07o71mk7i521141i1rbr6nj9.png-17kB"></p>
+<p>然后打开 Debug 选项卡, 选择右边的 use jlink<br><img src="http://static.zybuluo.com/zwh8800/pbkcy680p6wxoi54xk8gip7e/image_1bl07om2r1ecb7vtphf4bdpnjm.png" alt="image_1bl07om2r1ecb7vtphf4bdpnjm.png-24.1kB"></p>
+<p>然后点击 Utilities 选项卡, 也选择 jlink:<br><img src="http://static.zybuluo.com/zwh8800/s353yhzpofjn0l6la6cpj862/image_1bl07p8up16eg8n53951jbvk4s13.png" alt="image_1bl07p8up16eg8n53951jbvk4s13.png-18.1kB"></p>
+<p>接着点击 Settings 选择 add 然后在列表中选择我们的器件:<br><img src="http://static.zybuluo.com/zwh8800/p47bb6vw9z3eivk7mzjx2sy0/image_1bl07pm2ni37imc1vsi5tt9s61g.png" alt="image_1bl07pm2ni37imc1vsi5tt9s61g.png-30.3kB"></p>
+<p>之后勾选上 Reset and run:<br><img src="http://static.zybuluo.com/zwh8800/poxp24jgkqvkypwbo3w597mz/image_1bl07q50dkns1flb1hid1ffn19ot1t.png" alt="image_1bl07q50dkns1flb1hid1ffn19ot1t.png-20.2kB"><br>一路 ok 后, 应该可以下载和调试程序了</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/单片机/">单片机</a><a href="/tags/jlink/">jlink</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

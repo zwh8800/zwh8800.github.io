@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>延时函数的一个BUG | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="延时函数的一个BUG
+
+123456789101112131415161718void Delay_us (unsigned char time_us)&amp;#123;   TR2   = 0;                          // Stop timer   TF2H  = 0;   ">
+  
+
+  
+  
+  <meta name="keywords" content="错题本,BUG">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="延时函数的一个BUG"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>延时函数的一个BUG</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/12/18/延时函数的一个BUG/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-12-18T00:00:00.000Z">
+          2013-12-18
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>延时函数的一个BUG</p>
+<p><a href="/notename/" title="archive 20131218"></a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Delay_us</span> <span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> time_us)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   TR2   = <span class="number">0</span>;                          <span class="comment">// Stop timer</span></span><br><span class="line">   TF2H  = <span class="number">0</span>;                          <span class="comment">// Clear timer overflow flag</span></span><br><span class="line">   TMR2  = -( (<span class="keyword">unsigned</span> <span class="keyword">int</span>)(SYSCLK * time_us / <span class="number">1000000</span>) );</span><br><span class="line">   TR2   = <span class="number">1</span>;                          <span class="comment">// Start timer</span></span><br><span class="line">   <span class="keyword">while</span> (!TF2H);                      <span class="comment">// Wait till timer overflow occurs</span></span><br><span class="line">   TR2   = <span class="number">0</span>;                          <span class="comment">// Stop timer</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Delay_ms</span> <span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> time_ms)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="keyword">unsigned</span> <span class="keyword">char</span> i;</span><br><span class="line"> </span><br><span class="line">   <span class="keyword">while</span>(time_ms--)</span><br><span class="line">      <span class="keyword">for</span>(i = <span class="number">0</span>; i&lt; <span class="number">10</span>; i++)           <span class="comment">// 10 * 100 microsecond delay</span></span><br><span class="line">         Delay_us(<span class="number">100</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先贴代码</p>
+<p>这是silicon lab里自带的例子(其实不是, 本身第五行是这样写的</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TMR<span class="number">2</span>  = -<span class="comment">( (UINT)</span><span class="comment">(SYSCLK/1000000)</span> * <span class="comment">(UINT)</span><span class="comment">(time_us)</span> );</span><br></pre></td></tr></table></figure>
+
+<p>不论现在两种方法怎么写都有BUG.</p>
+<p>先看silicon原版的吧, SYSCLK为24500000时除以1000000等于24.5, 转为整数, 近似成24, 这样还好, 差别不大.</p>
+<p>假如没有开那么高的频率呢, 一般情况下, 我测试时用默认的8分频, 也就是SYSCLK = 12000000 / 8 = 1500000= 1.5MHZ  (用F340说吧, 比较明显)</p>
+<p>SYSCLK / 1000000 = 1 &lt; 1.5</p>
+<p>一下子比1.5小了三分之一</p>
+<p>导致我每次演示都会快那么三分之一.</p>
+<p>然后我就把代码改成了上面贴的那样.</p>
+<p>没想到, 当时以为改对了的, 还是有BUG.</p>
+<p>当时的想法是, 既然除以1000000之后把小数部分消去了, 那就先乘上time_us(当时也意识到了, 这样会比之前慢一些, 因为SYSCLK / 1000000会在编译时优化求值, 而先做乘法, 再做除法的话两个工作都会在运行时进行)</p>
+<p>如果当时的想法能向前再走一步的话就会找到这个BUG了. 既然要在运行时进行, 那么SYSCLK&gt;32768, 会被认为是为signed int, 然后乘以time_us, time_us是unsigned char类型. 所以提升成signed int, 可是在Delay_ms函数中调用的是Delay_us(100), 24500000 * 100 = 2’450’000’000而232 / 2 – 1 = 2’147’483’647, 比2’450’000’000要小!, signed int的最大值竟然比2’450’000’000还小…之后的事情大家知道了吧, 2’450’000’000会被截断成一个负数!(对, 就是负数…)</p>
+<p><img src="http://static.zybuluo.com/zwh8800/8qz85rwvubngw6a4i33hr5w8/image_1bl05485217g51fci1kl2i1g19809.png" alt="image_1bl05485217g51fci1kl2i1g19809.png-74.2kB"></p>
+<p>原谅我才疏学浅, 这是第一次遇见超整数上限的事情(貌似原来写PSP程序的时候也遇见过一次, 取随机数超过signed int上限, psp平台的随机数最大是SIGNED_INT_MAX, 再进行加法的话就变成负的了)</p>
+<p>一定记住教训!</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/错题本/">错题本</a><a href="/tags/BUG/">BUG</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

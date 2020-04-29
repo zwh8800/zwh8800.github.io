@@ -1,0 +1,305 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>arm-linux 汇编(3) – 处理器模式 寄存器 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="上一篇中给出了在arm体系架构中[用户态]的寄存器, 共有16个通用寄存器r0-r15和一个通用程序状态寄存器(cpsr).
+
+上一篇中给出了在arm体系架构中[用户态]的寄存器, 共有16个通用寄存器r0-r15和一个通用程序状态寄存器(cpsr).
+1.这次接着说通用程序状态寄存器先看图:
+
+c">
+  
+
+  
+  
+  <meta name="keywords" content="arm-linux,汇编,系统编程">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="arm-linux 汇编(3) – 处理器模式 寄存器"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>arm-linux 汇编(3) – 处理器模式 寄存器</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/18/arm-linux汇编(3)–处理器模式寄存器/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-18T00:00:00.000Z">
+          2014-01-18
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>上一篇中给出了在arm体系架构中[用户态]的寄存器, 共有16个通用寄存器r0-r15和一个通用程序状态寄存器(cpsr).</p>
+<p><a href="/notename/" title="archive 20140118"></a></p>
+<p>上一篇中给出了在arm体系架构中[用户态]的寄存器, 共有16个通用寄存器r0-r15和一个通用程序状态寄存器(cpsr).</p>
+<h6 id="1-这次接着说通用程序状态寄存器"><a href="#1-这次接着说通用程序状态寄存器" class="headerlink" title="1.这次接着说通用程序状态寄存器"></a>1.这次接着说通用程序状态寄存器</h6><p>先看图:</p>
+<p><img src="http://static.zybuluo.com/zwh8800/z5m5jxx45x7iy1qvaksufyf8/image_1bl0ld0ga1lkn16khh2rvg1j3a9.png" alt="image_1bl0ld0ga1lkn16khh2rvg1j3a9.png-116.9kB"></p>
+<p>cpsr分为4个域, 每个域8位, 分别是<strong>标志域</strong>, <strong>状态域</strong>, <strong>扩展域</strong>和<strong>控制域</strong>.(图上画的有点错误, 扩展域画大了, mode和I,F,T都是控制域的)</p>
+<p>其中标志域表示运算结果的标志. 控制域中, I为1表示屏蔽掉普通中断, F为1表示屏蔽掉快速中断, T为1表示当前为thumb模式.</p>
+<p>Mode域表示了当前CPU的处理器模式.</p>
+<h6 id="2-处理器模式"><a href="#2-处理器模式" class="headerlink" title="2.处理器模式"></a>2.处理器模式</h6><p>不算上最新安全扩展和虚拟化扩展新加上的模式的话, arm架构共有7个处理器模式:</p>
+<table>
+<tbody>
+<tr>
+<td>User mode</td>
+<td>FIQ mode</td>
+<td>IRQ mode</td>
+<td>Supervisor (svc) mode</td>
+</tr>
+<tr>
+<td>Abort mode</td>
+<td>Undefined mode</td>
+<td>System mode</td>
+</tr>
+</tbody>
+</table>
+
+<p>其中User mode为非特权模式以外, 剩下6个都为特权模式.</p>
+<p>当快速中断产生时进入FIQ模式.</p>
+<p>当中断产生时进入IRQ模式.</p>
+<p>当系统reset或swi(又称svc, 软中断)命令执行时进入svc模式.</p>
+<p>当访问内存失败时(分为prefetch abort和data abort)进入Abort模式.</p>
+<p>当执行的指令未定义时进入Undefined模式.</p>
+<p>是否为特权模式决定了那些寄存器是可用的, 以及cpsr本身的访问权限. 对于特权模式, 对cpsr有完全的访问权限(MSR和MRS指令), 对以非特权模式, 只能读控制域但可读写条件标志域.</p>
+<h6 id="3-寄存器"><a href="#3-寄存器" class="headerlink" title="3.寄存器"></a>3.寄存器</h6><p>arm架构共有37个寄存器但在不同时刻有20个寄存器是隐藏的(图中阴影部分), 只有当寄存器处于某种特定模式时, 才能访问特定的寄存器(如在abort模式才能访问r13_abt), 另外, 在不同的模式访问cpsr都是同一个, 而spsr_mode用来保存进入特权模式之前的cpsr以便保存异常之前的现场.</p>
+<p><img src="http://static.zybuluo.com/zwh8800/ksx9ajg9g1bzznq9qd8doqu7/image_1bl0lfomu104c13dd161112p81p89m.png" alt="image_1bl0lfomu104c13dd161112p81p89m.png-178.8kB"></p>
+<table class="wikitable">
+<caption>Registers across CPU modes</caption>
+<tbody>
+<tr>
+<th>usr</th>
+<th>sys</th>
+<th>svc</th>
+<th>abt</th>
+<th>und</th>
+<th>irq</th>
+<th>fiq</th>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R0</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R1</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R2</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R3</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R4</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R5</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R6</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R7</td>
+</tr>
+<tr align="center">
+<td colspan="6">R8</td>
+<td>R8_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="6">R9</td>
+<td>R9_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="6">R10</td>
+<td>R10_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="6">R11</td>
+<td>R11_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="6">R12</td>
+<td>R12_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="2">R13</td>
+<td>R13_svc</td>
+<td>R13_abt</td>
+<td>R13_und</td>
+<td>R13_irq</td>
+<td>R13_fiq</td>
+</tr>
+<tr align="center">
+<td colspan="2">R14</td>
+<td>R14_svc</td>
+<td>R14_abt</td>
+<td>R14_und</td>
+<td>R14_irq</td>
+<td>R14_fiq</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">R15</td>
+</tr>
+<tr>
+<td style="text-align: center;" colspan="7">CPSR</td>
+</tr>
+<tr align="center">
+<td colspan="2"></td>
+<td>SPSR_svc</td>
+<td>SPSR_abt</td>
+<td>SPSR_und</td>
+<td>SPSR_irq</td>
+<td>SPSR_fiq</td>
+</tr>
+</tbody>
+</table>
+
+<p>从wiki上copy的一个寄存器的表格</p>
+<p>其实这些东西对于写用户程序的话都是透明的了, 但是有利于理解arm体系架构和看懂一些系统级的代码.</p>
+<p>下面想要学一学eabi相关的东西了除了指令集就是这个最重要了.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/arm-linux/">arm-linux</a><a href="/tags/汇编/">汇编</a><a href="/tags/系统编程/">系统编程</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

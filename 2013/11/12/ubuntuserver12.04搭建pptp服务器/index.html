@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>ubuntu server 12.04 搭建 pptp 服务器 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="前几天把pptp服务器搭上了, xen的vps就这点好处, 想怎么搞就怎么搞, 虽说贵了点. 在国内的话用pptp连外国网站快多了, 本身校园网烂得掉渣自己电脑更新系统基本上得一晚上(特别是国外源), psv更新更是…呵呵..呵呵..呵呵呵. 搭起来pptp之后反而会比之前快很多, 今天把psv系统">
+  
+
+  
+  
+  <meta name="keywords" content="运维,Linux,pptp">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="ubuntu server 12.04 搭建 pptp 服务器"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>ubuntu server 12.04 搭建 pptp 服务器</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/11/12/ubuntuserver12.04搭建pptp服务器/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-11-12T00:00:00.000Z">
+          2013-11-12
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>前几天把pptp服务器搭上了, xen的vps就这点好处, 想怎么搞就怎么搞, 虽说贵了点. 在国内的话用pptp连外国网站快多了, 本身校园网烂得掉渣自己电脑更新系统基本上得一晚上(特别是国外源), psv更新更是…呵呵..呵呵..呵呵呵. 搭起来pptp之后反而会比之前快很多, 今天把psv系统更新到了3.0, 只需要15分钟. 真是让我这个更新狂魔泪流满面.</p>
+<p><a href="/notename/" title="archive 20131112"></a></p>
+<p>好吧, 进正题</p>
+<p>基本上是综合了网上的做法, 不过网上的教程总有些漏, 有的没法加密, 有的登陆不上.</p>
+<p>首先, 安装pptpd</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="builtin-name">get</span> install pptpd</span><br></pre></td></tr></table></figure>
+
+<p>安装pptpd的同时会安装上ppp, 因为pptp在握手时使用ppp协议, 通讯时使用ppp协议(通过GRE协议在ip层上使用ppp).</p>
+<p>之后分别对pptp和ppp进行配置.</p>
+<h6 id="1-打开文件-etc-pptpd-conf"><a href="#1-打开文件-etc-pptpd-conf" class="headerlink" title="1. 打开文件/etc/pptpd.conf"></a>1. 打开文件/etc/pptpd.conf</h6><p>这个文件为Sample Poptop configuration file(简单Poptop配置文件), 可以看见里面有6个TAG不过需要我们改动的只有最后的那一组</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># TAG: localip</span></span><br><span class="line"><span class="meta"># TAG: remoteip</span></span><br></pre></td></tr></table></figure>
+
+<p>用来设置连接之后的本机地址和对端地址(指pptp服务器在pptp子网中的ip地址, 不要填写真正分配的因特网地址), 可以看见注释里有个(Recommended)的localip和remoteip, 是192.168的那个, 这两个地址没被用过的话, 直接取消注释用它就好了.</p>
+<h6 id="2-打开文件-etc-ppp-pptpd-options"><a href="#2-打开文件-etc-ppp-pptpd-options" class="headerlink" title="2. 打开文件/etc/ppp/pptpd-options"></a>2. 打开文件/etc/ppp/pptpd-options</h6><p>这个文件为PPP options文件, 其实这个文件在刚刚的pptpd.conf中的option tag指定了, 可以去看看, 还可以指定其他的文件当做PPP options. 首先看一下参数name(就是name xxx那一行), 看一下他后面的名字是什么, 一会儿要用, 我这里是name pptpd. 然后是一系列ppp协议的加密选项, pap和chap是明文传送密码的, mschap对内容不加密, mschap-v2配合上mppe可以进行对密码和内容的同时加密. 所以加密部分配置文件基本不用动:</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># Encryption</span></span><br><span class="line"><span class="meta"># Debian: on systems with a kernel built with the package</span></span><br><span class="line"><span class="meta"># kernel-patch-mppe &gt;= 2.4.2 and using ppp &gt;= 2.4.2, …</span></span><br><span class="line"><span class="meta"># &#123;&#123;&#123;</span></span><br><span class="line">refuse-pap</span><br><span class="line">refuse-chap</span><br><span class="line">refuse-mschap</span><br><span class="line"><span class="meta"># Require the peer to authenticate itself using MS-CHAPv2 [Microsoft</span></span><br><span class="line"><span class="meta"># Challenge Handshake Authentication Protocol, Version 2] authentication.</span></span><br><span class="line"></span><br><span class="line">require-mschap-v2</span><br><span class="line"><span class="meta"># Require MPPE 128-bit encryption</span></span><br><span class="line"><span class="meta"># (note that MPPE requires the use of MSCHAP-V2 during authentication)</span></span><br><span class="line">require-mppe<span class="number">-128</span></span><br><span class="line"><span class="meta"># &#125;&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>但对于不想加密的同学, 想直接用chap登陆可以这样写:</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>-chap</span><br></pre></td></tr></table></figure>
+<p>下面还有一行ms-dns设置成你喜欢的dns服务器吧我设置的是:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ms-dns <span class="number">114.114</span><span class="number">.114</span><span class="number">.114</span></span><br><span class="line">ms-dns <span class="number">8.8</span><span class="number">.8</span><span class="number">.8</span></span><br></pre></td></tr></table></figure>
+
+<p>还有最后, 至关重要的, 在文件最末尾加两行不明觉利的</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">novj</span></span><br><span class="line"><span class="attribute">novjccomp</span></span><br><span class="line"><span class="attribute">nologfd</span></span><br></pre></td></tr></table></figure>
+<p>我还不懂这个是干嘛的, google没google到, 谁知道的可以告诉我.</p>
+<p>打开文件/etc/ppp/chap-secrets这里存放chap加密方式的密码, 打开之后分四列, 第一列为用户名, 第二列填写刚刚第一步里, 那个name参数就行了, 我的是pptpd, 第三列是密码, 第四列是允许接入的ip, 允许所有ip填写*, 没列用Tab隔开就好了.<br>基本上ok了, 直接sudo /etc/init.d/pptpd restart吧</p>
+<p>更新:</p>
+<p>刚刚查了man pppd, 终于弄懂了那三行不明觉利的代码什么意思了</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> novj   <span class="builtin-name">Disable</span> Van Jacobson style TCP<span class="built_in">/IP </span>header compression <span class="keyword">in</span> both the</span><br><span class="line">        transmit <span class="keyword">and</span> the receive direction.</span><br><span class="line">novjccomp</span><br><span class="line">      <span class="builtin-name">Disable</span> the connection-ID compression  option  <span class="keyword">in</span>  Van  Jacobson</span><br><span class="line">      style  TCP<span class="built_in">/IP </span> header  compression.  With this option, pppd will</span><br><span class="line">      <span class="keyword">not</span> omit the connection-ID byte  <span class="keyword">from</span>  Van  Jacobson  compressed</span><br><span class="line">      TCP<span class="built_in">/IP </span>headers, nor ask the<span class="built_in"> peer </span><span class="keyword">to</span> <span class="keyword">do</span> so.</span><br></pre></td></tr></table></figure>
+
+<p>先看说明, 貌似就是有个叫Van Jacobson的, 他的压缩协议让我总上不了网, 只好把它关啦. 总之就是禁用TCP/IP头压缩和connection-ID压缩, 否则我的win7一直在登陆的最后一步断开连接.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/运维/">运维</a><a href="/tags/Linux/">Linux</a><a href="/tags/pptp/">pptp</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

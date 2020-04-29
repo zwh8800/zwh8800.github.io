@@ -1,0 +1,235 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>golang 垃圾回收机制 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="用任何带 GC 的语言最后都要直面 GC 问题。在以前学习 C# 的时候就被迫读了一大堆 .NET Garbage Collection 的文档。最近也学习了一番 golang 的垃圾回收机制，在这里记录一下。
+
+常见 GC 算法趁着这个机会我总结了一下常见的 GC 算法。分别是：引用计数法、Mar">
+  
+
+  
+  
+  <meta name="keywords" content="golang,GC,垃圾回收">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="golang 垃圾回收机制"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>golang 垃圾回收机制</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/06/22/golang垃圾回收机制/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-06-22T07:22:16.000Z">
+          2016-06-22
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>用任何带 GC 的语言最后都要直面 GC 问题。在以前学习 C# 的时候就被迫读了一大堆 .NET Garbage Collection 的文档。最近也学习了一番 golang 的垃圾回收机制，在这里记录一下。</p>
+<p><a href="/notename/" title="gc in golang"></a></p>
+<h2 id="常见-GC-算法"><a href="#常见-GC-算法" class="headerlink" title="常见 GC 算法"></a>常见 GC 算法</h2><p>趁着这个机会我总结了一下常见的 GC 算法。分别是：<strong>引用计数法</strong>、<strong>Mark-Sweep法</strong>、<strong>三色标记法</strong>、<strong>分代收集法</strong>。</p>
+<h3 id="1-引用计数法"><a href="#1-引用计数法" class="headerlink" title="1. 引用计数法"></a>1. 引用计数法</h3><p>原理是在每个对象内部维护一个整数值，叫做这个对象的<strong>引用计数</strong>，当对象被引用时引用计数加一，当对象不被引用时引用计数减一。当引用计数为 0 时，自动销毁对象。</p>
+<p>目前引用计数法主要用在 c++ 标准库的 std::shared_ptr 、微软的 COM 、Objective-C 和 PHP 中。</p>
+<p>但是引用计数法有个缺陷就是不能解决循环引用的问题。循环引用是指对象 A 和对象 B 互相持有对方的引用。这样两个对象的引用计数都不是 0 ，因此永远不能被收集。</p>
+<p>另外的缺陷是，每次对象的赋值都要将引用计数加一，增加了消耗。</p>
+<h3 id="2-Mark-Sweep法（标记清除法）"><a href="#2-Mark-Sweep法（标记清除法）" class="headerlink" title="2. Mark-Sweep法（标记清除法）"></a>2. Mark-Sweep法（标记清除法）</h3><p>这个算法分为两步，标记和清除。</p>
+<ul>
+<li>标记：从程序的根节点开始， <strong>递归地</strong> 遍历所有对象，将能遍历到的对象打上标记。</li>
+<li>清除：讲所有未标记的的对象当作垃圾销毁。</li>
+</ul>
+<center>
+![Animation_of_the_Naive_Mark_and_Sweep_Garbage_Collector_Algorithm.gif-143.9kB][1]
+<small>图片来自 https://en.wikipedia.org/wiki/Tracing_garbage_collection </small>
+</center>
+
+<p>如图所示。</p>
+<p>但是这个算法也有一个缺陷，就是人们常常说的 STW 问题（Stop The World）。因为算法在标记时必须暂停整个程序，否则其他线程的代码可能会改变对象状态，从而可能把不应该回收的对象当做垃圾收集掉。</p>
+<p>当程序中的对象逐渐增多时，递归遍历整个对象树会消耗很多的时间，在大型程序中这个时间可能会是毫秒级别的。让所有的用户等待几百毫秒的 GC 时间这是不能容忍的。</p>
+<p>golang 1.5以前使用的这个算法。</p>
+<h3 id="3-三色标记法"><a href="#3-三色标记法" class="headerlink" title="3. 三色标记法"></a>3. 三色标记法</h3><p>三色标记法是传统 Mark-Sweep 的一个改进，它是一个并发的 GC 算法。</p>
+<p>原理如下，</p>
+<ol>
+<li>首先创建三个集合：白、灰、黑。</li>
+<li>将所有对象放入白色集合中。</li>
+<li>然后从根节点开始遍历所有对象（注意这里<strong>并不递归遍历</strong>），把遍历到的对象从白色集合放入灰色集合。</li>
+<li>之后遍历灰色集合，将灰色对象引用的对象从白色集合放入灰色集合，之后将此灰色对象放入黑色集合</li>
+<li>重复 4 直到灰色中无任何对象</li>
+<li>通过write-barrier检测对象有变化，重复以上操作</li>
+<li>收集所有白色对象（垃圾）</li>
+</ol>
+<center>
+![Animation_of_tri-color_garbage_collection.gif-94kB][2]
+<small>图片来自 https://en.wikipedia.org/wiki/Tracing_garbage_collection </small>
+</center>
+
+<p>过程如上图所示。</p>
+<p>这个算法可以实现 “on-the-fly”，也就是在程序执行的同时进行收集，并不需要暂停整个程序。</p>
+<p>但是也会有一个缺陷，可能程序中的垃圾产生的速度会大于垃圾收集的速度，这样会导致程序中的垃圾越来越多无法被收集掉。</p>
+<p>使用这种算法的是 Go 1.5、Go 1.6。</p>
+<h3 id="4-分代收集"><a href="#4-分代收集" class="headerlink" title="4. 分代收集"></a>4. 分代收集</h3><p>分代收集也是传统 Mark-Sweep 的一个改进。这个算法是基于一个经验：绝大多数对象的生命周期都很短。所以按照对象的生命周期长短来进行分代。</p>
+<p>一般 GC 都会分三代，在 java 中称之为新生代（Young Generation）、年老代（Tenured Generation）和永久代（Permanent Generation）；在 .NET 中称之为第 0 代、第 1 代和第2代。</p>
+<p>原理如下：</p>
+<ul>
+<li>新对象放入第 0 代</li>
+<li>当内存用量超过一个较小的阈值时，触发 0 代收集</li>
+<li>第 0 代幸存的对象（未被收集）放入第 1 代</li>
+<li>只有当内存用量超过一个较高的阈值时，才会触发 1 代收集</li>
+<li>2 代同理</li>
+</ul>
+<p>因为 0 代中的对象十分少，所以每次收集时遍历都会非常快（比 1 代收集快几个数量级）。只有内存消耗过于大的时候才会触发较慢的 1 代和 2 代收集。</p>
+<p>因此，分代收集是目前比较好的垃圾回收方式。使用的语言（平台）有 jvm、.NET 。</p>
+<h2 id="golang-的-GC"><a href="#golang-的-GC" class="headerlink" title="golang 的 GC"></a>golang 的 GC</h2><p>go 语言在 1.3 以前，使用的是比较蠢的传统 Mark-Sweep 算法。</p>
+<p>1.3 版本进行了一下改进，把 Sweep 改为了并行操作。</p>
+<p>1.5 版本进行了较大改进，使用了三色标记算法。go 1.5 在源码中的解释是“非分代的、非移动的、并发的、三色的标记清除垃圾收集器”</p>
+<p>go 除了标准的三色收集以外，还有一个辅助回收功能，防止垃圾产生过快手机不过来的情况。这部分代码在 <a href="https://golang.org/src/runtime/mgcmark.go#L316" target="_blank" rel="noopener"><code>runtime.gcAssistAlloc</code></a> 中。</p>
+<p>但是 golang 并没有分代收集，所以对于巨量的小对象还是很苦手的，会导致整个 mark 过程十分长，在某些极端情况下，甚至会导致 GC 线程占据 50% 以上的 CPU。</p>
+<p>因此，当程序由于高并发等原因造成大量小对象的gc问题时，最好可以使用 <a href="https://golang.org/pkg/sync/#Pool" target="_blank" rel="noopener"><code>sync.Pool</code></a> 等对象池技术，避免大量小对象加大 GC 压力。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/golang/">golang</a><a href="/tags/GC/">GC</a><a href="/tags/垃圾回收/">垃圾回收</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>网件 R6220 刷机 LEDE（openwrt）固件教程 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="家里一直用的是网件的 R6220 路由器，之前一直用的是原厂固件，因为本人不太喜欢在主路由器上装奇奇怪怪的东西，另外是因为 R6220 一直都没有好用的固件可以刷，前几天逛论坛发现竟然已经有人破解了 R6220 可以刷 LEDE 和 pandora 了，忍不住手痒又去刷了一波固件。此文记录一下过程。">
+  
+
+  
+  
+  <meta name="keywords" content="openwrt,折腾,路由器,lede">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="网件 R6220 刷机 LEDE（openwrt）固件教程"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>网件 R6220 刷机 LEDE（openwrt）固件教程</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2017/08/20/网件R6220刷机LEDE（openwrt）固件教程/" rel="bookmark">
+        <time class="entry-date published" datetime="2017-08-20T07:22:39.000Z">
+          2017-08-20
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>家里一直用的是网件的 R6220 路由器，之前一直用的是原厂固件，因为本人不太喜欢在主路由器上装奇奇怪怪的东西，另外是因为 R6220 一直都没有好用的固件可以刷，前几天逛论坛发现竟然已经有人破解了 R6220 可以刷 LEDE 和 pandora 了，忍不住手痒又去刷了一波固件。此文记录一下过程。</p>
+<p><a href="/notename/" title="install lede on netgear r6220"></a></p>
+<p>[toc]</p>
+<blockquote>
+<p><strong>请全程使用网线连接进行操作，操作时千万不要断电，因为 R6220 使用 NAND flash，刷坏后无法使用普通编程器修复，刷机有风险，请扶稳方向盘谨慎驾驶</strong></p>
+</blockquote>
+<h2 id="1-开启路由器telnet"><a href="#1-开启路由器telnet" class="headerlink" title="1. 开启路由器telnet"></a>1. 开启路由器telnet</h2><p>在浏览器打开 <a href="http://192.168.1.1/setup.cgi?todo=debug" target="_blank" rel="noopener">http://192.168.1.1/setup.cgi?todo=debug</a> 这个网址，记着把 192.168.1.1 替换成你路由器的 ip 地址，成功后会显示 <code>Debug Enabled !</code> 说明已经成功。</p>
+<p>使用 Mac 或 Linux 的用户，打开终端，执行 <code>telnet 192.168.1.1</code> ，可以登录到路由器的管理shell里，使用 windows 的用户，可以<a href="https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe" target="_blank" rel="noopener">点这里</a>下载 putty，然后如下图，Host Name填路由器ip，port写23，connection type 选 telnet：</p>
+<p><img src="http://static.zybuluo.com/zwh8800/87dgejkt4rs7ov1wgy8ejzyx/image_1bnv9ksf91joebhc5uvi451l14p.png" alt="image_1bnv9ksf91joebhc5uvi451l14p.png-84.3kB"></p>
+<p>点击 open 之后，会出现一个黑屏窗口，显示 <code>R6220 login:</code> ，输入 <code>root</code> 按回车，会显示一个大的 logo 和一个 <code>#</code> 号（如下），此时说明已经登录成功了。</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Welcome to</span><br><span class="line">    _______  _______  ___     __  ____   _  _   ___</span><br><span class="line">    |<span class="string">  ___  \</span>|<span class="string">   __  </span>||<span class="string">   </span>|<span class="string">   </span>|<span class="string">__</span>||<span class="string">    \ </span>|<span class="string"> </span>||<span class="string"> </span>|<span class="string"> /  /</span></span><br><span class="line"><span class="string">    </span>|<span class="string"> </span>|<span class="string">___</span>|<span class="string"> </span>||<span class="string">  </span>|<span class="string">__</span>|<span class="string"> </span>||<span class="string">   </span>|<span class="string">__  __ </span>|<span class="string">     \</span>|<span class="string"> </span>||<span class="string"> </span>|<span class="string">/  /</span></span><br><span class="line"><span class="string">    </span>|<span class="string">   _   /</span>|<span class="string">   _   </span>||<span class="string">      </span>||<span class="string">  </span>||<span class="string"> </span>|<span class="string">\     </span>||<span class="string">     \</span></span><br><span class="line"><span class="string">    </span>|<span class="string">__</span>|<span class="string"> \__\</span>|<span class="string">__</span>|<span class="string"> </span>|<span class="string">__</span>||<span class="string">______</span>||<span class="string">__</span>||<span class="string">_</span>|<span class="string"> \____</span>||<span class="string">_</span>|<span class="string">\___\</span></span><br><span class="line"><span class="string">                     =System Architecture Department=</span></span><br><span class="line"><span class="string">#</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-备份eeprom"><a href="#2-备份eeprom" class="headerlink" title="2. 备份eeprom"></a>2. 备份eeprom</h2><blockquote>
+<p>此步骤可跳过，但有一定几率无法使用 Wi-Fi</p>
+</blockquote>
+<p>准备一个格式化成 fat32 的U盘（最好重新格式化，卷标写成U），插入 R6220 的USB口中，然后在刚才的黑窗口里输入命令：<code>ls /mnt/shares</code></p>
+<p>会显示出你刚才优盘的卷标名，如果重新格式化成 U 了，那么就会显示一个 U。</p>
+<p>下一步，执行 <code>cd /mnt/shares/优盘的卷标名</code> ，同理如果刚才显示 U 这里就应该执行 <code>cd /mnt/shares/U</code>。</p>
+<p>如果没有报错的话就进行下一步：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd <span class="attribute">if</span>=/dev/mtd10 <span class="attribute">of</span>=./mtd10.bin</span><br></pre></td></tr></table></figure>
+
+<p>这是为了把 eeprom 备份到U盘中。如果执行之后，显示一个 <code>#</code> 说明成功了。现在把U盘拔下来插到电脑上，可以看到一个 mtd10.bin 文件，把它复制到电脑上备份。</p>
+<h2 id="3-刷写不死-bootloader-pb-boot"><a href="#3-刷写不死-bootloader-pb-boot" class="headerlink" title="3. 刷写不死 bootloader pb-boot"></a>3. 刷写不死 bootloader pb-boot</h2><p>从这里下载 pb-boot：</p>
+<blockquote>
+<p>链接: <a href="https://pan.baidu.com/s/1jIONs6i" target="_blank" rel="noopener">https://pan.baidu.com/s/1jIONs6i</a> 密码: nyn9</p>
+</blockquote>
+<p>把这个文件放到U盘里，插入到路由器中。</p>
+<p>使用 telnet 登陆到路由器，和第二步一样，执行 <code>cd /mnt/shares/U</code> 进入到U盘文件夹。执行下面的命令：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mtd_write write pb-boot-r6220<span class="number">-20170801.</span>img Bootloader</span><br></pre></td></tr></table></figure>
+
+<p>成功后会显示：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Unlocking Bootloader <span class="built_in">..</span>.</span><br><span class="line">Writing <span class="keyword">from</span> pb-boot-r6220.bin <span class="keyword">to</span> Bootloader <span class="built_in">..</span>.  [w]</span><br></pre></td></tr></table></figure>
+
+<p>接下来路由器关机，然后用针扎着reset键开机，开机后发现电源灯和wan口灯呼吸闪烁，说明进入了 bootloader，在浏览器中输入 192.168.1.1 会看到 pb-boot 的界面：</p>
+<p><img src="http://static.zybuluo.com/zwh8800/say5dhokusmabok0w2ix1d8x/image_1bnvblmm81d0t1hgfpfu1h0ft4116.png" alt="image_1bnvblmm81d0t1hgfpfu1h0ft4116.png-107.3kB"></p>
+<p>现在说明不死 bootloader 已经刷好了，可以随意折腾路由器而不怕刷坏了，无论何时感觉刷坏了，都可以用针扎着reset键开机，来反复刷机重置系统。</p>
+<blockquote>
+<p>小知识：bootloader 是在操作系统运行之前先运行的一个小程序，类似电脑的 bios，折腾路由器时就算把系统搞坏了，只要 bootloader 没被破坏，都可以刷回出厂设置的。</p>
+</blockquote>
+<h3 id="3-1-mac-用户会遇到的坑"><a href="#3-1-mac-用户会遇到的坑" class="headerlink" title="3.1 mac 用户会遇到的坑"></a>3.1 mac 用户会遇到的坑</h3><p>使用 mac 的用户再刷写了 pb-boot 之后，会发现无法获取到 IP 地址，可以这样操作：</p>
+<p>在<strong>系统偏好设置</strong>中点网络，把网卡设置成下图所示：</p>
+<p><img src="http://static.zybuluo.com/zwh8800/s5ltalpg46voaket5azleek1/image_1bnvc6apsorr15en13he1l7s1mei1j.png" alt="image_1bnvc6apsorr15en13he1l7s1mei1j.png-107.3kB"></p>
+<p>打开<strong>终端</strong>反复执行如下命令：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">sudo</span> <span class="selector-tag">arp</span> <span class="selector-tag">-ad</span></span><br><span class="line"><span class="selector-tag">sudo</span> <span class="selector-tag">arp</span> <span class="selector-tag">-s</span> 192<span class="selector-class">.168</span><span class="selector-class">.1</span><span class="selector-class">.1</span> <span class="selector-tag">ff</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:ff</span><span class="selector-pseudo">:ff</span></span><br></pre></td></tr></table></figure>
+
+<p>第一次可能会要求你输密码，输入即可</p>
+<p>每执行一遍就再浏览器中刷新一次 192.168.1.1 ，直到浏览器能打开网页后停止执行命令。</p>
+<h2 id="4-刷-LEDE-官方固件"><a href="#4-刷-LEDE-官方固件" class="headerlink" title="4. 刷 LEDE 官方固件"></a>4. 刷 LEDE 官方固件</h2><p>一开始我是在 <a href="http://www.right.com.cn/forum/thread-208580-1-1.html" target="_blank" rel="noopener">恩山无限论坛</a> 下载的网友编译的固件，他的固件本身集成了好多功能，比如 广告屏蔽大师和s-s，不爱折腾的人刷他的固件用自带的功能就够用了，但是他的固件有个问题，固件的内核版本不是官方的版本，没办法安装官方软件仓库里的 kmod 软件包（可以强制安装，但是会大几率无限重启），另外固件的 opkg 好像也没有配置好，安装软件包会比较折腾。所以我建议还是先刷网友版，然后升级成官方版。</p>
+<p>先从这里下载恩山网友版固件</p>
+<blockquote>
+<p>链接: <a href="https://pan.baidu.com/s/1c1YSCLy" target="_blank" rel="noopener">https://pan.baidu.com/s/1c1YSCLy</a> 密码: 36vm</p>
+</blockquote>
+<p>然后在 192.168.1.1 里，点击 browse 选择刚才下载的网友版固件，再点击 Firmware update，等 1 分钟就刷好了。</p>
+<p>再次刷新 192.168.1.1 网页，发现已经进入 lede 的界面了。</p>
+<p><img src="http://static.zybuluo.com/zwh8800/noqu5zni5zwm6uazgqiy4i1o/image_1bnvcca3pf6dfb6177rr9b70o20.png" alt="image_1bnvcca3pf6dfb6177rr9b70o20.png-23.1kB"></p>
+<p>用户名填 root，密码输admin，进入到管理界面中。</p>
+<p>然后左侧点击<strong>网络</strong>、<strong>接口</strong>，把 WAN 口配置好，尝试一下能不能上去网。</p>
+<p>对于不想折腾的朋友到此为止就可以了，恩山网友版的固件足够好用，喜欢折腾的朋友继续看下面（如果发现Wi-Fi无法正常使用的请看<a href="#8-找不到-wi-fi或wi-fi信号很差">最下面</a>）。</p>
+<p>点击左侧的<strong>系统</strong>，然后点击<strong>备份/升级</strong>。现在咱们要升级成 lede 官方版。</p>
+<p>从这里下载官方版：<a href="https://downloads.lede-project.org/snapshots/targets/ramips/mt7621/lede-ramips-mt7621-r6220-squashfs-sysupgrade.tar" target="_blank" rel="noopener">https://downloads.lede-project.org/snapshots/targets/ramips/mt7621/lede-ramips-mt7621-r6220-squashfs-sysupgrade.tar</a></p>
+<p>或者从中科大的镜像里下载：<a href="http://mirrors.ustc.edu.cn/lede/snapshots/targets/ramips/mt7621/lede-ramips-mt7621-r6220-squashfs-sysupgrade.tar" target="_blank" rel="noopener">http://mirrors.ustc.edu.cn/lede/snapshots/targets/ramips/mt7621/lede-ramips-mt7621-r6220-squashfs-sysupgrade.tar</a></p>
+<p>在刷写新的固件那一栏，选择刚下载的固件，然后点击刷写固件。</p>
+<p>等 1 分钟后，路由器自动重启，此时官方固件已经刷好了。</p>
+<h2 id="5-配置官方固件"><a href="#5-配置官方固件" class="headerlink" title="5. 配置官方固件"></a>5. 配置官方固件</h2><p>官方固件默认不开启Wi-Fi，默认不安装web管理界面，所以我们需要先使用命令行进行配置。</p>
+<p>使用 <code>ssh root@192.168.1.1</code> 登陆，windows的朋友还使用 putty，但是 port 需填写 22，connection type 选 SSH。</p>
+<p>然后输入 root 回车，再输入 admin 回车。</p>
+<p><img src="http://static.zybuluo.com/zwh8800/oyll40uphimhngb1t8pmfcql/image_1bnvd5mqeofhlp61sa51q0c11fm2d.png" alt="image_1bnvd5mqeofhlp61sa51q0c11fm2d.png-22.6kB"></p>
+<p>接着会看到一个 LEDE 的 logo，说明登陆成功了，下一步安装web管理界面。</p>
+<blockquote>
+<p>以下内容选作</p>
+</blockquote>
+<p>因为 lede 默认的软件仓库可能会比较慢，所以我们可以换成中科大的源，先执行vim：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">vim</span> /etc/opkg/distfeeds.<span class="keyword">conf</span></span><br></pre></td></tr></table></figure>
+
+<p>用 vim 打开 opkg 配置文件，然后多按几次键盘上的 <code>dd</code> 会发现之前的内容被删除了。之后按一下 键盘上的 <code>I</code> ，然后复制下面的内容，在终端里粘贴（putty用户直接在黑窗口里右键就可以了）</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">src<span class="regexp">/gz reboot_core http:/</span><span class="regexp">/mirrors.ustc.edu.cn/</span>lede<span class="regexp">/snapshots/</span>targets<span class="regexp">/ramips/</span>mt7621/packages</span><br><span class="line">src<span class="regexp">/gz reboot_base http:/</span><span class="regexp">/mirrors.ustc.edu.cn/</span>lede<span class="regexp">/snapshots/</span>packages<span class="regexp">/mipsel_24kc/</span>base</span><br><span class="line">src<span class="regexp">/gz reboot_luci http:/</span><span class="regexp">/mirrors.ustc.edu.cn/</span>lede<span class="regexp">/snapshots/</span>packages<span class="regexp">/mipsel_24kc/</span>luci</span><br><span class="line">src<span class="regexp">/gz reboot_packages http:/</span><span class="regexp">/mirrors.ustc.edu.cn/</span>lede<span class="regexp">/snapshots/</span>packages<span class="regexp">/mipsel_24kc/</span>packages</span><br><span class="line">src<span class="regexp">/gz reboot_routing http:/</span><span class="regexp">/mirrors.ustc.edu.cn/</span>lede<span class="regexp">/snapshots/</span>packages<span class="regexp">/mipsel_24kc/</span>routing</span><br><span class="line">src<span class="regexp">/gz reboot_telephony http:/</span><span class="regexp">/mirrors.ustc.edu.cn/</span>lede<span class="regexp">/snapshots/</span>packages<span class="regexp">/mipsel_24kc/</span>telephony</span><br></pre></td></tr></table></figure>
+
+<p>然后按一下键盘上的 ESC 键，然后依次输入 <code>冒号</code>、<code>w</code>、<code>q</code>、<code>回车键</code>，退出到 shell 界面，现在中科大源就配置好了。</p>
+<blockquote>
+<p>以上内容选作</p>
+</blockquote>
+<p>接下来执行opkg来安装web管理界面，中文翻译和material皮肤：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">opkg update</span><br><span class="line">opkg <span class="keyword">install </span>luci</span><br><span class="line">opkg <span class="keyword">install </span>luci-i18n-<span class="keyword">base-zh-cn</span></span><br><span class="line"><span class="keyword">opkg </span><span class="keyword">install </span>luci-theme-material</span><br></pre></td></tr></table></figure>
+
+<p>短暂等待后就安装好了，在浏览器打开 192.168.1.1 就能看到路由器管理界面了。</p>
+<blockquote>
+<p>注意，此处有个小坑，如果在刚才升级到原版系统时，把 <strong>保留配置</strong> 的勾给去掉了，那么此时路由器是无法上网的，也就无法从软件仓库安装，所以如果你和我一样手贱去掉了那个勾，你现在可以把 R6220 接到一个已经配置好能上网的路由器的 LAN 口上，然后再进行 opkg install 操作。</p>
+</blockquote>
+<h2 id="6-安装upnp"><a href="#6-安装upnp" class="headerlink" title="6. 安装upnp"></a>6. 安装upnp</h2><p>官方版固件默认没有 upnp，需要ssh登陆到路由器执行下面命令安装：</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">opkg</span> <span class="string">update</span></span><br><span class="line"><span class="attr">opkg</span> <span class="string">install luci-app-upnp</span></span><br></pre></td></tr></table></figure>
+
+<p>或者也可以在<strong>系统</strong>、<strong>软件包</strong>里安装 <code>luci-app-upnp</code></p>
+<p>然后在 <strong>服务</strong>、<strong>UPNP</strong>里勾选 Start UPnP and NAT-PMP service，点击保存&amp;应用</p>
+<h2 id="7-编译广告屏蔽大师（adbyby）"><a href="#7-编译广告屏蔽大师（adbyby）" class="headerlink" title="7. 编译广告屏蔽大师（adbyby）"></a>7. 编译广告屏蔽大师（adbyby）</h2><p><a href="https://github.com/kuoruan/luci-app-adbyby" target="_blank" rel="noopener">广告屏蔽大师（英文名adbyby）</a>是一个很好用的 lede 应用，能屏蔽爱奇艺、优酷等一系列广告而且不用等待。</p>
+<h3 id="7-1-下载SDK"><a href="#7-1-下载SDK" class="headerlink" title="7.1 下载SDK"></a>7.1 下载SDK</h3><p>中科大源：<a href="http://mirrors.ustc.edu.cn/lede/snapshots/targets/ramips/mt7621/lede-sdk-ramips-mt7621_gcc-5.4.0_musl.Linux-x86_64.tar.xz" target="_blank" rel="noopener">http://mirrors.ustc.edu.cn/lede/snapshots/targets/ramips/mt7621/lede-sdk-ramips-mt7621_gcc-5.4.0_musl.Linux-x86_64.tar.xz</a></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget http:<span class="regexp">//mi</span>rrors.ustc.edu.cn<span class="regexp">/lede/</span>snapshots<span class="regexp">/targets/</span>ramips<span class="regexp">/mt7621/</span>lede-sdk-ramips-mt7621_gcc-<span class="number">5.4</span>.<span class="number">0</span>_musl.Linux-x86_64.tar.xz</span><br><span class="line">tar xvf lede-sdk-ramips-mt7621_gcc-<span class="number">5.4</span>.<span class="number">0</span>_musl.Linux-x86_64.tar.xz</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-下载adbyby"><a href="#7-2-下载adbyby" class="headerlink" title="7.2 下载adbyby"></a>7.2 下载adbyby</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">clone</span> <span class="title">https</span>://github.com/kuoruan/luci-app-adbyby.git</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-3-更新feeds"><a href="#7-3-更新feeds" class="headerlink" title="7.3 更新feeds"></a>7.3 更新feeds</h3><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cd</span> ~<span class="string">/lede-sdk-ramips-mt7621_gcc-5.4.0_musl.Linux-x86_64</span></span><br><span class="line"><span class="string">./scripts/feeds</span> update -a</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-4-把-adbyby-放进-SDK"><a href="#7-4-把-adbyby-放进-SDK" class="headerlink" title="7.4 把 adbyby 放进 SDK"></a>7.4 把 adbyby 放进 SDK</h3><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cd</span> ~<span class="string">/luci-app-adbyby</span></span><br><span class="line">cp <span class="string">./adbyby</span> ~<span class="string">/lede-sdk-ramips-mt7621_gcc-5.4.0_musl.Linux-x86_64/package</span> -r</span><br><span class="line">cp <span class="string">./luci-app-adbyby</span> ~<span class="string">/lede-sdk-ramips-mt7621_gcc-5.4.0_musl.Linux-x86_64/feeds/luci/applications</span> -r</span><br></pre></td></tr></table></figure>
+
+<p>把 adbyby 放到 package 里，把 luci-app-adbyby 放到 feeds/luci/applications 里。</p>
+<h3 id="7-5-再更新-feeds"><a href="#7-5-再更新-feeds" class="headerlink" title="7.5 再更新 feeds"></a>7.5 再更新 feeds</h3><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cd</span> ~<span class="string">/lede-sdk-ramips-mt7621_gcc-5.4.0_musl.Linux-x86_64</span></span><br><span class="line"><span class="string">./scripts/feeds</span> update -a</span><br><span class="line"><span class="string">./scripts/feeds</span> install luci-app-adbyby</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-6-编译"><a href="#7-6-编译" class="headerlink" title="7.6 编译"></a>7.6 编译</h3><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">make menuconfig</span></span><br></pre></td></tr></table></figure>
+
+<p>会打开一个界面，在里面用上下键移动光标，用回车键选择，先选 LuCI，再选 Appications，然后找到 luci-app-adbyby 按两下空格使前面变成 <code>[*]</code> ，然后一直按 ESC 退出，退出前会询问是否保存，选 YES。</p>
+<p>然后执行 </p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make <span class="attribute">V</span>=99</span><br></pre></td></tr></table></figure>
+
+<p>最后会在 bin 文件夹编译出 luci-app-adbyby.ipk 文件，上传到路由器的/tmp 文件夹，执行 <code>opkg install luci-app-adbyby.ipk</code> 进行安装。</p>
+<h2 id="8-找不到-Wi-Fi，或Wi-Fi信号很差"><a href="#8-找不到-Wi-Fi，或Wi-Fi信号很差" class="headerlink" title="8. 找不到 Wi-Fi，或Wi-Fi信号很差"></a>8. 找不到 Wi-Fi，或Wi-Fi信号很差</h2><p>如果刷了 lede 之后找不到Wi-Fi，可以把 eeprom 还原成原厂。</p>
+<h3 id="8-1-把之前备份的-mtd10-bin-放到路由器中"><a href="#8-1-把之前备份的-mtd10-bin-放到路由器中" class="headerlink" title="8.1 把之前备份的 mtd10.bin 放到路由器中"></a>8.1 把之前备份的 <code>mtd10.bin</code> 放到路由器中</h3><p>在终端里执行：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp mtd10.bin <span class="symbol">root@</span><span class="number">10.0</span><span class="number">.0</span><span class="number">.1</span>:/tmp</span><br></pre></td></tr></table></figure>
+
+<p>使用 windows 的用户可以下载一个 <a href="https://sourceforge.net/projects/winscp/files/WinSCP/5.9.6/WinSCP-5.9.6-Portable.zip/download" target="_blank" rel="noopener">WinScp</a> 来远程复制文件：</p>
+<p>File protocol 选择 scp，hostname输入路由器IP，port写22，username写root，password写密码。</p>
+<p><img src="http://static.zybuluo.com/zwh8800/6krs6kpjj5jtaxxs4we8ma47/image_1bnvf7v6un84c0v11qm1vku1sd37.png" alt="image_1bnvf7v6un84c0v11qm1vku1sd37.png-39.8kB"></p>
+<p>点击login，然后再右侧窗口双击一下 <code>..</code> ，然后再双击 tmp 文件夹。然后再左侧窗口找到刚才备份的 mtd10.bin 文件，直接拖到右侧窗口的空白区域。</p>
+<p><img src="http://static.zybuluo.com/zwh8800/5lt2mgcipjm2xiucliey687v/image_1bnvfagtt1k5f105kcgr7r132a3k.png" alt="image_1bnvfagtt1k5f105kcgr7r132a3k.png-193.8kB"></p>
+<h3 id="8-2-还原-eeprom"><a href="#8-2-还原-eeprom" class="headerlink" title="8.2 还原 eeprom"></a>8.2 还原 eeprom</h3><p>使用 putty 或 ssh 登陆路由器，然后执行下面命令：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mtd -r <span class="keyword">write</span> <span class="regexp">/tmp/m</span>td10.bin factory</span><br></pre></td></tr></table></figure>
+
+<p>成功后会自动重启。</p>
+<p>然后在<strong>系统</strong>、<strong>备份/升级</strong>里重新上传sysupgrade.tar，并且不勾选<strong>保留设置</strong>。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/openwrt/">openwrt</a><a href="/tags/折腾/">折腾</a><a href="/tags/路由器/">路由器</a><a href="/tags/lede/">lede</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

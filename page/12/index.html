@@ -1,0 +1,916 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第 12 页 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2013/11/12/ubuntuserver12.04搭建pptp服务器/"><span>ubuntu server 12.04 搭建 pptp 服务器</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/11/12/ubuntuserver12.04搭建pptp服务器/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-11-12T00:00:00.000Z">
+          2013-11-12
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>前几天把pptp服务器搭上了, xen的vps就这点好处, 想怎么搞就怎么搞, 虽说贵了点. 在国内的话用pptp连外国网站快多了, 本身校园网烂得掉渣自己电脑更新系统基本上得一晚上(特别是国外源), psv更新更是…呵呵..呵呵..呵呵呵. 搭起来pptp之后反而会比之前快很多, 今天把psv系统更新到了3.0, 只需要15分钟. 真是让我这个更新狂魔泪流满面.</p>
+<p><a href="/notename/" title="archive 20131112"></a></p>
+<p>好吧, 进正题</p>
+<p>基本上是综合了网上的做法, 不过网上的教程总有些漏, 有的没法加密, 有的登陆不上.</p>
+<p>首先, 安装pptpd</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="builtin-name">get</span> install pptpd</span><br></pre></td></tr></table></figure>
+
+<p>安装pptpd的同时会安装上ppp, 因为pptp在握手时使用ppp协议, 通讯时使用ppp协议(通过GRE协议在ip层上使用ppp).</p>
+<p>之后分别对pptp和ppp进行配置.</p>
+<h6 id="1-打开文件-etc-pptpd-conf"><a href="#1-打开文件-etc-pptpd-conf" class="headerlink" title="1. 打开文件/etc/pptpd.conf"></a>1. 打开文件/etc/pptpd.conf</h6><p>这个文件为Sample Poptop configuration file(简单Poptop配置文件), 可以看见里面有6个TAG不过需要我们改动的只有最后的那一组</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># TAG: localip</span></span><br><span class="line"><span class="meta"># TAG: remoteip</span></span><br></pre></td></tr></table></figure>
+
+<p>用来设置连接之后的本机地址和对端地址(指pptp服务器在pptp子网中的ip地址, 不要填写真正分配的因特网地址), 可以看见注释里有个(Recommended)的localip和remoteip, 是192.168的那个, 这两个地址没被用过的话, 直接取消注释用它就好了.</p>
+<h6 id="2-打开文件-etc-ppp-pptpd-options"><a href="#2-打开文件-etc-ppp-pptpd-options" class="headerlink" title="2. 打开文件/etc/ppp/pptpd-options"></a>2. 打开文件/etc/ppp/pptpd-options</h6><p>这个文件为PPP options文件, 其实这个文件在刚刚的pptpd.conf中的option tag指定了, 可以去看看, 还可以指定其他的文件当做PPP options. 首先看一下参数name(就是name xxx那一行), 看一下他后面的名字是什么, 一会儿要用, 我这里是name pptpd. 然后是一系列ppp协议的加密选项, pap和chap是明文传送密码的, mschap对内容不加密, mschap-v2配合上mppe可以进行对密码和内容的同时加密. 所以加密部分配置文件基本不用动:</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># Encryption</span></span><br><span class="line"><span class="meta"># Debian: on systems with a kernel built with the package</span></span><br><span class="line"><span class="meta"># kernel-patch-mppe &gt;= 2.4.2 and using ppp &gt;= 2.4.2, …</span></span><br><span class="line"><span class="meta"># &#123;&#123;&#123;</span></span><br><span class="line">refuse-pap</span><br><span class="line">refuse-chap</span><br><span class="line">refuse-mschap</span><br><span class="line"><span class="meta"># Require the peer to authenticate itself using MS-CHAPv2 [Microsoft</span></span><br><span class="line"><span class="meta"># Challenge Handshake Authentication Protocol, Version 2] authentication.</span></span><br><span class="line"></span><br><span class="line">require-mschap-v2</span><br><span class="line"><span class="meta"># Require MPPE 128-bit encryption</span></span><br><span class="line"><span class="meta"># (note that MPPE requires the use of MSCHAP-V2 during authentication)</span></span><br><span class="line">require-mppe<span class="number">-128</span></span><br><span class="line"><span class="meta"># &#125;&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>但对于不想加密的同学, 想直接用chap登陆可以这样写:</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>-chap</span><br></pre></td></tr></table></figure>
+<p>下面还有一行ms-dns设置成你喜欢的dns服务器吧我设置的是:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ms-dns <span class="number">114.114</span><span class="number">.114</span><span class="number">.114</span></span><br><span class="line">ms-dns <span class="number">8.8</span><span class="number">.8</span><span class="number">.8</span></span><br></pre></td></tr></table></figure>
+
+<p>还有最后, 至关重要的, 在文件最末尾加两行不明觉利的</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">novj</span></span><br><span class="line"><span class="attribute">novjccomp</span></span><br><span class="line"><span class="attribute">nologfd</span></span><br></pre></td></tr></table></figure>
+<p>我还不懂这个是干嘛的, google没google到, 谁知道的可以告诉我.</p>
+<p>打开文件/etc/ppp/chap-secrets这里存放chap加密方式的密码, 打开之后分四列, 第一列为用户名, 第二列填写刚刚第一步里, 那个name参数就行了, 我的是pptpd, 第三列是密码, 第四列是允许接入的ip, 允许所有ip填写*, 没列用Tab隔开就好了.<br>基本上ok了, 直接sudo /etc/init.d/pptpd restart吧</p>
+<p>更新:</p>
+<p>刚刚查了man pppd, 终于弄懂了那三行不明觉利的代码什么意思了</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> novj   <span class="builtin-name">Disable</span> Van Jacobson style TCP<span class="built_in">/IP </span>header compression <span class="keyword">in</span> both the</span><br><span class="line">        transmit <span class="keyword">and</span> the receive direction.</span><br><span class="line">novjccomp</span><br><span class="line">      <span class="builtin-name">Disable</span> the connection-ID compression  option  <span class="keyword">in</span>  Van  Jacobson</span><br><span class="line">      style  TCP<span class="built_in">/IP </span> header  compression.  With this option, pppd will</span><br><span class="line">      <span class="keyword">not</span> omit the connection-ID byte  <span class="keyword">from</span>  Van  Jacobson  compressed</span><br><span class="line">      TCP<span class="built_in">/IP </span>headers, nor ask the<span class="built_in"> peer </span><span class="keyword">to</span> <span class="keyword">do</span> so.</span><br></pre></td></tr></table></figure>
+
+<p>先看说明, 貌似就是有个叫Van Jacobson的, 他的压缩协议让我总上不了网, 只好把它关啦. 总之就是禁用TCP/IP头压缩和connection-ID压缩, 否则我的win7一直在登陆的最后一步断开连接.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/运维/">运维</a><a href="/tags/Linux/">Linux</a><a href="/tags/pptp/">pptp</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2013/11/12/ubuntuserver12.04搭建pptp服务器/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2013/11/11/[转]linux下IPTABLES配置详解/"><span>[转]linux下IPTABLES配置详解</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/11/11/[转]linux下IPTABLES配置详解/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-11-11T00:00:00.000Z">
+          2013-11-11
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux下IPTABLES配置详解</p>
+<p><a href="/notename/" title="archive 20131111"></a></p>
+<p>如果你的IPTABLES基础知识还不了解,建议先去看看.</p>
+<h2 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h2><p>我们来配置一个filter表的防火墙.</p>
+<h3 id="1-查看本机关于IPTABLES的设置情况"><a href="#1-查看本机关于IPTABLES的设置情况" class="headerlink" title="(1)查看本机关于IPTABLES的设置情况"></a>(1)查看本机关于IPTABLES的设置情况</h3><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">[<span class="symbol">root@</span>tp ~]# iptables -L -n</span><br><span class="line">Chain INPUT (policy ACCEPT)</span><br><span class="line"></span><br><span class="line">target       prot opt source                 destination</span><br><span class="line"></span><br><span class="line">Chain FORWARD (policy ACCEPT)</span><br><span class="line">target       prot opt source                 destination</span><br><span class="line"></span><br><span class="line">Chain OUTPUT (policy ACCEPT)</span><br><span class="line">target       prot opt source                 destination</span><br><span class="line"></span><br><span class="line">Chain RH-Firewall<span class="number">-1</span>-INPUT (<span class="number">0</span> <span class="built_in">ref</span>erences)</span><br><span class="line">target       prot opt source                 destination</span><br><span class="line"></span><br><span class="line">ACCEPT       all    —    <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>              <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span></span><br><span class="line"></span><br><span class="line">ACCEPT       icmp —    <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>              <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>             icmp type <span class="number">255</span></span><br><span class="line"></span><br><span class="line">ACCEPT       esp    —    <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>              <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span></span><br><span class="line"></span><br><span class="line">ACCEPT       ah     —    <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>              <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span></span><br><span class="line"></span><br><span class="line">ACCEPT       udp    —    <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>              <span class="number">224.0</span><span class="number">.0</span><span class="number">.251</span>           udp dpt:<span class="number">5353</span></span><br><span class="line"></span><br><span class="line">ACCEPT       udp    —    <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>              <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>             udp dpt:<span class="number">631</span></span><br><span class="line"></span><br><span class="line">ACCEPT       all    —    <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>              <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>             state RELATED,ESTABLISHED</span><br><span class="line"></span><br><span class="line">ACCEPT       tcp    —    <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>              <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>             state NEW tcp dpt:<span class="number">22</span></span><br><span class="line"></span><br><span class="line">ACCEPT       tcp    —    <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>              <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>             state NEW tcp dpt:<span class="number">80</span></span><br><span class="line"></span><br><span class="line">ACCEPT       tcp    —    <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>              <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>             state NEW tcp dpt:<span class="number">25</span></span><br><span class="line"></span><br><span class="line">REJECT       all    —    <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>              <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">0</span>             reject-with icmp-host-prohibited</span><br></pre></td></tr></table></figure>
+
+<p>可以看出我在安装linux时,选择了有防火墙,并且开放了22,80,25端口.</p>
+<p>如果你在安装linux时没有选择启动防火墙,是这样的</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@tp ~]<span class="comment"># iptables -L -n</span></span><br><span class="line">Chain INPUT (<span class="keyword">policy</span> ACCEPT)</span><br><span class="line"></span><br><span class="line"><span class="keyword">target</span>       prot opt source                 destination</span><br><span class="line"></span><br><span class="line">Chain FORWARD (<span class="keyword">policy</span> ACCEPT)</span><br><span class="line"><span class="keyword">target</span>       prot opt source                 destination</span><br><span class="line"></span><br><span class="line">Chain OUTPUT (<span class="keyword">policy</span> ACCEPT)</span><br><span class="line"><span class="keyword">target</span>       prot opt source                 destination</span><br></pre></td></tr></table></figure>
+
+<p>什么规则都没有.</p>
+<h3 id="2-清除原有规则"><a href="#2-清除原有规则" class="headerlink" title="(2)清除原有规则."></a>(2)清除原有规则.</h3><p>不管你在安装linux时是否启动了防火墙,如果你想配置属于自己的防火墙,那就清除现在filter的所有规则.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@tp ~]<span class="comment"># iptables -F        # 清除预设表filter中的所有规则链的规则</span></span><br><span class="line">[root@tp ~]<span class="comment"># iptables -X        # 清除预设表filter中使用者自定链中的规则</span></span><br></pre></td></tr></table></figure>
+
+<p>我们在来看一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@tp ~]<span class="comment"># iptables -L -n</span></span><br><span class="line">Chain INPUT (policy ACCEPT)</span><br><span class="line"></span><br><span class="line">target       prot opt <span class="built_in">source</span>                 destination</span><br><span class="line"></span><br><span class="line">Chain FORWARD (policy ACCEPT)</span><br><span class="line">target       prot opt <span class="built_in">source</span>                 destination</span><br><span class="line"></span><br><span class="line">Chain OUTPUT (policy ACCEPT)</span><br><span class="line">target       prot opt <span class="built_in">source</span>                 destination</span><br></pre></td></tr></table></figure>
+
+<p>什么都没有了吧,和我们在安装linux时没有启动防火墙是一样的.(提前说一句,这些配置就像用命令配置IP一样,重起就会失去作用),怎么保存.</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@tp</span> ~]<span class="meta"># /etc/rc.d/init.d/iptables save</span></span><br></pre></td></tr></table></figure>
+
+<p>这样就可以写到/etc/sysconfig/iptables文件里了.写入后记得把防火墙重起一下,才能起作用.</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@tp ~]#<span class="built_in"> service </span>iptables restart</span><br></pre></td></tr></table></figure>
+
+<p>现在IPTABLES配置表里什么配置都没有了,那我们开始我们的配置吧</p>
+<h3 id="3-设定预设规则"><a href="#3-设定预设规则" class="headerlink" title="(3)设定预设规则"></a>(3)设定预设规则</h3><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@tp</span> ~]<span class="meta"># iptables -p INPUT DROP</span></span><br><span class="line">[root<span class="symbol">@tp</span> ~]<span class="meta"># iptables -p OUTPUT ACCEPT</span></span><br><span class="line">[root<span class="symbol">@tp</span> ~]<span class="meta"># iptables -p FORWARD DROP</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的意思是,当超出了IPTABLES里filter表里的两个链规则(INPUT,FORWARD)时,不在这两个规则里的数据包怎么处理呢,那就是DROP(放弃).应该说这样配置是很安全的.我们要控制流入数据包</p>
+<p>而对于OUTPUT链,也就是流出的包我们不用做太多限制,而是采取ACCEPT,也就是说,不在着个规则里的包怎么办呢,那就是通过.<br>可以看出INPUT,FORWARD两个链采用的是允许什么包通过,而OUTPUT链采用的是不允许什么包通过.<br>这样设置还是挺合理的,当然你也可以三个链都DROP,但这样做我认为是没有必要的,而且要写的规则就会增加.但如果你只想要有限的几个规则是,如只做WEB服务器.还是推荐三个链都是DROP.<br>注:如果你是远程SSH登陆的话,当你输入第一个命令回车的时候就应该掉了.因为你没有设置任何规则.<br>怎么办,去本机操作呗!</p>
+<h3 id="4-添加规则"><a href="#4-添加规则" class="headerlink" title="(4)添加规则."></a>(4)添加规则.</h3><p>首先添加INPUT链,INPUT链的默认规则是DROP,所以我们就写需要ACCETP(通过)的链<br>为了能采用远程SSH登陆,我们要开启22端口.</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A INPUT -p tcp –dport 22 -j ACCEPT</span></span><br><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A OUTPUT -p tcp –sport 22 -j ACCEPT</span></span><br></pre></td></tr></table></figure>
+<p>(注:这个规则,如果你把OUTPUT 设置成DROP的就要写上这一部,好多人都是望了写这一部规则导致,始终无法SSH.在远程一下,是不是好了.<br>其他的端口也一样,如果开启了web服务器,OUTPUT设置成DROP的话,同样也要添加一条链:</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A OUTPUT -p tcp –sport 80 -j ACCEPT ,其他同理.)</span></span><br></pre></td></tr></table></figure>
+<p>如果做了WEB服务器,开启80端口.</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A INPUT -p tcp –dport 80 -j ACCEPT</span></span><br></pre></td></tr></table></figure>
+<p>如果做了邮件服务器,开启25,110端口.</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A INPUT -p tcp –dport 110 -j ACCEPT</span></span><br><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A INPUT -p tcp –dport 25 -j ACCEPT</span></span><br></pre></td></tr></table></figure>
+
+<p>如果做了FTP服务器,开启21端口</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A INPUT -p tcp –dport 21 -j ACCEPT</span></span><br><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A INPUT -p tcp –dport 20 -j ACCEPT</span></span><br></pre></td></tr></table></figure>
+<p>如果做了DNS服务器,开启53端口</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A INPUT -p tcp –dport 53 -j ACCEPT</span></span><br></pre></td></tr></table></figure>
+<p>如果你还做了其他的服务器,需要开启哪个端口,照写就行了.<br>上面主要写的都是INPUT链,凡是不在上面的规则里的,都DROP<br>允许icmp包通过,也就是允许ping,</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A OUTPUT -p icmp -j ACCEPT (OUTPUT设置成DROP的话)</span></span><br><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A INPUT -p icmp -j ACCEPT    (INPUT设置成DROP的话)</span></span><br></pre></td></tr></table></figure>
+<p>允许loopback!(不然会导致DNS无法正常关闭等问题)</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IPTABLES -A <span class="keyword">INPUT</span> -i lo -p <span class="keyword">all</span> -j ACCEPT (如果是<span class="keyword">INPUT</span> <span class="keyword">DROP</span>)</span><br><span class="line">IPTABLES -A OUTPUT -o lo -p <span class="keyword">all</span> -j ACCEPT(如果是OUTPUT <span class="keyword">DROP</span>)</span><br></pre></td></tr></table></figure>
+<p>下面写OUTPUT链,OUTPUT链默认规则是ACCEPT,所以我们就写需要DROP(放弃)的链.<br>减少不安全的端口连接</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A OUTPUT -p tcp –sport 31337 -j DROP</span></span><br><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A OUTPUT -p tcp –dport 31337 -j DROP</span></span><br></pre></td></tr></table></figure>
+<p>有些些特洛伊木马会扫描端口31337到31340(即黑客语言中的 elite 端口)上的服务。既然合法服务都不使用这些非标准端口来通信,阻塞这些端口能够有效地减少你的网络上可能被感染的机器和它们的远程主服务器进行独立通信的机会<br>还有其他端口也一样,像:31335、27444、27665、20034 NetBus、9704、137-139（smb）,2049(NFS)端口也应被禁止,我在这写的也不全,有兴趣的朋友应该去查一下相关资料.<br>当然出入更安全的考虑你也可以包OUTPUT链设置成DROP,那你添加的规则就多一些,就像上边添加<br>允许SSH登陆一样.照着写就行了.<br>下面写一下更加细致的规则,就是限制到某台机器<br>如:我们只允许192.168.0.3的机器进行SSH连接</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="symbol">root@</span>tp ~]# iptables -A INPUT -s <span class="number">192.168</span><span class="number">.0</span><span class="number">.3</span> -p tcp –dport <span class="number">22</span> -j ACCEPT</span><br></pre></td></tr></table></figure>
+<p>如果要允许,或限制一段IP地址可用 192.168.0.0/24 表示192.168.0.1-255端的所有IP.<br>24表示子网掩码数.但要记得把 /etc/sysconfig/iptables 里的这一行删了.<br>-A INPUT -p tcp -m tcp –dport 22 -j ACCEPT 因为它表示所有地址都可以登陆.<br>或采用命令方式:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="symbol">root@</span>tp ~]# iptables -D INPUT -p tcp –dport <span class="number">22</span> -j ACCEPT</span><br></pre></td></tr></table></figure>
+<p>然后保存,我再说一边,反是采用命令的方式,只在当时生效,如果想要重起后也起作用,那就要保存.写入到/etc/sysconfig/iptables文件里.</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@tp</span> ~]<span class="meta"># /etc/rc.d/init.d/iptables save</span></span><br></pre></td></tr></table></figure>
+<p>这样写 !192.168.0.3 表示除了192.168.0.3的ip地址<br>其他的规则连接也一样这么设置.<br>在下面就是FORWARD链,FORWARD链的默认规则是DROP,所以我们就写需要ACCETP(通过)的链,对正在转发链的监控.<br>开启转发功能,(在做NAT时,FORWARD默认规则是DROP时,必须做)</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[<span class="symbol">root@</span>tp ~]# iptables -A FORWARD -i eth0 -o eth1 -m state –state RELATED,ESTABLISHED -j ACCEPT</span><br><span class="line">[<span class="symbol">root@</span>tp ~]# iptables -A FORWARD -i eth1 -o eh0 -j ACCEPT</span><br><span class="line">丢弃坏的TCP包</span><br><span class="line">[<span class="symbol">root@</span>tp ~]#iptables -A FORWARD -p TCP ! –syn -m state –state NEW -j DROP</span><br><span class="line">处理IP碎片数量,防止攻击,允许每秒<span class="number">100</span>个</span><br><span class="line">[<span class="symbol">root@</span>tp ~]#iptables -A FORWARD -f -m limit –limit <span class="number">100</span>/s –limit-burst <span class="number">100</span> -j ACCEPT</span><br><span class="line">设置ICMP包过滤,允许每秒<span class="number">1</span>个包,限制触发条件是<span class="number">10</span>个包.</span><br><span class="line">[<span class="symbol">root@</span>tp ~]#iptables -A FORWARD -p icmp -m limit –limit <span class="number">1</span>/s –limit-burst <span class="number">10</span> -j ACCEPT</span><br></pre></td></tr></table></figure>
+<p>我在前面只所以允许ICMP包通过,就是因为我在这里有限制.</p>
+<h2 id="二-配置一个NAT表放火墙"><a href="#二-配置一个NAT表放火墙" class="headerlink" title="二,配置一个NAT表放火墙"></a>二,配置一个NAT表放火墙</h2><h3 id="1-查看本机关于NAT的设置情况"><a href="#1-查看本机关于NAT的设置情况" class="headerlink" title="1,查看本机关于NAT的设置情况"></a>1,查看本机关于NAT的设置情况</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@tp rc.d]# iptables -t<span class="built_in"> nat </span>-L</span><br><span class="line">Chain PREROUTING (policy ACCEPT)</span><br><span class="line"></span><br><span class="line">target       prot opt source                 destination</span><br><span class="line"></span><br><span class="line">Chain POSTROUTING (policy ACCEPT)</span><br><span class="line">target       prot opt source                 destination</span><br><span class="line"></span><br><span class="line">SNAT         all    —    192.168.0.0/24         anywhere              <span class="keyword">to</span>:211.101.46.235</span><br><span class="line"></span><br><span class="line">Chain OUTPUT (policy ACCEPT)</span><br><span class="line">target       prot opt source                 destination</span><br></pre></td></tr></table></figure>
+
+<p>我的NAT已经配置好了的(只是提供最简单的代理上网功能,还没有添加防火墙规则).关于怎么配置NAT,参考我的另一篇文章<br>当然你如果还没有配置NAT的话,你也不用清除规则,因为NAT在默认情况下是什么都没有的<br>如果你想清除,命令是</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@tp ~]# iptables -F -t nat</span><br><span class="line">[root@tp ~]# iptables -X -t nat</span><br><span class="line">[root@tp ~]# iptables –Z -t nat</span><br></pre></td></tr></table></figure>
+<h3 id="2-添加规则"><a href="#2-添加规则" class="headerlink" title="2,添加规则"></a>2,添加规则</h3><p>添加基本的NAT地址转换,(关于如何配置NAT可以看我的另一篇文章),<br>添加规则,我们只添加DROP链.因为默认链全是ACCEPT.<br>防止外网用内网IP欺骗</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@tp sysconfig]# iptables -t<span class="built_in"> nat </span>-A PREROUTING -i eth0 -s 10.0.0.0/8 -j DROP</span><br><span class="line">[root@tp sysconfig]# iptables -t<span class="built_in"> nat </span>-A PREROUTING -i eth0 -s 172.16.0.0/12 -j DROP</span><br><span class="line"></span><br><span class="line">[root@tp sysconfig]# iptables -t<span class="built_in"> nat </span>-A PREROUTING -i eth0 -s 192.168.0.0/16 -j DROP</span><br></pre></td></tr></table></figure>
+
+<p>如果我们想,比如阻止MSN,QQ,BT等的话,需要找到它们所用的端口或者IP,(个人认为没有太大必要)</p>
+<p>例：<br>禁止与211.101.46.253的所有连接</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@tp ~]# iptables -t<span class="built_in"> nat </span>-A PREROUTING    -d 211.101.46.253 -j DROP</span><br></pre></td></tr></table></figure>
+
+<p>禁用FTP(21)端口</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@tp ~]# iptables -t<span class="built_in"> nat </span>-A PREROUTING -p tcp –dport 21 -j DROP</span><br><span class="line">这样写范围太大了,我们可以更精确的定义.</span><br><span class="line">[root@tp ~]# iptables -t<span class="built_in"> nat </span>-A PREROUTING    -p tcp –dport 21 -d 211.101.46.253 -j DROP</span><br></pre></td></tr></table></figure>
+<p>这样只禁用211.101.46.253地址的FTP连接,其他连接还可以.如web(80端口)连接.<br>按照我写的,你只要找到QQ,MSN等其他软件的IP地址,和端口,以及基于什么协议,只要照着写就行了.<br>最后：<br>drop非法连接</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A INPUT     -m state –state INVALID -j DROP</span></span><br><span class="line"></span><br><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables -A OUTPUT    -m state –state INVALID -j DROP</span></span><br><span class="line"></span><br><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables-A FORWARD -m state –state INVALID -j DROP</span></span><br></pre></td></tr></table></figure>
+<p>允许所有已经建立的和相关的连接</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables-A INPUT -m state –state ESTABLISHED,RELATED -j ACCEPT</span></span><br><span class="line"></span><br><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># iptables-A OUTPUT -m state –state ESTABLISHED,RELATED -j ACCEPT</span></span><br><span class="line"></span><br><span class="line"><span class="section">[root@tp ~]</span><span class="comment"># /etc/rc.d/init.d/iptables save</span></span><br></pre></td></tr></table></figure>
+<p>这样就可以写到/etc/sysconfig/iptables文件里了.写入后记得把防火墙重起一下,才能起作用．</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@tp ~]#<span class="built_in"> service </span>iptables restart</span><br></pre></td></tr></table></figure>
+
+<p>别忘了保存，不行就写一部保存一次．你可以一边保存，一边做实验，看看是否达到你的要求，</p>
+<p>上面的所有规则我都试过，没有问题．<br>写这篇文章，用了我将近１个月的时间．查找资料，自己做实验，希望对大家有所帮助．如有不全及不完善的地方还请提出.<br>因为本篇文章以配置为主.关于IPTABLES的基础知识及指令命令说明等我会尽快传上,当然你可以去网上搜索一下,还是很多的.</p>
+<p>转自:<a href="https://www.cnblogs.com/JemBai/archive/2009/03/19/1416364.html" target="_blank" rel="noopener">https://www.cnblogs.com/JemBai/archive/2009/03/19/1416364.html</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/运维/">运维</a><a href="/tags/Linux/">Linux</a><a href="/tags/IPTABLES/">IPTABLES</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2013/11/11/[转]linux下IPTABLES配置详解/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2013/11/10/netstat-r查看路由表时Flags的含义/"><span>netstat -r查看路由表时Flags的含义</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/11/10/netstat-r查看路由表时Flags的含义/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-11-10T00:00:00.000Z">
+          2013-11-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>netstat 命令解释</p>
+<p><a href="/notename/" title="archive 20131110"></a></p>
+<p><img src="http://static.zybuluo.com/zwh8800/pl5inkizmskrlmz5ldzdxbxj/image_1bl028klq1b7e1khd4qnkplh0n9.png" alt="image_1bl028klq1b7e1khd4qnkplh0n9.png-12.4kB"></p>
+<p>对于一条给定路由, 有五种不同的Flag:</p>
+<blockquote>
+<p>U  该路由可以使用</p>
+<p>G  该路由是到一个网关(路由器). 若没有此标志, 说明目的地址为直接连接的.</p>
+<p>H  该路由是到一个主机, 既目标地址是完整的主机地址而不是网络地址. 如果没有该标志, 说明该路由是到一个网络,<br>所以目的地址是一个网络地址(网络号 + 子网号 + 0)</p>
+<p>D  该路由是有重定向报文创建的.</p>
+<p>M 该路由已被重定向报文修改</p>
+</blockquote>
+<p>其中G和H比较重要:</p>
+<p><strong>G区分了直接路由和间接路由, 对于直接路由, 发往直接路由的分组不仅有目的端的IP, 还有目的端的链路层地址. 但对于间接路由, 当分组被发送到间接路由时, IP地址指明的是最终目的地, 但链路层地址指明的是网关(下一站路由).</strong></p>
+<p><strong>H说明了目的地址是一个完整的主机地址, 没有设置H则说明目的地址是一个网络地址(主机号为0), 当搜索路由表时, 主机地址必须与目的地址完全匹配, 而网络地址只需要匹配网络号和子网号.</strong></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/运维/">运维</a><a href="/tags/Linux/">Linux</a><a href="/tags/netstat/">netstat</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2013/11/10/netstat-r查看路由表时Flags的含义/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2013/11/07/几条命令/"><span>几条命令</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/11/07/几条命令/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-11-07T00:00:00.000Z">
+          2013-11-07
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>关于 netstat 和 iptables 的用法</p>
+<p><a href="/notename/" title="archive 20131107"></a></p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo netstat -tnlpu <span class="string">| grep pptpd</span></span><br></pre></td></tr></table></figure>
+
+<p>显示程序名和端口号</p>
+<p>-t :显示tcp</p>
+<p>-u :显示udp</p>
+<p>-n :不反向解析ip</p>
+<p>-l :显示监听套接字</p>
+<p>-p :显示程序名(需root)</p>
+<p>完整用法:</p>
+<blockquote>
+<p>usage: netstat [-vWeenNcCF] [<Af>] -r netstat {-V|–version|-h|–help}<br>netstat [-vWnNcaeol] [<Socket> …] netstat { [-vWeenNac] -i | [-cWnNe]<br>-M | -s }</p>
+<p>-r, –route display routing table<br>-i, –interfaces display interface table<br>-g, –groups display multicast group memberships<br>-s, –statistics display networking statistics (like SNMP)<br>-M, –masquerade display masqueraded connections</p>
+<p>-v, –verbose be verbose<br>-W, –wide don’t truncate IP addresses<br>-n, –numeric don’t resolve names –numeric-hosts don’t resolve host names –numeric-ports don’t resolve port names –numeric-users don’t<br>resolve user names<br>-N, –symbolic resolve hardware names<br>-e, –extend display other/more information<br>-p, –programs display PID/Program name for sockets<br>-c, –continuous continuous listing</p>
+<p>-l, –listening display listening server sockets<br>-a, –all, –listening display all sockets (default: connected)<br>-o, –timers display timers<br>-F, –fib display Forwarding Information Base (default)<br>-C, –cache display routing cache instead of FIB</p>
+<p><Socket>={-t|–tcp} {-u|–udp} {-w|–raw} {-x|–unix} –ax25 –ipx –netrom<br><AF>=Use ‘-6|-4’ or ‘-A <af>’ or ‘–<af>’; default: inet List of<br>possible address families (which support routing): inet (DARPA<br>Internet) inet6 (IPv6) ax25 (AMPR AX.25) netrom (AMPR NET/ROM) ipx<br>(Novell IPX) ddp (Appletalk DDP) x25 (CCITT X.25)</p>
+</blockquote>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -t<span class="built_in"> nat </span>-A POSTROUTING -s 192.168.0.1/24 -o eth0 -j MASQUERADE</span><br></pre></td></tr></table></figure>
+
+<p>开启nat</p>
+<p>具体见<a href="https://lengzzz.com/note/archive-20131111">这里</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/运维/">运维</a><a href="/tags/Linux/">Linux</a><a href="/tags/备忘/">备忘</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2013/11/07/几条命令/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2013/10/25/上次用虚拟机建立NAT曲线共享上网的经历忘了记录了/"><span>上次用虚拟机建立NAT 曲线共享上网的经历忘了记录了</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/10/25/上次用虚拟机建立NAT曲线共享上网的经历忘了记录了/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-10-25T00:00:00.000Z">
+          2013-10-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>上次用虚拟机建立NAT 曲线共享上网的经历忘了记录了</p>
+<p><a href="/notename/" title="archive 20131025"></a></p>
+<p>首先主机连上学校的2B校园网</p>
+<p>然后ubuntu server虚拟机装两个网卡, 一个是正常nat上网, 另一个为桥接网卡</p>
+<p>/etc/network/interfaces 大概这样写</p>
+<p><img src="http://static.zybuluo.com/zwh8800/hk6o73lt9mqidvp371w7mff0/image_1bl00gri2a201k807s01gk016t99.png" alt="image_1bl00gri2a201k807s01gk016t99.png-13.1kB"></p>
+<p>一个为上网的出口, 一个桥接到校园网的局域网内, 做NAT服务器</p>
+<p>之后修改/etc/sysctl.conf文件</p>
+<p>将net.ipv4.ip_forward= 1的注释删掉</p>
+<p>否则内核如果读取的目的地址不是本机ip但目的mac地址为本机的数据包(路由数据包)将会直接丢弃</p>
+<p>然后加载iptables和nat模块</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo modprobe ip_tables</span><br><span class="line">sudo modprobe ip_nat_ftp</span><br></pre></td></tr></table></figure>
+
+<p>如果没安装iptables先执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install iptables</span><br></pre></td></tr></table></figure>
+
+<p>之后执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -F -t nat    <span class="comment">#清空所有规则</span></span><br><span class="line">sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE    <span class="comment">#建立nat 以eth0为出口</span></span><br></pre></td></tr></table></figure>
+
+<p>然后调用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables-save -c /home/zzz/iptables.save</span><br></pre></td></tr></table></figure>
+
+<p>把刚刚配置的写入一个文件中, 下次开机只需调用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables-restore -c /home/zzz/iptables.save</span><br></pre></td></tr></table></figure>
+
+<p>就ok了, 可以把modprobe那两句 和restore放到rc.local里 每次开机自动执行</p>
+<p><a href="https://www.cnblogs.com/JemBai/archive/2009/03/19/1416364.html" target="_blank" rel="noopener">https://www.cnblogs.com/JemBai/archive/2009/03/19/1416364.html</a><br><a href="https://oa.jmu.edu.cn/netoa/libq/pubdisc.nsf/66175841be38919248256e35005f4497/7762e8e1056be98f48256e88001ef71d?OpenDocument" target="_blank" rel="noopener">https://oa.jmu.edu.cn/netoa/libq/pubdisc.nsf/66175841be38919248256e35005f4497/7762e8e1056be98f48256e88001ef71d?OpenDocument</a></p>
+<p>参考两篇文章</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/运维/">运维</a><a href="/tags/Linux/">Linux</a><a href="/tags/NAT/">NAT</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2013/10/25/上次用虚拟机建立NAT曲线共享上网的经历忘了记录了/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2013/10/12/[转]Linuxtcpdump命令详解/"><span>[转]Linux tcpdump命令详解</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/10/12/[转]Linuxtcpdump命令详解/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-10-12T00:00:00.000Z">
+          2013-10-12
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>Linux tcpdump命令详解</p>
+<p><a href="/notename/" title="archive 20131012"></a></p>
+<p>这太长了：<a href="https://www.cnblogs.com/ggjucheng/archive/2012/01/14/2322659.html" target="_blank" rel="noopener">https://www.cnblogs.com/ggjucheng/archive/2012/01/14/2322659.html</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/tcpdump/">tcpdump</a><a href="/tags/运维/">运维</a><a href="/tags/Linux/">Linux</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2013/10/12/[转]Linuxtcpdump命令详解/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2013/10/11/重装了MK808的系统精简了很多东西记录一下/"><span>重装了MK808的系统 精简了很多东西 记录一下</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/10/11/重装了MK808的系统精简了很多东西记录一下/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-10-11T00:00:00.000Z">
+          2013-10-11
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>今年寒假前买的MK808 感觉用来做迷你服务器简直神器, 性能比树莓派要高, 价格却是二分之一. 上次装系统时还不怎么懂linux服务器配置, 基本是照着wiki step by step的来. 这次有了自己租服务器的几个月经验, 养成了一些好习惯, 自然感觉原来装的系统各种不爽. 于是今天下午有时间从头来过一边.</p>
+<p><a href="/notename/" title="archive 20131011"></a></p>
+<p>几个重要点先记录一下 以免遗忘:</p>
+<h6 id="1-MK808的无线网卡驱动很操蛋-必须装一个补丁包-modules-3-0-8-alok-RC3-1-tgz-关键是开机后需要执行两条插入驱动模块的命令才能用无线网卡"><a href="#1-MK808的无线网卡驱动很操蛋-必须装一个补丁包-modules-3-0-8-alok-RC3-1-tgz-关键是开机后需要执行两条插入驱动模块的命令才能用无线网卡" class="headerlink" title="1. MK808的无线网卡驱动很操蛋, 必须装一个补丁包, modules-3.0.8-alok-RC3.1.tgz 关键是开机后需要执行两条插入驱动模块的命令才能用无线网卡,"></a>1. MK808的无线网卡驱动很操蛋, 必须装一个补丁包, modules-3.0.8-alok-RC3.1.tgz 关键是开机后需要执行两条插入驱动模块的命令才能用无线网卡,</h6><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">depmod -a       #仅第一次使用即可</span><br><span class="line">modprobe -a bcm40181</span><br><span class="line">service networking restart </span><br><span class="line">ifconfig eth0 up</span><br></pre></td></tr></table></figure>
+<p>很麻烦, 所以在网上找了个办法, 编辑/etc/rc.local文件, 在后面加上上面那几句话即可. 每次开机前会自动执行.</p>
+<h6 id="2-网络的设置也记录一下吧-编辑-etc-network-interfaces文件来完成-关键是在eth0的下面-eth0是无线网卡-而不是wlan0-加上"><a href="#2-网络的设置也记录一下吧-编辑-etc-network-interfaces文件来完成-关键是在eth0的下面-eth0是无线网卡-而不是wlan0-加上" class="headerlink" title="2. 网络的设置也记录一下吧, 编辑/etc/network/interfaces文件来完成. 关键是在eth0的下面(eth0是无线网卡, 而不是wlan0)加上"></a>2. 网络的设置也记录一下吧, 编辑/etc/network/interfaces文件来完成. 关键是在eth0的下面(eth0是无线网卡, 而不是wlan0)加上</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wpa-ssid 你的wifi名字</span><br><span class="line">wpa-psk 你的wifi密码</span><br></pre></td></tr></table></figure>
+<p>每次更改这个文件之后需要</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">service networking restart</span></span><br></pre></td></tr></table></figure>
+
+<p>来重启网络, 不过发现改个ip什么的可以直接在ssh下进行, 网不会断掉</p>
+<h6 id="3-还有一个恶心的东西不知道为什么在终端内经常会是不是打出一行字-上面有提示用这条命令能去除"><a href="#3-还有一个恶心的东西不知道为什么在终端内经常会是不是打出一行字-上面有提示用这条命令能去除" class="headerlink" title="3. 还有一个恶心的东西不知道为什么在终端内经常会是不是打出一行字, 上面有提示用这条命令能去除"></a>3. 还有一个恶心的东西不知道为什么在终端内经常会是不是打出一行字, 上面有提示用这条命令能去除</h6><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo <span class="number">0</span> &gt; <span class="regexp">/proc/</span>sys<span class="regexp">/kernel/</span>hung_task_timeout_secs</span><br></pre></td></tr></table></figure>
+
+<p>所以说也把他放在/etc/rc.local里吧</p>
+<h6 id="4-最后一点是最近租服务器养成的好习惯-建立一个文件叫installed-每装一个软件包就把名字和依赖记录在里面-迁移的时候方便-删除的时候也不怕漏掉"><a href="#4-最后一点是最近租服务器养成的好习惯-建立一个文件叫installed-每装一个软件包就把名字和依赖记录在里面-迁移的时候方便-删除的时候也不怕漏掉" class="headerlink" title="4. 最后一点是最近租服务器养成的好习惯, 建立一个文件叫installed, 每装一个软件包就把名字和依赖记录在里面, 迁移的时候方便, 删除的时候也不怕漏掉"></a>4. 最后一点是最近租服务器养成的好习惯, 建立一个文件叫installed, 每装一个软件包就把名字和依赖记录在里面, 迁移的时候方便, 删除的时候也不怕漏掉</h6><h6 id="5-补充一个-因为mk808没有自带时钟-每次开机是与NTP时间服务器校准时钟-但是要设定一下时区用下面命令设置时区"><a href="#5-补充一个-因为mk808没有自带时钟-每次开机是与NTP时间服务器校准时钟-但是要设定一下时区用下面命令设置时区" class="headerlink" title="5. 补充一个, 因为mk808没有自带时钟, 每次开机是与NTP时间服务器校准时钟, 但是要设定一下时区用下面命令设置时区"></a>5. 补充一个, 因为mk808没有自带时钟, 每次开机是与NTP时间服务器校准时钟, 但是要设定一下时区用下面命令设置时区</h6><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="meta-keyword">/usr/</span>share<span class="meta-keyword">/zoneinfo/</span>Asia/ShangHai <span class="meta-keyword">/etc/</span>localtime</span><br><span class="line">sudo ntpdate cn.pool.ntp.org</span><br></pre></td></tr></table></figure>
+<p>大致就这样 洗澡去</p>
+<p>详细可参考这两篇文章:</p>
+<p><a href="https://www.cnblogs.com/Jedimaster/archive/2013/04/12/3016312.html" target="_blank" rel="noopener">https://www.cnblogs.com/Jedimaster/archive/2013/04/12/3016312.html</a></p>
+<p><a href="https://www.miniand.com/wiki/Optional-Upgrading+your+PicUntu+installation+to+RC3" target="_blank" rel="noopener">https://www.miniand.com/wiki/Optional-Upgrading+your+PicUntu+installation+to+RC3</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/折腾/">折腾</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2013/10/11/重装了MK808的系统精简了很多东西记录一下/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2013/10/10/迁移成功!/"><span>迁移成功!</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/10/10/迁移成功!/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-10-10T00:00:00.000Z">
+          2013-10-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>今天 把小家搬到了budgetvm, 原来的服务器一星期down五次真是实在受不了啦</p>
+<p><a href="/notename/" title="archive 20131010"></a></p>
+<p>今天 把小家搬到了budgetvm, 原来的服务器一星期down五次真是实在受不了啦</p>
+<p>这次的VPS比上次稍微贵一些不过改用了Xen的VPS, 可以随意艹</p>
+<p>基本上原来的数据都迁移过来了, 部分apache插件没装(实际上是忘了怎么装了, 下午图书馆滴干活!)</p>
+<p>博客先运行一阵子吧  看看稳不稳定</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/闲扯/">闲扯</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2013/10/10/迁移成功!/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2013/10/04/usb之灾/"><span>usb之灾</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/10/04/usb之灾/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-10-04T00:00:00.000Z">
+          2013-10-04
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>usb之灾</p>
+<p><a href="/notename/" title="archive 20131004"></a></p>
+<p><img src="http://static.zybuluo.com/zwh8800/cnrrr0uaes0tkwxfw4fap46t/image_1bkvvue4ic3c10fp1v2frh017co9.png" alt="image_1bkvvue4ic3c10fp1v2frh017co9.png-757.7kB"></p>
+<p>柜子里还有两三根</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/闲扯/">闲扯</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2013/10/04/usb之灾/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2013/10/03/[转]minecraft服务器搭建(包含oracle-jdk的安装)/"><span>[转]minecraft服务器搭建(包含oracle-jdk的安装)</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2013/10/03/[转]minecraft服务器搭建(包含oracle-jdk的安装)/" rel="bookmark">
+        <time class="entry-date published" datetime="2013-10-03T00:00:00.000Z">
+          2013-10-03
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>minecraft服务器搭建(包含oracle-jdk的安装)</p>
+<p><a href="/notename/" title="archive 20131003"></a></p>
+<p>这太长了，我还是转个地址吧：</p>
+<p><a href="http://minecraft.gamepedia.com/Tutorials/Setting_up_a_server" target="_blank" rel="noopener">http://minecraft.gamepedia.com/Tutorials/Setting_up_a_server</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/服务器/">服务器</a><a href="/tags/minecraft/">minecraft</a><a href="/tags/搭建/">搭建</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2013/10/03/[转]minecraft服务器搭建(包含oracle-jdk的安装)/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  <a href="/page/11/" class="pagination-prev">上一页</a>
+  
+  
+  <a href="/page/13/" class="pagination-next">下一页</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>linux 设备驱动程序 (5) – 字符设备驱动例子 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="linux 设备驱动程序 (5) – 字符设备驱动例子
+
+这次给出一个例子, 比 (3) 中的例子稍微复杂一些. 在 (3) 中, 给出了一个字符设备的例子, 会保存最后一个写入的字节. 这次的例子使用一个链表保存写入的数据, 读取时从链表中移出数据:![image_1bl0atutt1kn7iv5">
+  
+
+  
+  
+  <meta name="keywords" content="linux,驱动开发">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="linux 设备驱动程序 (5) – 字符设备驱动例子"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>linux 设备驱动程序 (5) – 字符设备驱动例子</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/03/linux设备驱动程序(5)–字符设备驱动例子/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-03T00:00:00.000Z">
+          2014-03-03
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p> linux 设备驱动程序 (5) – 字符设备驱动例子</p>
+<p><a href="/notename/" title="archive 20140303"></a></p>
+<p>这次给出一个例子, 比 (3) 中的例子稍微复杂一些. 在 (3) 中, 给出了一个字符设备的例子, 会保存最后一个写入的字节. 这次的例子使用一个链表保存写入的数据, 读取时从链表中移出数据:<br>![image_1bl0atutt1kn7iv5t3b18q8fr49.png-5.9kB][1]</p>
+<p>因此这个驱动和 FIFO 和管道非常相似, 当用户写入数据时, write point 后移, 并且写入数据 (如果当前链表 node 空间用尽则创建新 node). 当用户读取数据时, read pointer 也后移 (如果 read pointer 指向后一个 node 则删除前一个 node)</p>
+<p>所以首先写一个简单的单向链表:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BYTE_PER_NODE 4096	<span class="comment">/* 每个节点的数据size */</span></span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">linked_node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">char</span> *data;	<span class="comment">/* 指向一个数组, 数据保存在这里 */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">linked_node</span>* <span class="title">next</span>;</span>	<span class="comment">/* 指向下一个节点 */</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">/* 创建一个新node */</span></span><br><span class="line"><span class="function">struct linked_node* <span class="title">create_node</span><span class="params">(<span class="keyword">void</span>)</span>	</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">linked_node</span>* <span class="title">ret</span>;</span></span><br><span class="line">	<span class="keyword">if</span> ((ret = kmalloc(<span class="keyword">sizeof</span>(struct linked_node), GFP_KERNEL)) == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		DEBUG_LOG(KERN_WARNING, <span class="string">"no memory\n"</span>);</span><br><span class="line">		<span class="keyword">goto</span> err;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> ((ret-&gt;data = kmalloc(BYTE_PER_NODE, GFP_KERNEL)) == <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		DEBUG_LOG(KERN_WARNING, <span class="string">"no memory\n"</span>);</span><br><span class="line">		<span class="keyword">goto</span> err1;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line"> </span><br><span class="line">err1:</span><br><span class="line">	kfree(ret);</span><br><span class="line">err:</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 删除一个node */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">free_node</span><span class="params">(struct linked_node* node)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	kfree(node-&gt;data);</span><br><span class="line">	kfree(node);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为我们的读写指针 (read pointer/write pointer) 需要保存指向哪个节点, 以及在节点中的哪个位置. 所以用一个结构体来保存这个指针:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pos_pointer</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">linked_node</span>* <span class="title">node</span>;</span></span><br><span class="line">	<span class="keyword">size_t</span> pos;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">chr_dev</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">pos_pointer</span> <span class="title">read_ptr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">pos_pointer</span> <span class="title">write_ptr</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">semaphore</span> <span class="title">sem</span>;</span></span><br><span class="line">	<span class="keyword">wait_queue_head_t</span> <span class="built_in">queue</span>;</span><br><span class="line"> </span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">cdev</span> <span class="title">cdev</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在我们的设备结构体中使用 pos_pointer 保存读写指针.</p>
+<p>另外发现多了一个 sem 成员, 这个是上篇中学习的信号量. queue 成员是一个” 等待队列头”, 用于当无数据可读时进行休眠 [下一篇讲述].</p>
+<p>在 chr_init() 函数中应该设置我们的读写指针和信号量设施:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* in function chr_init() */</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">/* 设置私有数据 */</span></span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"setup private data\n"</span>)</span>;</span><br><span class="line"><span class="keyword">if</span> ((node = create<span class="constructor">_node()</span>)<span class="operator"> == </span>NULL)</span><br><span class="line">&#123;</span><br><span class="line">	goto err2;</span><br><span class="line">&#125;</span><br><span class="line">chr_dev-&gt;read_ptr.node = node;</span><br><span class="line">chr_dev-&gt;read_ptr.pos = <span class="number">0</span>;</span><br><span class="line">chr_dev-&gt;write_ptr.node = node;</span><br><span class="line">chr_dev-&gt;write_ptr.pos = <span class="number">0</span>;</span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"success\n"</span>)</span>;</span><br><span class="line"><span class="comment">/* 初始化信号量 */</span></span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"initialize semaphore\n"</span>)</span>;</span><br><span class="line">sema<span class="constructor">_init(&amp;<span class="params">chr_dev</span>-&gt;<span class="params">sem</span>, 1)</span>;</span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"success\n"</span>)</span>;</span><br><span class="line"><span class="comment">/* 初始化等待队列 */</span></span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"initialize wait queue\n"</span>)</span>;</span><br><span class="line">init<span class="constructor">_waitqueue_head(&amp;<span class="params">chr_dev</span>-&gt;<span class="params">queue</span>)</span>;</span><br><span class="line"><span class="constructor">DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"success\n"</span>)</span>;</span><br></pre></td></tr></table></figure>
+<p>在 chr_exit() 中也应该释放资源:</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">p = chr_dev-&gt;read_ptr.<span class="keyword">node</span><span class="title">;</span></span><br><span class="line"><span class="title">chr_dev-</span>&gt;read_ptr.<span class="keyword">node</span> <span class="title">= NULL</span>;</span><br><span class="line">chr_dev-&gt;write_ptr.<span class="keyword">node</span> <span class="title">= NULL</span>;</span><br><span class="line">while (p)</span><br><span class="line">&#123;</span><br><span class="line">	q = p-&gt;next;</span><br><span class="line">	free_node(p);</span><br><span class="line">	p = q;</span><br><span class="line">&#125;</span><br><span class="line">cdev_del(&amp;chr_dev-&gt;cdev);</span><br></pre></td></tr></table></figure>
+<p>写入函数:</p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">ssize_t write(struct file *filp, const char __user *buf, size_t count, loff_t *fpos)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="title">struct</span> chr_dev *dev = filp-&gt;</span>private_data;</span><br><span class="line">	size_t this_write, total_write = <span class="number">0</span>;</span><br><span class="line">	char* p;</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">if</span> (down_interruptible(&amp;dev-&gt;</span>sem) != <span class="number">0</span>)</span><br><span class="line">		return -ERESTARTSYS;</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"write from user,pid=%d [%s]\n"</span>, </span><br><span class="line">		<span class="function"><span class="title">current</span>-&gt;</span><span class="function"><span class="title">pid</span>, current-&gt;</span>comm);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">while</span> (count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="function"><span class="title">this_write</span> = MIN(BYTE_PER_NODE - dev-&gt;</span>write_ptr.pos,</span><br><span class="line">						count);</span><br><span class="line">		<span class="function"><span class="title">p</span> = &amp;dev-&gt;</span><span class="function"><span class="title">write_ptr</span>.node-&gt;</span><span class="function"><span class="title">data</span>[dev-&gt;</span>write_ptr.pos];</span><br><span class="line">		<span class="keyword">if</span> (copy_from_user(p, buf, this_write) != <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			DEBUG_LOG(KERN_WARNING, <span class="string">"copy_from_user error\n"</span>);</span><br><span class="line">			goto err;</span><br><span class="line">		&#125;</span><br><span class="line">		count -= this_write;</span><br><span class="line">		total_write += this_write;</span><br><span class="line">		buf += this_write;</span><br><span class="line">		<span class="function"><span class="title">dev</span>-&gt;</span>write_ptr.pos += this_write;</span><br><span class="line">		<span class="function"><span class="title">if</span> (dev-&gt;</span>write_ptr.pos == BYTE_PER_NODE)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span><span class="function"><span class="title">write_ptr</span>.node-&gt;</span>next = create_node();</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span><span class="function"><span class="title">write_ptr</span>.node = dev-&gt;</span><span class="function"><span class="title">write_ptr</span>.node-&gt;</span>next;</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span>write_ptr.pos = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"write success total_write=%d,pos=%d\n"</span>, </span><br><span class="line">		<span class="function"><span class="title">total_write</span>, dev-&gt;</span>write_ptr.pos);</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">up</span>(&amp;dev-&gt;</span>sem);</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">wake_up_interruptible</span>(&amp;dev-&gt;</span>queue);</span><br><span class="line">	return total_write;</span><br><span class="line"> </span><br><span class="line">err:</span><br><span class="line">	<span class="function"><span class="title">up</span>(&amp;dev-&gt;</span>sem);</span><br><span class="line">	return -EFAULT; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们使用循环将数据写入, 每次循环开始时检测当前 node 剩余空间 (BYTE_PER_NODE – dev-&gt;write_ptr.pos) 和用户要求写入的 count 谁更小, 取较小作为 this_write(这一次写入的数据). 写入 node 之后, 令 count-=this_write 和并且令写指针 +=this_write. 之后检测写指针是否到 node 的末尾, 如果是的话, create 一个新 node.</p>
+<p>读取函数和写入很类似:</p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">ssize_t read(struct file *filp, char __user *buf, size_t count, loff_t *fpos)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="function"><span class="title">struct</span> chr_dev *dev = filp-&gt;</span>private_data;</span><br><span class="line">	size_t this_read, total_read = <span class="number">0</span>;</span><br><span class="line">	char* p;</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">if</span> (down_interruptible(&amp;dev-&gt;</span>sem) != <span class="number">0</span>)</span><br><span class="line">		return -ERESTARTSYS;</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"read from user,pid=%d [%s]\n"</span>, </span><br><span class="line">		<span class="function"><span class="title">current</span>-&gt;</span><span class="function"><span class="title">pid</span>, current-&gt;</span>comm);</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">while</span> (dev-&gt;</span><span class="function"><span class="title">read_ptr</span>.node == dev-&gt;</span>write_ptr.node &amp;&amp;</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span><span class="function"><span class="title">read_ptr</span>.pos == dev-&gt;</span>write_ptr.pos)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="function"><span class="title">up</span>(&amp;dev-&gt;</span>sem);</span><br><span class="line">		<span class="function"><span class="title">if</span> (filp-&gt;</span>f_flags &amp; O_NONBLOCK)</span><br><span class="line">			return -EAGAIN;</span><br><span class="line"> </span><br><span class="line">		DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"[%s] going to sleep\n"</span>, <span class="function"><span class="title">current</span>-&gt;</span>comm);</span><br><span class="line"> </span><br><span class="line">		<span class="function"><span class="title">if</span> (wait_event_interruptible(dev-&gt;</span><span class="function"><span class="title">queue</span>, (dev-&gt;</span><span class="function"><span class="title">read_ptr</span>.node != dev-&gt;</span>write_ptr.node ||</span><br><span class="line">				<span class="function"><span class="title">dev</span>-&gt;</span><span class="function"><span class="title">read_ptr</span>.pos != dev-&gt;</span>write_ptr.pos) ) != <span class="number">0</span>)</span><br><span class="line">			return -ERESTARTSYS;</span><br><span class="line"> </span><br><span class="line">		<span class="function"><span class="title">if</span> (down_interruptible(&amp;dev-&gt;</span>sem) != <span class="number">0</span>)</span><br><span class="line">			return -ERESTARTSYS;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">while</span> (count != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="function"><span class="title">if</span> (dev-&gt;</span><span class="function"><span class="title">read_ptr</span>.node == dev-&gt;</span>write_ptr.node)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="function"><span class="title">this_read</span> = MIN(dev-&gt;</span><span class="function"><span class="title">write_ptr</span>.pos - dev-&gt;</span>read_ptr.pos,</span><br><span class="line">						count);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="function"><span class="title">this_read</span> = MIN(BYTE_PER_NODE - dev-&gt;</span>read_ptr.pos,</span><br><span class="line">						count);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (this_read == <span class="number">0</span>)</span><br><span class="line">			break;</span><br><span class="line"> </span><br><span class="line">		<span class="function"><span class="title">p</span> = &amp;dev-&gt;</span><span class="function"><span class="title">read_ptr</span>.node-&gt;</span><span class="function"><span class="title">data</span>[dev-&gt;</span>read_ptr.pos];</span><br><span class="line">		<span class="keyword">if</span> (copy_to_user(buf, p, this_read) != <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			DEBUG_LOG(KERN_WARNING, <span class="string">"copy_to_user error\n"</span>);</span><br><span class="line">			goto err;</span><br><span class="line">		&#125;</span><br><span class="line">		count -= this_read;</span><br><span class="line">		total_read += this_read;</span><br><span class="line">		buf += this_read;</span><br><span class="line">		<span class="function"><span class="title">dev</span>-&gt;</span>read_ptr.pos += this_read;</span><br><span class="line">		<span class="function"><span class="title">if</span> (dev-&gt;</span>read_ptr.pos == BYTE_PER_NODE)</span><br><span class="line">		&#123;</span><br><span class="line">			struct linked_node* node;</span><br><span class="line">			<span class="function"><span class="title">node</span> = dev-&gt;</span>read_ptr.node;</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span><span class="function"><span class="title">read_ptr</span>.node = dev-&gt;</span><span class="function"><span class="title">read_ptr</span>.node-&gt;</span>next;</span><br><span class="line">			free_node(node);</span><br><span class="line">			<span class="function"><span class="title">dev</span>-&gt;</span>read_ptr.pos = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	DEBUG_LOG(DEFAULT_LEVEL, <span class="string">"read success total_read=%d,pos=%d\n"</span>, </span><br><span class="line">		<span class="function"><span class="title">total_read</span>, dev-&gt;</span>read_ptr.pos);</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="title">up</span>(&amp;dev-&gt;</span>sem);</span><br><span class="line">	return total_read;</span><br><span class="line"> </span><br><span class="line">err:</span><br><span class="line">	<span class="function"><span class="title">up</span>(&amp;dev-&gt;</span>sem);</span><br><span class="line">	return -EFAULT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>[EOF]<br>  [1]: <a href="http://static.zybuluo.com/zwh8800/ftvt6tioo62u69zyo3m8r7z8/image_1bl0atutt1kn7iv5t3b18q8fr49.png" target="_blank" rel="noopener">http://static.zybuluo.com/zwh8800/ftvt6tioo62u69zyo3m8r7z8/image_1bl0atutt1kn7iv5t3b18q8fr49.png</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/驱动开发/">驱动开发</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

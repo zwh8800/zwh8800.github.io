@@ -1,0 +1,226 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>arm-linux 汇编(2) – 调用c函数 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="上一篇学习了armlinux汇编的helloworld，用到了arm汇编的一些基本指令，如mov、ldr、swi，需要详细的arm体系架构的信息可以去arm官网下载arm_architecture_reference_manual.pdf文件，上面有很详细的信息。本文接着上次，继续讲一下如何用汇编调">
+  
+
+  
+  
+  <meta name="keywords" content="arm-linux,汇编,系统编程">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="arm-linux 汇编(2) – 调用c函数"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>arm-linux 汇编(2) – 调用c函数</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/16/arm-linux汇编(2)–调用c函数/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-16T00:00:00.000Z">
+          2014-01-16
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>上一篇学习了armlinux汇编的helloworld，用到了arm汇编的一些基本指令，如mov、ldr、swi，需要详细的arm体系架构的信息可以去arm官网下载arm_architecture_reference_manual.pdf文件，上面有很详细的信息。本文接着上次，继续讲一下如何用汇编调用c函数。</p>
+<p><a href="/notename/" title="archive 20140116"></a></p>
+<p>另外，如果觉得那个手册太冗长，或者是英文苦手的话，可以在本站下载这个短小精悍的reference card（中文版哦）：</p>
+<p><a href="https://lengzzz.com/download/QRC0001_UAL.pdf">https://lengzzz.com/download/QRC0001_UAL.pdf</a></p>
+<p>现在进入正题：</p>
+<p>上一篇中，重点讲述了在arm-linux下的<strong>系统调用</strong>的方法，但是更多时候，我们可能会与一些c库进行交互，今天学习了<strong>汇编调用c库函数</strong>的方法。</p>
+<p>先上例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.section .rodata</span><br><span class="line">fmt:</span><br><span class="line">	.asciz &quot;2 * 4 &#x3D; %d\n&quot;	@.asciz以NULL结尾的字符串</span><br><span class="line"> </span><br><span class="line">.section .text</span><br><span class="line">.global _start</span><br><span class="line"> </span><br><span class="line">_start:</span><br><span class="line">	mov r2, #2</span><br><span class="line">	mov r3, #4</span><br><span class="line">	mul r1, r2, r3		@乘法指令, r1&#x3D;r2*r3</span><br><span class="line">	ldr r0, &#x3D;fmt</span><br><span class="line">	bl printf		@bl为函数调用, 跳转到printf并将当前pc保存到lr寄存器</span><br><span class="line">exit:</span><br><span class="line">	mov r0, #1</span><br><span class="line">	mov r7, #1</span><br><span class="line">	swi #0</span><br></pre></td></tr></table></figure>
+
+<p>例子很简单, 功能就是计算2<em>4并输出2 * 4 = 8. 先使用mul指令计算出2</em>4的值放在r1寄存器中, 然后将printf的格式串fmt放到r0中, 然后调用printf函数.</p>
+<p>要汇编这个程序不能用昨天简单的指令了. 因为, printf是libc库中的函数, 必须要和c库进行连接:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">as mul.s -o mul.o</span><br><span class="line">ld -dynamic-linker /lib/ld-linux-armhf.so.3 mul.o -o mul -lc</span><br></pre></td></tr></table></figure>
+
+<p>相比较上一篇中的连接指令, 多了两条, 一个是<strong>-dynamic-linker /lib/ld-linux-armhf.so.3`</strong>另一个是<strong>-lc</strong></p>
+<p>第一个是指令在man pages中的介绍是:</p>
+<blockquote>
+<p>–dynamic-linker=file<br>Set the name of the dynamic linker.  This is only meaningful when<br>generating dynamically linked ELF executables.  The default dynamic<br>linker is normally correct; don’t use this unless you know what you<br>are doing.</p>
+</blockquote>
+<p>是用来设置<strong>动态链接器</strong>的, 在不同的设备上ld-linux-armhf.so.3的名字可能都不一样, 但一般都在lib文件夹中并且以ld开头. 如果没有这条指令的话, 运行程序的时候会提示file not found</p>
+<p>第二条是-lc, 和gcc的用法一样, <strong>表示连接libc库</strong>. 如果不加这个指令的话连接时会提示undefined “printf”.</p>
+<p>现在介绍一下bl指令. bl是<em>branch</em>(分支) <em>link</em>(连接)的缩写(和x86架构的call ret相比意思太含糊了), branch的意思就是<strong>跳转(分支)到其他地方执行</strong>, link的意思是<strong>将当前的pc(Program Counter程序计数器, 保存着当前程序运行到哪里了)寄存器保存到lr(Link Register连接寄存器)</strong>, 以便调用函数之后函数可以返回回来. 当printf函数运行结束时, 会调用<strong>mov pc, lr</strong>来返回.</p>
+<p>再来说一说arm的寄存器吧. 在<strong>用户态</strong>, arm的寄存器一共有这几个:</p>
+<table>
+<tbody>
+<tr>
+<td>r0</td>
+<td>r1</td>
+<td>r2</td>
+<td>r3</td>
+<td>r4</td>
+<td>r5</td>
+<td>r6</td>
+<td>r7</td>
+</tr>
+<tr>
+<td>r8</td>
+<td>r9</td>
+<td>r10</td>
+<td>r11</td>
+<td>r12</td>
+<td>r13(sp)</td>
+<td>r14(lr)</td>
+<td>r15(pc)</td>
+</tr>
+<tr>
+<td>CPSR</td>
+</tr>
+</tbody>
+</table>
+
+<p>算是比较多的. 其中sp表示堆栈指针(Stack Pointer), lr代表连接寄存器(Link Register), pc表示程序计数器(Program Counter).</p>
+<p>具体函数调用时参数传递和返回值用那些寄存器在eabi中都有介绍. 之后将会进行学习.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/arm-linux/">arm-linux</a><a href="/tags/汇编/">汇编</a><a href="/tags/系统编程/">系统编程</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

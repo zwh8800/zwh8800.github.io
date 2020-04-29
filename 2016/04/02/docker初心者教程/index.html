@@ -1,0 +1,261 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>docker 初心者教程 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="换了博客系统之后，好有写博客的欲望。先来一篇docker的。
+
+[toc]
+微服务先谈一下我对docker的理解吧。docker这个东西和微服务是离不来的，目前各大互联网企业都实践微服务，催生了docker的出现。我现在所在的公司也不例外，现在公司的技术大方向就是把老系统一步一步拆分成微服务，同时新">
+  
+
+  
+  
+  <meta name="keywords" content="docker,运维,DevOps">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="docker 初心者教程"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>docker 初心者教程</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/02/docker初心者教程/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-02T12:03:06.000Z">
+          2016-04-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>换了博客系统之后，好有写博客的欲望。先来一篇docker的。</p>
+<p><a href="/notename/" title="docker for beginners"></a></p>
+<p>[toc]</p>
+<h2 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h2><p>先谈一下我对docker的理解吧。docker这个东西和微服务是离不来的，目前各大互联网企业都实践微服务，催生了docker的出现。我现在所在的公司也不例外，现在公司的技术大方向就是把老系统一步一步拆分成微服务，同时新系统直接做成微服务。身在其中，吃的屎多了，自然感到了微服务的种种优势。</p>
+<p>对于微服务的优点我感觉最明显的有两点:</p>
+<ul>
+<li><strong>思维上</strong>解耦了</li>
+<li>团队的工作更具体明确了。</li>
+</ul>
+<p>因为现在同时在做新系统（微服务）的同时还需要在老系统上加功能，对第一点感觉就十分明显。在老系统那40万行屎山一样的代码上改东西时，整个人的心智负担就会很重，生怕哪一行把整个app拖慢了。新系统因为它足够微，所以理解整体业务逻辑就比较容易，应用做了什么事情大家都心知肚明，所以写代码的时候就可以随意一些啦wwww</p>
+<p>第二点感觉也很明显是因为几个月前公司才做了一次调整，由之前的按照技术栈分团队改为了按产品线分团队。这样一个团队中既有做web的也有iOS、android的还有懂运维的，大家组成一个团队共同来开发一个（或几个）产品，这样大家对一个产品会理解的更深刻，不会出现之前那种每部分都摸过，但是哪部分业务都不熟的情况。而且现在大家职责更分明，出了问题也能第一时间找到人来处理。</p>
+<h2 id="docker-解决的问题"><a href="#docker-解决的问题" class="headerlink" title="docker 解决的问题"></a>docker 解决的问题</h2><p>但是，微服务也会带来很多部署上的问题。以前发布只用build、deploy一个项目，现在需要搞10+个项目。这不把运维给累死啦？最麻烦的是每个项目依赖的东西不一样，可能项目A用的库是1.5.0，但项目B用的是1.6.0。这部署到一台机器还是两台机器呢，一台出错两台费钱。出问题的更多的是两个项目的依赖的依赖的依赖有冲突（不是直接冲突，两个项目的依赖树上有冲突）。另外程序员们总喜欢用最新的库，天天催运维升级系统。这样运维老爷们就会很头疼，大喊<code>老子不干啦！你们程序员事真多，自己搭环境自己玩吧！</code>。</p>
+<p>因此，docker就腾空出世了。由上面可见，docker解决的最大的问题就是<code>定制的运行环境持久化，使应用或服务无论最终在哪里运行都有同样可预测的行为，尽量减少环境导致问题的可能性</code>。</p>
+<p>另外，docker统一了由于操作系统不同而带来的服务接口不一致，比如应用部署上线后通常配合系统的initctl或upstart之类的写一个服务脚本。但是不同的系统甚至不同版本的系统都不互相兼容。用docker的话大家都统一<code>docker restart</code>了。爽歪歪。</p>
+<h2 id="docker-使用"><a href="#docker-使用" class="headerlink" title="docker 使用"></a>docker 使用</h2><p>第一次用docker给人的感觉像用一个速度超快的虚拟机，但是比虚拟机牛逼在没有开机关机过程。docker中也有两个概念：<strong>image</strong>、<strong>container</strong>。container就相当于VBox里的一个虚拟机了，而image可以认为是container的一个备份（系统快照）。</p>
+<p>基本的helloworld咱们就不跑了，就拿今天写好的博客系统来讲吧。这个和纯的微服务不一样，并不以接口形式向外提供服务，而是使用了模版引擎提供页面服务，以及向下访问数据库，和抓取cmd markdown的数据（类似于服务间调用接口啦233）。</p>
+<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>首先你需要把你的项目编译打包，这一步一般会在持续集成里去做。但是我们就手动搞啦。我这里的项目是golang的所以是一些go的编译命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># golang交叉编译</span></span><br><span class="line">GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build</span><br><span class="line">tar zcvf</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h3><p>准备工作完成后，下面来安装docker。Mac下的安装过程比较蛋疼，我看了下就放弃了。手边的Linux机器不少，再不济的也能用virtual box。不过前几天据说发布了测试的原生Mac版 <a href="http://www.oschina.net/news/71885/docker-to-mac-windows" target="_blank" rel="noopener">Docker 终于有 Windows 和 Mac 版了</a> 喜大普奔。</p>
+<p>Linux下安装就比较方便的，我用的ubuntu，直接用get.docker.com的安装脚本就能一键安装。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"></span><br><span class="line">apt-get update -y</span><br><span class="line">apt-get install -y curl</span><br><span class="line">curl -fsSL https://get.docker.com/ | sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="先拉个操作系统"><a href="#先拉个操作系统" class="headerlink" title="先拉个操作系统"></a>先拉个操作系统</h3><p>装好之后现在可以做我们自己的镜像了。docker的特点是你的镜像可以基于已有的镜像构建。所以我们可以先从docker hub（类似github一样的东西）拉一个基础的操作系统镜像下来，然后在其之上来构建我们的镜像。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拉取alpine系统</span></span><br><span class="line">docker pull alpine:3.3</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者习惯ubuntu的可以拉ubuntu</span></span><br><span class="line">docker pull ubuntu:15.10</span><br></pre></td></tr></table></figure>
+<p>在进行docker pull命令的完整语法是 <code>docker pull [registry]/[username]/[image]:[version]</code> 分为四个部分，registry代表拉取的服务器地址，username是被拉取的镜像所有者的用户名，image是镜像名，version是版本tag。</p>
+<p>其中，registry被省去代表拉取官方registry，username被省去代表拉去官方镜像，version被省去代表拉去latest镜像，也就是最新镜像。</p>
+<p>所以上面的命令的意思是把官方的alpine3.3拉过来。docker官方的registry里维护了一些最基本的镜像和比较常用的镜像。官方维护的品质一般都是比较可以信赖的，所以制作镜像可以基于官方镜像来build。</p>
+<p>pull好之后可以执行一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">zzz@ubuntu-server ~ $ docker images</span><br><span class="line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">zwh8800/xware          latest              9426e8b48edc        4 days ago          176.8 MB</span><br><span class="line">gogs/gogs              latest              40ce39eb7c4b        9 days ago          81.17 MB</span><br><span class="line">zwh8800/starbucks      latest              15fbd0099e0c        12 days ago         17.22 MB</span><br><span class="line">zwh8800/douyu-notify   latest              48ee382f41b8        2 weeks ago         12.01 MB</span><br><span class="line">dperson/samba          latest              a09a77b57057        2 weeks ago         250.3 MB</span><br><span class="line">nginx                  1.9.12              af4b3d7d5401        3 weeks ago         190.5 MB</span><br><span class="line">ubuntu                 15.10               79cfbe2a4950        4 weeks ago         135.9 MB</span><br><span class="line">jenkins                latest              c2cac236cd93        4 weeks ago         708.7 MB</span><br><span class="line">golang                 1.6.0-alpine        c40da134e949        4 weeks ago         238 MB</span><br><span class="line">alpine                 3.3                 70c557e50ed6        4 weeks ago         4.798 MB</span><br><span class="line">golang                 1.6                 bb6cd5033ad2        4 weeks ago         744 MB</span><br></pre></td></tr></table></figure>
+<p>看一下所有本地的镜像</p>
+<h3 id="执行一下试试"><a href="#执行一下试试" class="headerlink" title="执行一下试试"></a>执行一下试试</h3><p>既然已经拉下来镜像了，不玩一下就工作实在是可惜。所以我们先试着运行一下官方的镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zzz@ubuntu-server ~ $ docker run --rm -ti ubuntu:15.10 /bin/bash</span><br><span class="line">root@8b94129944d0:/<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<p>你会发现你好像回到了命令行，但有一些不同，你的hostname好像变了。如果你像我一样配置了prompt的颜色的话，发现颜色没了。其实我们已经进入容器（<strong>container</strong>）了，但完全没想到会是这么快，就像运行一个程序一样根本不需要开机的时间。在这个bash里你可以尽情的 <code>apt-get install</code> 甚至 <code>rm / -rf</code> 完全不会影响你的宿主机。docker就像一个虚拟机一样，他有独立的文件系统，独立的网络。所以 <code>解开安全带吧</code> <code>大家一起飙车</code></p>
+<p>玩开心了要退出的话直接 <code>exit</code> 就好了。我们在运行的时候使用了 <code>--rm</code> 选项所以退出 container 的时候会自动删除 container。如果我们不加这个选项的话，可以在退出之后执行一下 <code>docker ps -a</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES</span><br><span class="line">2f9dd61f8a18        ubuntu:15.10        <span class="string">"/bin/bash"</span>         40 seconds ago      Exited (0) 35 seconds ago                       desperate_bartik</span><br></pre></td></tr></table></figure>
+<p>会看到我们的容器还存在，你可以再次 <code>docker start</code> 它。</p>
+<h3 id="在容器中运行应用"><a href="#在容器中运行应用" class="headerlink" title="在容器中运行应用"></a>在容器中运行应用</h3><p>下面，我们真正运行一下应用。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm -ti -p 80:3336 -v ~/go/src/github.com/zwh8800/md-blog-gen:/app ubuntu:15.10 bash</span><br><span class="line">root@8b94129944d0:/<span class="comment"># cd /app</span></span><br><span class="line">root@8b94129944d0:/<span class="comment"># ./md-blog-gen -log_dir log</span></span><br></pre></td></tr></table></figure>
+<p>现在在浏览器里输入 <code>http://docker所在机器ip/</code> 看看是不是已经开始运行了？</p>
+<p>在docker中，<code>-v</code> 是类似挂载的选项，可以把宿主机的目录挂载到容器中。可以看见，在使用docker时，大家都是很粗犷的，直接把app放到根目录下wwww。</p>
+<h3 id="把容器打上-tag"><a href="#把容器打上-tag" class="headerlink" title="把容器打上 tag"></a>把容器打上 tag</h3><p>刚才执行过命令之后，我们可以把这个状态下的容器打一个tag，它就可以变成一个镜像（<strong>image</strong>）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -m <span class="string">"Release md-blog-gen image"</span> -a <span class="string">"zwh8800"</span> 15b042d970c9 zwh8800/md-blog-gen:latest</span><br></pre></td></tr></table></figure>
+<p>现在执行一下 <code>docker images</code> 是不是多了一个镜像？</p>
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>有了个直观认识之后大家又会感觉 <code>不给力啊老湿</code> 着我每次都得手动执行还不如我以前呢。</p>
+<center>
+![坑爹呢这是][1]
+</center>
+
+<p>所以docker还有法宝一件Dockerfile。这个东西不仅简化而且统一了大家的部署流程。</p>
+<p>先看看md-blog-gen的Dockerfile</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine:<span class="number">3.3</span></span><br><span class="line"><span class="keyword">MAINTAINER</span> zwh8800 &lt;<span class="number">496781108</span>@qq.com&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apk update &amp;&amp; apk add ca-certificates</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> ./md-blog-gen /app</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> ./template /app/template</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">VOLUME</span><span class="bash"> /app/<span class="built_in">log</span></span></span><br><span class="line"><span class="keyword">VOLUME</span><span class="bash"> /app/config</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">3336</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">"./md-blog-gen"</span>, <span class="string">"-log_dir"</span>, <span class="string">"log"</span>, <span class="string">"-config"</span>, <span class="string">"config/md-blog-gen.gcfg"</span>]</span></span><br></pre></td></tr></table></figure>
+<p>非常之 <code>短小</code> </p>
+<p>所以逐句解释一下</p>
+<ul>
+<li>以alpine:3.3为基础构建镜像</li>
+<li>维护者是我</li>
+<li>当前目录设置为/app</li>
+<li>安装一下我需要的依赖</li>
+<li>把需要的文件放到容器里（ADD命令可以直接ADD一个tar.gz，可以自动解压）</li>
+<li>指明镜像的挂载点</li>
+<li>指明镜像暴漏的端口</li>
+<li>镜像的默认执行命令</li>
+</ul>
+<p>把Dockerfile放到项目的目录下面，执行一下 <code>docker build -t zwh8800/md-blog-gen:latest .</code> 就开始构建</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Step 1 : FROM alpine:3.3</span><br><span class="line">d7a513a663c1</span><br><span class="line">Step 2 : MAINTAINER zwh8800 &lt;496781108@qq.com&gt;</span><br><span class="line">Using cache</span><br><span class="line">dcf2dbbf66e2</span><br><span class="line">Step 3 : WORKDIR /app</span><br><span class="line">Using cache</span><br><span class="line">d8aa8ad0b356</span><br><span class="line">Step 4 : RUN apk update &amp;&amp; apk add ca-certificates</span><br><span class="line">Using cache</span><br><span class="line">9260849655f9</span><br><span class="line">Step 5 : ADD ./md-blog-gen /app</span><br><span class="line">Using cache</span><br><span class="line">1a21d6e13904</span><br><span class="line">Step 6 : ADD ./template /app/template</span><br><span class="line">Using cache</span><br><span class="line">449e6a44d38b</span><br><span class="line">Step 7 : VOLUME /app/<span class="built_in">log</span></span><br><span class="line">Using cache</span><br><span class="line">402f6b0dc5b3</span><br><span class="line">Step 8 : VOLUME /app/config</span><br><span class="line">Using cache</span><br><span class="line">5d0b036a04d7</span><br><span class="line">Step 9 : EXPOSE 3336</span><br><span class="line">Using cache</span><br><span class="line">87a65b9eff28</span><br><span class="line">Step 10 : CMD ./md-blog-gen -log_dir <span class="built_in">log</span> -config config/md-blog-gen.gcfg</span><br><span class="line">Using cache</span><br><span class="line">e43ef3612d6b</span><br><span class="line">Successfully built e43ef3612d6b</span><br></pre></td></tr></table></figure>
+
+<p>成功了，赶紧的 <code>docker run --name blog -d -v log:/app/log -v config:/app/config zwh8800/md-blog-gen</code> 啊，这次我们加上了 <code>-d</code> 选项，这个可以让container后台运行，另外加上了一个 <code>--name</code> 可以给容器起个名字。现在，它真的像一个服务了。</p>
+<h3 id="管理容器"><a href="#管理容器" class="headerlink" title="管理容器"></a>管理容器</h3><p>最常用的肯定是操作肯定是启停</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用容器名</span></span><br><span class="line">docker start blog</span><br><span class="line"><span class="comment"># 使用容器id</span></span><br><span class="line">docker stop e43ef3612d6b</span><br><span class="line"><span class="comment"># 容器id不用打全部，前几位就可以</span></span><br><span class="line">docker restart e43e</span><br></pre></td></tr></table></figure>
+<p>其他要做的就是在 <code>/etc/rc.local</code> 里加一句 <code>docker star blog</code> 就好了，保证开机时服务启动。</p>
+<h2 id="database"><a href="#database" class="headerlink" title="database"></a>database</h2><p>另外比较关心的是，我们的服务依赖的服务应当放在哪里。首当其冲的问题就是数据库怎么办。</p>
+<p>具体有这三种方式吧。</p>
+<h3 id="应用＋数据库组成镜像"><a href="#应用＋数据库组成镜像" class="headerlink" title="应用＋数据库组成镜像"></a>应用＋数据库组成镜像</h3><p>就是在镜像里安装上数据库，优势是部署方便，劣势就是不同应用无法共享数据库了。而且这样不很符合现在 <strong>immutable server</strong> 的概念。</p>
+<h3 id="应用数据库单独为镜像"><a href="#应用数据库单独为镜像" class="headerlink" title="应用数据库单独为镜像"></a>应用数据库单独为镜像</h3><p>这样保证了共享数据库，使用docker link或者其他工具来打通容器。</p>
+<h3 id="数据库独立出来"><a href="#数据库独立出来" class="headerlink" title="数据库独立出来"></a>数据库独立出来</h3><p>有些公司的数据库是单独部署的，或使用云服务，这样就没必要放在docker中了。</p>
+<h3 id="关于docker容器之间相互打通"><a href="#关于docker容器之间相互打通" class="headerlink" title="关于docker容器之间相互打通"></a>关于docker容器之间相互打通</h3><p>docker默认有 <code>--link</code> 选项，但是现在已经不推荐了。目前有一些集群方案可供使用</p>
+<ul>
+<li><a href="http://kubernetes.io/" target="_blank" rel="noopener">kubernetes</a></li>
+<li><a href="https://github.com/docker/swarm" target="_blank" rel="noopener">docker swarm</a></li>
+<li><a href="https://docs.docker.com/compose/" target="_blank" rel="noopener">docker compose</a></li>
+</ul>
+<p>具体的坑大家自己踩啦233</p>
+<h2 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h2><p>上次同事的分享会上谈了一些使用docker过程中的大坑，有空再谈。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/docker/">docker</a><a href="/tags/运维/">运维</a><a href="/tags/DevOps/">DevOps</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

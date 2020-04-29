@@ -1,0 +1,283 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用 lua 编写 socks5 代理 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="之前做过一个有趣的东西，把一部分 NodeJS 的 API 移植到了 lua 上。让我可以在 lua 里使用异步网络 API 了，我把做的这个小东西叫做 lua-libuv。今天去参加了一下 Gopher China 2016 中间听得无聊了，便打开电脑，基于自己的 lua-libuv 编写了一个 ">
+  
+
+  
+  
+  <meta name="keywords" content="网络编程,lua,libuv,socks5">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="使用 lua 编写 socks5 代理"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>使用 lua 编写 socks5 代理</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/04/16/使用lua编写socks5代理/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-04-16T18:43:47.000Z">
+          2016-04-16
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>之前做过一个有趣的东西，把<a href="https://lengzzz.com/note/archive-20151015">一部分 NodeJS 的 API 移植到了 lua 上</a>。让我可以在 lua 里使用异步网络 API 了，我把做的这个小东西叫做 <a href="https://github.com/zwh8800/lua-libuv" target="_blank" rel="noopener">lua-libuv</a>。今天去参加了一下 Gopher China 2016 中间听得无聊了，便打开电脑，基于自己的 lua-libuv 编写了一个 socks5 协议的 proxy。这篇博客，讲解一下 socks5 协议以及实现。</p>
+<p><a href="/notename/" title="socks5 proxy in lua"></a></p>
+<p>[toc]</p>
+<h2 id="socks5-协议介绍"><a href="#socks5-协议介绍" class="headerlink" title="socks5 协议介绍"></a>socks5 协议介绍</h2><p>socks5 协议可能是中国网友见得最多的协议了。很多著名的工具 都就会在本机的 1080 端口开启一个 socks5 proxy 服务，供浏览器来调用。我们今天就来聊一聊 socks5 协议。</p>
+<p>socks5 协议不只是在中国流行，它其实是最常见的代理协议之一，几乎所有浏览器都会原生支持 socks5 协议，而在 <i class="icon-apple"></i> Mac 上则是系统级别的支持，所以可见其流行程度仅次于 http 代理。由于 socks5 是工作在 tcp 层的协议，所以它又比 http 代理灵活很多。比如 http 代理只能用来看网页。但是使用 socks5 协议还可以上外网打游戏，也可以使用代理登陆 QQ 。但是 socks5 也有自己的短板，比如对 udp 支持的不好（socks5 把域名 resolve 的事都做了，就为了避免 client 调用 udp ）</p>
+<h2 id="socks5-协议详解"><a href="#socks5-协议详解" class="headerlink" title="socks5 协议详解"></a>socks5 协议详解</h2><p>socks5 协议非常简单，<a href="https://www.ietf.org/rfc/rfc1928.txt" target="_blank" rel="noopener">rfc1928</a> 整个只有 9 页，我大概用了 10 分钟粗略看了一下就明白 socks5 的设计了。</p>
+<h3 id="端口"><a href="#端口" class="headerlink" title="端口"></a>端口</h3><p>socks5 一般回使用 1080 端口来提供服务。</p>
+<h3 id="握手"><a href="#握手" class="headerlink" title="握手"></a>握手</h3><p>socks5 协议使用四次应答式的握手建立一个链接。分别会</p>
+<ul>
+<li>client：协商method</li>
+<li>server：选用method</li>
+<li>client：发起请求</li>
+<li>server：处理请求并回复</li>
+</ul>
+<p>四次握手结束之后，client 会把代理服务器当作是自己真正想通讯的服务器一样对待。而代理则会转发真正的通讯信息。</p>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><h4 id="1-协商-method"><a href="#1-协商-method" class="headerlink" title="1. 协商 method"></a>1. 协商 method</h4><p>当一个客户端需要建立一个 firewall 之外的连接时，首先向 socks5 服务器的 1080 端口发起一个 tcp 连接。</p>
+<p>随后，客户端向服务器提供自己支持的 method 列表。数据的 payload 如下：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="code">+++</span>+</span><br><span class="line">|VER | NMETHODS | METHODS  |</span><br><span class="line"><span class="code">+++</span>+</span><br><span class="line">| 1  |    1     | 1 to 255 |</span><br><span class="line"><span class="code">+++</span>+</span><br></pre></td></tr></table></figure>
+
+<p>上面是字段名，下面是字段长度。</p>
+<p>字段分别是：</p>
+<ul>
+<li>版本号，对于 socks5 来说始终为5</li>
+<li>method 个数</li>
+<li>method 列表，个数需要和第二个字段相同，不能超过255</li>
+</ul>
+<p>method 的选项有如下几项，不过我感觉最常用的也就是第一个了。</p>
+<ul>
+<li>0x00: 无需授权</li>
+<li>0x01: GSSAPI</li>
+<li>0x02: 用户名／密码授权</li>
+<li>0x03 - 0x7f: IANA ASSIGNED</li>
+<li>0x80 - 0xfe: 私有 method</li>
+<li>0xff: 用于服务器向客户端返回不支持此 method 的错误代码</li>
+</ul>
+<h4 id="2-选择-method"><a href="#2-选择-method" class="headerlink" title="2. 选择 method"></a>2. 选择 method</h4><p>服务器接到请求之后，应当选用一种 method 返回给客户端：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="code">+++</span></span><br><span class="line">|VER | METHOD |</span><br><span class="line"><span class="code">+++</span></span><br><span class="line">| 1  |   1    |</span><br><span class="line"><span class="code">+++</span></span><br></pre></td></tr></table></figure>
+
+<p>之后如果 method 是需要鉴权的，会进行相应的鉴权。这里不谈了。</p>
+<h4 id="3-请求"><a href="#3-请求" class="headerlink" title="3. 请求"></a>3. 请求</h4><p>之后客户端把自己想要连接的信息封成一个请求发给 proxy 。格式如下：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="code">+++</span><span class="code">+++</span>+</span><br><span class="line">|VER | CMD |  RSV  | ATYP | DST.ADDR | DST.PORT |</span><br><span class="line"><span class="code">+++</span><span class="code">+++</span>+</span><br><span class="line">| 1  |  1  | X'00' |  1   | Variable |    2     |</span><br><span class="line"><span class="code">+++</span><span class="code">+++</span>+</span><br></pre></td></tr></table></figure>
+
+<p>其中，</p>
+<ul>
+<li>VER 还是代表版本，始终为 0x05</li>
+<li>CMD 代表命令，表示建立连接还是监听连接<ul>
+<li>0x01: Connect，连接其他服务器</li>
+<li>0x02: Bind，监听端口</li>
+<li>0x03: 建立udp连接</li>
+</ul>
+</li>
+<li>保留</li>
+<li>地址类型<ul>
+<li>0x01: IPv4</li>
+<li>0x03: DomainName</li>
+<li>0x04: IPv6</li>
+</ul>
+</li>
+<li>目的地址</li>
+<li>目的端口</li>
+</ul>
+<p>这里面，命令又会有三种情况。如上，udp因为没有建立连接这一步，所以监听和连接是等同的。</p>
+<p>地址类型也是，当地址类型不同时，目的地址的长度会不一样</p>
+<ul>
+<li>IPv4: 4 字节</li>
+<li>DomainName: 目的地址的第一个字节代表域名长度</li>
+<li>IPv6: 16 字节</li>
+</ul>
+<p>所以需要按照 ATYP 来读取目的地址。</p>
+<h4 id="4-回复"><a href="#4-回复" class="headerlink" title="4. 回复"></a>4. 回复</h4><p>服务器收到请求后，需要向目的地址建立连接，如果失败了，需要告诉客户端原因。如果成功了，也需要告诉客户端代理服务器使用的地址和端口信息。</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="code">+++</span><span class="code">+++</span>+</span><br><span class="line">|VER | REP |  RSV  | ATYP | BND.ADDR | BND.PORT |</span><br><span class="line"><span class="code">+++</span><span class="code">+++</span>+</span><br><span class="line">| 1  |  1  | X'00' |  1   | Variable |    2     |</span><br><span class="line"><span class="code">+++</span><span class="code">+++</span>+</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>VER 还是代表版本，始终为 0x05</li>
+<li>REP 代表返回值<ul>
+<li>0x00: 成功</li>
+<li>0x01: socks 服务器错误</li>
+<li>0x02: 不允许访问</li>
+<li>0x03: Network unreachable</li>
+<li>0x04: Host unreachable</li>
+<li>0x05: Connection refused</li>
+<li>0x06: TTL expired</li>
+<li>0x07: Command not supported</li>
+<li>0x08: Address type not supported</li>
+</ul>
+</li>
+<li>保留</li>
+<li>地址类型</li>
+</ul>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>假如浏览器访问 <a href="https://lengzzz.com">https://lengzzz.com</a> 需要如下对话</p>
+<blockquote>
+<p>05 01 00</p>
+<blockquote>
+<p>05 00</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>05 01 00 03(ATYP) 0b(LEN) 6c 65 6e 67 7a 7a 7a 2e 63 6f 6d(DOMAINNAME) 01 bb(PORT)</p>
+<blockquote>
+<p>05 00 00 01(ATYP) 0a 00 00 11(IP) e9 c7(PORT)</p>
+</blockquote>
+</blockquote>
+<h2 id="Lua-实现"><a href="#Lua-实现" class="headerlink" title="Lua 实现"></a>Lua 实现</h2><p>大概就是用了两个函数来 parse 出 client 的 payload ，分别 parse 协商 method 阶段的 payload 和请求阶段的 payload 。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">parseMethodPayload</span><span class="params">(payload)</span></span></span><br><span class="line">    <span class="keyword">if</span> payload:<span class="built_in">byte</span>(<span class="number">1</span>) ~= SocksVersion <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, Errors.VersionError</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">local</span> method = &#123;</span><br><span class="line">        version = SocksVersion,</span><br><span class="line">        methods = &#123;&#125;,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">local</span> methodCount = payload:<span class="built_in">byte</span>(<span class="number">2</span>)</span><br><span class="line">    method.methods = &#123;payload:<span class="built_in">byte</span>(<span class="number">3</span>, <span class="number">3</span> + methodCount - <span class="number">1</span>)&#125;</span><br><span class="line">    <span class="keyword">return</span> method</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">parseRequestPayload</span><span class="params">(payload)</span></span></span><br><span class="line">    <span class="keyword">if</span> payload:<span class="built_in">byte</span>(<span class="number">1</span>) ~= SocksVersion <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, Errors.VersionError</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">local</span> request = &#123;</span><br><span class="line">        version = SocksVersion,</span><br><span class="line">        command = CommandType.Connect,</span><br><span class="line">        addressType = AddressType.IPv4,</span><br><span class="line">        distAddress = <span class="string">''</span>,</span><br><span class="line">        distPort = <span class="number">0</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> payload:<span class="built_in">byte</span>(<span class="number">2</span>) &gt; CommandType.Udp <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, Errors.CommandTypeNotSupported</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        request.command = payload:<span class="built_in">byte</span>(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">local</span> requestAddressType = payload:<span class="built_in">byte</span>(<span class="number">4</span>)</span><br><span class="line">    <span class="keyword">if</span>  requestAddressType ~= AddressType.IPv4 <span class="keyword">and</span></span><br><span class="line">        requestAddressType ~= AddressType.DomainName <span class="keyword">and</span></span><br><span class="line">        requestAddressType ~= AddressType.IPv6</span><br><span class="line">    <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, Errors.AddressTypeNotSupported</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        request.addressType = requestAddressType</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">local</span> portIndex</span><br><span class="line">    <span class="keyword">if</span> request.addressType == AddressType.IPv4 <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">local</span> ipBytes = &#123;payload:<span class="built_in">byte</span>(<span class="number">5</span>, <span class="number">8</span>)&#125;</span><br><span class="line">        request.distAddress = <span class="built_in">table</span>.<span class="built_in">concat</span>(ipBytes, <span class="string">'.'</span>)</span><br><span class="line">        portIndex = <span class="number">9</span></span><br><span class="line">    <span class="keyword">elseif</span> request.addressType == AddressType.DomainName <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">local</span> <span class="built_in">len</span> = payload:<span class="built_in">byte</span>(<span class="number">5</span>)</span><br><span class="line">        request.distAddress = payload:<span class="built_in">sub</span>(<span class="number">6</span>, <span class="number">6</span> + <span class="built_in">len</span> - <span class="number">1</span>)</span><br><span class="line">        portIndex = <span class="number">5</span> + <span class="built_in">len</span> + <span class="number">1</span></span><br><span class="line">    <span class="keyword">elseif</span> request.addressType == AddressType.IPv6 <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, Errors.AddressTypeNotSupported</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">local</span> portBytes = &#123;payload:<span class="built_in">byte</span>(portIndex, portIndex + <span class="number">1</span>) &#125;</span><br><span class="line">    request.distPort = portBytes[<span class="number">1</span>] * <span class="number">256</span> + portBytes[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> request, <span class="literal">nil</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>比较关键的就是这里，在会场写的，还是比较糙了。详细的代码看 <a href="https://github.com/zwh8800/lua-libuv/blob/master/test/socksProxy.lua" target="_blank" rel="noopener"><i class="icon-github"></i> Github</a> 就好啦：</p>
+<p><a href="https://github.com/zwh8800/lua-libuv/blob/master/test/socksProxy.lua" target="_blank" rel="noopener">https://github.com/zwh8800/lua-libuv/blob/master/test/socksProxy.lua</a></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/网络编程/">网络编程</a><a href="/tags/lua/">lua</a><a href="/tags/libuv/">libuv</a><a href="/tags/socks5/">socks5</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

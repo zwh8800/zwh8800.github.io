@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>linux设备驱动程序(2) – 内核版本 导出符号 模块参数 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="关于 内核版本 导出符号 模块参数 的内容
+
+1.内核版本有时模块会针对多个不同版本的内核进行编译, 这时就应该用到预处理命令来实现条件编译. 主要通过测试&amp;lt;linux/version.h&amp;gt;中的宏来完成.
+UTS_RELEASE: 内核版本的字符串, 如”2.6.10″
+LINUX_VE">
+  
+
+  
+  
+  <meta name="keywords" content="linux,驱动开发">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="linux设备驱动程序(2) – 内核版本 导出符号 模块参数"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>linux设备驱动程序(2) – 内核版本 导出符号 模块参数</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/28/linux设备驱动程序(2)–内核版本导出符号模块参数/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-28T00:00:00.000Z">
+          2014-01-28
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>关于 内核版本 导出符号 模块参数 的内容</p>
+<p><a href="/notename/" title="archive 20140128"></a></p>
+<h3 id="1-内核版本"><a href="#1-内核版本" class="headerlink" title="1.内核版本"></a>1.内核版本</h3><p>有时模块会针对多个不同版本的内核进行编译, 这时就应该用到预处理命令来实现条件编译. 主要通过测试<code>&lt;linux/version.h&gt;</code>中的宏来完成.</p>
+<p>UTS_RELEASE: 内核版本的字符串, 如”2.6.10″</p>
+<p>LINUX_VERSION_CODE: 内核版本的二进制表示, 每个版本号对应一个字节, 如2.6.10版的LINUX_VERSION_CODE为0x02060a</p>
+<p>KERNEL_VERSION(major, minor, release): 这个宏将major, minor和release扩展成LINUX_VERSION_CODE的形式, 可以直观的进行测试</p>
+<h3 id="2-导出模块符号"><a href="#2-导出模块符号" class="headerlink" title="2.导出模块符号"></a>2.导出模块符号</h3><p>有时, 模块可能需要被其他模块来调用, 所以需要导出自己模块的符合供别人使用. Linux内核头文件提供了一个方便的方法来到处内核符号:</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="constructor">EXPORT_SYMBOL(<span class="params">name</span>)</span>;		<span class="comment">//导出name</span></span><br><span class="line"><span class="constructor">EXPORT_SYMBOL_GPL(<span class="params">name</span>)</span>;	<span class="comment">//导出的符号只能被GPL代码使用</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-许可证"><a href="#3-许可证" class="headerlink" title="3.许可证"></a>3.许可证</h3><p>通过MODULE_LECENSE(license)宏来声明当前模块的许可证, license是一个字符串, 支持的许可证如下:</p>
+<p>“GPL”, “GPL v2”, “GPL and additional rights”, “Dual BSD/GPL”, “Dual MPL/GPL”, “Proprietary”(专用)</p>
+<p>如果不声明, 默认为”Proprietary”</p>
+<h3 id="4-模块参数"><a href="#4-模块参数" class="headerlink" title="4.模块参数"></a>4.模块参数</h3><p>linux内核模块可以声明全局变量为模块参数, 从而可以在加载时赋值.</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">static <span class="built_in">char</span>* whom = <span class="string">"nobody"</span>;</span><br><span class="line">static <span class="built_in">int</span> howmany = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">module</span><span class="constructor">_param(<span class="params">howmany</span>, <span class="params">int</span>, S_IRUGO)</span>;</span><br><span class="line"><span class="keyword">module</span><span class="constructor">_param(<span class="params">whom</span>, <span class="params">charp</span>, S_IRUGO)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>通过module_param宏可以导出whom和howmany两个模块参数. 这个宏在&lt;linux/moduleparam.h&gt;中定义.<br>当插入模块时, 使用以下指令来设置模块参数:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insmod hello <span class="attribute">howmany</span>=10 <span class="attribute">whom</span>=<span class="string">"zzZ"</span></span><br></pre></td></tr></table></figure>
+
+<p>对于module_param宏的第二个参数, 可以取以下值:</p>
+<pre><code>bool
+invbool
+    布尔值, 应关联int型, invbool会翻转布尔值.
+charp
+    字符指针, 也就是字符串
+int, long, short, uint, ulong, ushort</code></pre><p>还有一个姐妹宏module_param_array(name, type, num, perm);来设置数组参数.</p>
+<p>再来说说第三个参数perm, 这个是成员访问许可, 在<code>&lt;linux/stat.h&gt;</code>中定义可选值. 这个用来控制谁能访问sysfs中对模块参数的表述. 如果perm为0, 则在sysfs中没有对用的入口项(entry), 否则会在/sys/module中出现. 如果使用S_IRUGO, 任何人都可读取, 但不能修改. S_IRUGO | S_IWUSR允许root修改.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/驱动开发/">驱动开发</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

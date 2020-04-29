@@ -1,0 +1,961 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第 5 页 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/09/22/ARM20pinJTAG和SWD定义/"><span>ARM 20pin JTAG 和 SWD 定义</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/09/22/ARM20pinJTAG和SWD定义/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-09-22T00:00:00.000Z">
+          2014-09-22
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>ARM 的引脚定义</p>
+<p><a href="/notename/" title="archive 20140922"></a></p>
+<h2 id="二、标准-JTAG-20-PIN-信号定义"><a href="#二、标准-JTAG-20-PIN-信号定义" class="headerlink" title="二、标准 JTAG 20　PIN 信号定义"></a><p style="color: #008080;">二、标准 JTAG 20　PIN 信号定义</p></h2><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> VCC                        <span class="number">3.</span> VCC</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span> TRST                       <span class="number">4.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">5.</span> TDI                          <span class="number">6.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">7.</span> TMS                       <span class="number">8.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">9.</span> TCLK                      <span class="number">10.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">11.</span> RTCK                      <span class="number">12.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">13.</span> TDO                       <span class="number">14.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">15.</span>RESET                    <span class="number">16.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">17.</span> NC                         <span class="number">18.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">19.</span>NC                          <span class="number">20.</span> GND</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、标准-SWD-20-PIN-信号定义"><a href="#三、标准-SWD-20-PIN-信号定义" class="headerlink" title="三、标准 SWD 20 PIN 信号定义"></a><p style="color: #008080;">三、标准 SWD 20 PIN 信号定义</p></h2><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> VCC                        <span class="number">3.</span> VCC</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span> NC                           <span class="number">4.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">5.</span> NC                           <span class="number">6.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">7.</span> SWDIO                       <span class="number">8.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">9.</span> SWCLK                      <span class="number">10.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">11.</span> NC                      <span class="number">12.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">13.</span> SWO                      <span class="number">14.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">15.</span> RESET                   <span class="number">16.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">17.</span> NC                         <span class="number">18.</span> GND</span><br><span class="line"></span><br><span class="line"><span class="number">19.</span>NC                          <span class="number">20.</span> GND</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/ARM/">ARM</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/09/22/ARM20pinJTAG和SWD定义/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/07/28/值语义和对象语义/"><span>值语义和对象语义</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/07/28/值语义和对象语义/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-07-28T00:00:00.000Z">
+          2014-07-28
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>关于值语义和对象语义</p>
+<p><a href="/notename/" title="archive 20140728"></a></p>
+<p>说个在 c 艹中经常遇见的问题.</p>
+<p>在 c++ 中和 c# 和 java 不很一样. 它允许程序员定义一个类的复制构造函数和复制赋值运算符, 这就表明对象是可以复制的. (这里的复制的意思是克隆一个完全一致, 但却是一个新的个体的对象)</p>
+<p>这就允许程序员把对象当成值一样来使用, 例如:</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">string a</span> = <span class="string">"hahaha"</span>;</span><br><span class="line"><span class="attribute">string b</span> = a;</span><br><span class="line"><span class="attribute">int i</span> = 100;</span><br><span class="line"><span class="attribute">int j</span> = i;</span><br></pre></td></tr></table></figure>
+<p>在这段代码中, string 和 int 使用起来没有差别, 令 j = i 确实是在内存上新申请了一个 int 的空间, 令他和 i 相等. 同理 string b 也是这样.(也就是复制之后和原对象脱离关系, 就像复制 int 一样)<br>虽然我知道 string 使用 class 来定义的, int 是 c 语言内置类型, 但是用起来却是完全一致.<br>另外, 你可以吧 string 放入 vector 中放入 map 中, 就和使用一个 int 一样简单.<br>所以 string 可以说是值语义的.</p>
+<p>另外的一种用法就是在面向对象中比较常见的一种了. 就是用 class 定义一个具体的对象, 比如一个 TCP 连接, 一个文件对象.<br>我在前几天写程序时想要简单封装一个 tcp 连接的时候, 就陷入了一会遐想, 到底怎么定义复制构造函数和复制运算符. 答案是不要定义<br>因为复制一个对象在语义上本身就是不对的, 复制一个 tcp 连接是什么意思? 新打开一个连接?<br>所以说对于这种对象应该禁止他们的复制操作. 最好的方法是继承 boost::noncopyable.</p>
+<p>那么, 不能复制了, 我想把 tcp 连接放入 vector 或者在函数中传递怎么办? 我是用的方法是统一使用 shared_ptr, 这样资源泄漏的问题也就解决了.<br>所以, 在实现一个资源相关的类时, 用 RAII 方法封装一下资源, 然后继承 noncopyable 应该能解决大部分问题.</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/C/">C++</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/07/28/值语义和对象语义/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/06/30/用thttpd+lua+cgi+jQuerymobile搭建自动关机服务器/"><span>用 thttpd+lua+cgi+jQuery mobile 搭建自动关机服务器</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/06/30/用thttpd+lua+cgi+jQuerymobile搭建自动关机服务器/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-06-30T00:00:00.000Z">
+          2014-06-30
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>最近猎豹 wifi 共享精灵推出了一个 wifi 控制关机的功能. 我因为没有笔记本一直都用台式机 + linux nat + 无线 ap 来实现 wifi 共享 (见上次用虚拟机建立 NAT 曲线共享上网的经历忘了记录了). 所以看到这个功能之后一直眼红的不行, 在床上看视频到两三点再下去关电脑实在是破坏幸福感的事情. 所以嘛, 就又到了自己造轮子的时间.</p>
+<p><a href="/notename/" title="archive 20140630"></a></p>
+<p>首先分析一下需求, 很简单就是在手机上打开一个网页可以远程控制我的台式机关机.</p>
+<p>所以必须要有一个 web 服务器, 另外一门 web 脚本语言也是必不可少的, 而且前端网页应该尽量漂亮, 并且适配手机.</p>
+<p>首先 web 服务器应当尽量小巧, 一开始我用 shttpd 来做, 用了一天之后发现它对 http 验证支持的不很好. 所以便放弃他选择 thttpd 了. thttpd 也很小巧而且功能更多, 并且自称性能上不弱于 Apache.</p>
+<p>然后脚本语言, 脚本语言的话我只会 lua 和 javascript, 如果用 javascript 的话需要用到 nodejs, 可是我有点不习惯 nodejs 的异步模型和一层一层的函数嵌套. 所以还是选 lua 吧. 而且 thttpd 支持 cgi, 可以和 lua 很好的适配</p>
+<p>ok, 下面开始搭建环境. 因为对性能的要求不高, 所以决定在 Cygwin 下运行. 下载编译 thttpd, 直接 wget-&gt;./configure –prefix/usr-&gt;make-&gt;make install 就 ok 了.</p>
+<p>中间可能在编译 htpasswd.c 文件时提示 getline 重定义. 直接把 htpasswd.c 文件里的所有 getline 改名成_getline 即可.</p>
+<p>安装的时候会提示没有 / usr/man/man1 文件夹, 直接 mkdir /usr/man/man1 就 ok</p>
+<p>thttpd 支持命令行启动同时也支持配置文件. 具体可以 man thttpd 来查看. 在源码包里的./contrib/redhat-rpm 文件夹有一个例子的配置文件. 我们把它改一下放到用户目录里:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># This section overrides defaults</span></span><br><span class="line"><span class="attribute">dir</span>=/home/Administrator/webroot</span><br><span class="line"><span class="comment">#chroot</span></span><br><span class="line"><span class="attribute">user</span>=Administrator#<span class="built_in"> default </span>= nobody</span><br><span class="line"><span class="attribute">logfile</span>=/var/log/thttpd.log</span><br><span class="line"><span class="attribute">pidfile</span>=/var/run/thttpd.pid</span><br><span class="line"><span class="comment"># This section _documents_ defaults in effect</span></span><br><span class="line"><span class="comment"># port=80</span></span><br><span class="line"><span class="comment"># nosymlink# default = !chroot</span></span><br><span class="line"><span class="comment"># novhost</span></span><br><span class="line"><span class="attribute">cgipat</span>=/*.cgi</span><br><span class="line"><span class="comment"># nothrottles</span></span><br><span class="line"><span class="comment"># host=0.0.0.0</span></span><br><span class="line"><span class="comment"># charset=iso-8859-1</span></span><br></pre></td></tr></table></figure>
+
+<p>然后就是安装 lua 了, Cygwin 源里直接就有, 装上即可.</p>
+<p>在用户目录里建立一个 webroot 文件夹, 网站放这里.</p>
+<p>建立两个文件, 一个叫 index.cgi, 一个叫 shutdown.cgi 内容如下:</p>
+<figure class="highlight django"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml">#!/bin/lua</span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">local Z_SHUTDOWN_FILE = "/tmp/zshutdown"</span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">print("Content-type: text/html")</span></span><br><span class="line"><span class="xml">print()</span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">local is_shutting_down</span></span><br><span class="line"><span class="xml">local time_to_shutdown</span></span><br><span class="line"><span class="xml">local file = io.open(Z_SHUTDOWN_FILE, "r")	--read模式, 可查看文件是否存在</span></span><br><span class="line"><span class="xml">if file == nil then</span></span><br><span class="line"><span class="xml">	is_shutting_down = false</span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">else</span></span><br><span class="line"><span class="xml">	is_shutting_down = true</span></span><br><span class="line"><span class="xml">	local t1 = assert(file:read("*n"))</span></span><br><span class="line"><span class="xml">	time_to_shutdown = 30 - os.difftime(os.time(), t1)</span></span><br><span class="line"><span class="xml">	if time_to_shutdown <span class="tag">&lt; <span class="attr">0</span> <span class="attr">then</span></span></span></span><br><span class="line"><span class="xml">		is_shutting_down = false</span></span><br><span class="line"><span class="xml">		os.remove(Z_SHUTDOWN_FILE)</span></span><br><span class="line"><span class="xml">	end</span></span><br><span class="line"><span class="xml">end</span></span><br><span class="line"></span><br><span class="line"><span class="xml">print[=[</span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!Doctype <span class="meta-keyword">html</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns</span>=<span class="string">https://www.w3.org/1999/xhtml</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">title</span>&gt;</span>zzZ的自动关机<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"mobile-agent"</span> <span class="attr">content</span>=<span class="string">"format=html5;"</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"https://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css"</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-1.8.3.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">data-role</span>=<span class="string">"page"</span> <span class="attr">id</span>=<span class="string">"main"</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">data-role</span>=<span class="string">"header"</span> <span class="attr">data-position</span>=<span class="string">"fixed"</span>&gt;</span></span></span><br><span class="line"><span class="xml">		<span class="tag">&lt;<span class="name">h1</span>&gt;</span>zzZ的自动关机<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"text-align:center;"</span> <span class="attr">data-role</span>=<span class="string">"content"</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">]=]</span></span><br><span class="line"><span class="xml">	if is_shutting_down then</span></span><br><span class="line"><span class="xml">	print[=[</span></span><br><span class="line"><span class="xml">		<span class="tag">&lt;<span class="name">p</span>&gt;</span>您的电脑将在<span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"time"</span> <span class="attr">style</span>=<span class="string">"color:red"</span>&gt;</span>]=] print(time_to_shutdown); print[=[<span class="tag">&lt;/<span class="name">span</span>&gt;</span>秒后自动关机<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml">		<span class="tag">&lt;<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="xml">			var t = ]=] print(time_to_shutdown); print[=[;</span></span><br><span class="line"><span class="xml">			function decrease()</span></span><br><span class="line"><span class="xml">			&#123; if (t &gt; 0)$("#time").text(--t); &#125;</span></span><br><span class="line"><span class="xml">			setInterval("decrease()", 1000);</span></span><br><span class="line"><span class="xml">		<span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="xml">		<span class="tag">&lt;<span class="name">p</span>&gt;</span>按动按钮来取消关机：<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml">		<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"shutdown.cgi"</span> <span class="attr">data-rel</span>=<span class="string">"dialog"</span> <span class="attr">data-role</span>=<span class="string">"button"</span> <span class="attr">data-inline</span>=<span class="string">"true"</span> <span class="attr">data-icon</span>=<span class="string">"info"</span>&gt;</span>取消关机<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span><br><span class="line"><span class="xml">	]=]</span></span><br><span class="line"><span class="xml">	else</span></span><br><span class="line"><span class="xml">	print[=[</span></span><br><span class="line"><span class="xml">		<span class="tag">&lt;<span class="name">p</span>&gt;</span>按动按钮来进行关机：<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="xml">		<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#shutdown_confirm"</span> <span class="attr">data-rel</span>=<span class="string">"dialog"</span> <span class="attr">data-role</span>=<span class="string">"button"</span> <span class="attr">data-inline</span>=<span class="string">"true"</span> <span class="attr">data-icon</span>=<span class="string">"info"</span>&gt;</span>关机<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span><br><span class="line"><span class="xml">	]=]</span></span><br><span class="line"><span class="xml">	end</span></span><br><span class="line"><span class="xml">print[=[</span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">data-role</span>=<span class="string">"footer"</span> <span class="attr">data-position</span>=<span class="string">"fixed"</span>&gt;</span></span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;<span class="name">h1</span>&gt;</span>Powered by zzZ<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">data-role</span>=<span class="string">"page"</span> <span class="attr">id</span>=<span class="string">"shutdown_confirm"</span>&gt;</span></span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">data-role</span>=<span class="string">"header"</span>&gt;</span></span></span><br><span class="line"><span class="xml">		<span class="tag">&lt;<span class="name">h1</span>&gt;</span>真的要进行关机?<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">data-role</span>=<span class="string">"content"</span>&gt;</span></span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;<span class="name">center</span>&gt;</span></span></span><br><span class="line"><span class="xml">		<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"shutdown.cgi"</span> <span class="attr">data-rel</span>=<span class="string">"dialog"</span> <span class="attr">data-role</span>=<span class="string">"button"</span> <span class="attr">data-inline</span>=<span class="string">"true"</span> <span class="attr">data-icon</span>=<span class="string">"info"</span>&gt;</span>确认<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span><br><span class="line"><span class="xml">		<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#main"</span> <span class="attr">data-role</span>=<span class="string">"button"</span> <span class="attr">data-inline</span>=<span class="string">"true"</span> <span class="attr">data-icon</span>=<span class="string">"delete"</span>&gt;</span>取消<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;/<span class="name">center</span>&gt;</span></span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">data-role</span>=<span class="string">"footer"</span>&gt;</span></span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;<span class="name">h1</span>&gt;</span>Powered by zzZ<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line"><span class="xml">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml"> </span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span></span><br><span class="line"><span class="xml">]=]</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/lua</span><br><span class="line"> </span><br><span class="line">local Z_SHUTDOWN_FILE = "/tmp/zshutdown"</span><br><span class="line"> </span><br><span class="line">print("Content-type: text/html")</span><br><span class="line">print()</span><br><span class="line"> </span><br><span class="line">local is_shutting_down</span><br><span class="line">local file = io.open(Z_SHUTDOWN_FILE, "r")	--read模式, 可查看文件是否存在</span><br><span class="line">if file == nil then</span><br><span class="line">	is_shutting_down = false</span><br><span class="line">	file = io.open(Z_SHUTDOWN_FILE, "w")	--write模式, 打开文件并写入</span><br><span class="line">	file:write(os.time())</span><br><span class="line">	file:close()</span><br><span class="line"> </span><br><span class="line">	os.execute('shutdown -s 30')</span><br><span class="line">else</span><br><span class="line">	is_shutting_down = true</span><br><span class="line">	os.remove(Z_SHUTDOWN_FILE)</span><br><span class="line"> </span><br><span class="line">	os.execute('shutdown -a')</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">print[=[</span><br><span class="line"><span class="meta">&lt;!Doctype <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">xmlns</span>=<span class="string">https://www.w3.org/1999/xhtml</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>关机命令已接受<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"mobile-agent"</span> <span class="attr">content</span>=<span class="string">"format=html5;"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"https://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/jquery-1.8.3.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">data-role</span>=<span class="string">"page"</span> <span class="attr">id</span>=<span class="string">"main"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">data-role</span>=<span class="string">"header"</span> <span class="attr">data-position</span>=<span class="string">"fixed"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">h1</span>&gt;</span></span><br><span class="line">]=]</span><br><span class="line"> </span><br><span class="line">if is_shutting_down then</span><br><span class="line">	print "关机已取消"</span><br><span class="line">else</span><br><span class="line">	print "关机命令已接受"</span><br><span class="line">end</span><br><span class="line"> </span><br><span class="line">print[=[</span><br><span class="line">		<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">data-role</span>=<span class="string">"content"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">center</span>&gt;</span></span><br><span class="line">]=]</span><br><span class="line"> </span><br><span class="line">if is_shutting_down then</span><br><span class="line">print[=[</span><br><span class="line">		<span class="tag">&lt;<span class="name">p</span>&gt;</span>关机命令已取消<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"javascript:location.reload(true)"</span> <span class="attr">data-role</span>=<span class="string">"button"</span> <span class="attr">data-inline</span>=<span class="string">"true"</span> <span class="attr">data-icon</span>=<span class="string">"info"</span>&gt;</span>返回<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">]=]</span><br><span class="line">else</span><br><span class="line">print[=[</span><br><span class="line">		<span class="tag">&lt;<span class="name">p</span>&gt;</span>您的电脑将在<span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"time"</span> <span class="attr">style</span>=<span class="string">"color:red"</span>&gt;</span>30<span class="tag">&lt;/<span class="name">span</span>&gt;</span>秒后自动关机<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="actionscript">			<span class="keyword">var</span> t = <span class="number">30</span>;</span></span><br><span class="line"><span class="actionscript">			<span class="function"><span class="keyword">function</span> <span class="title">decrease</span><span class="params">()</span></span></span></span><br><span class="line"><span class="javascript">			&#123; <span class="keyword">if</span> (t &gt; <span class="number">0</span>)$(<span class="string">"#time"</span>).text(--t); &#125;</span></span><br><span class="line"><span class="actionscript">			setInterval(<span class="string">"decrease()"</span>, <span class="number">1000</span>);</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"javascript:location.reload(true)"</span> <span class="attr">data-role</span>=<span class="string">"button"</span> <span class="attr">data-inline</span>=<span class="string">"true"</span> <span class="attr">data-icon</span>=<span class="string">"info"</span>&gt;</span>返回<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">]=]</span><br><span class="line">end</span><br><span class="line"> </span><br><span class="line">print[=[</span><br><span class="line">	<span class="tag">&lt;/<span class="name">center</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">	<span class="tag">&lt;<span class="name">div</span> <span class="attr">data-role</span>=<span class="string">"footer"</span> <span class="attr">data-position</span>=<span class="string">"fixed"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">h1</span>&gt;</span>Powered by zzZ<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">]=]</span><br></pre></td></tr></table></figure>
+
+<p>ok 了, 效果如图:<br><img src="http://static.zybuluo.com/zwh8800/f9e5nxrsul19mal0edw8p4c2/image_1bl0277mi94vhuh2v11d3gar49.png" alt="image_1bl0277mi94vhuh2v11d3gar49.png-219.7kB"><br><img src="http://static.zybuluo.com/zwh8800/7lfovihp8gzsvxasli8e21ce/image_1bl028649hrj10b9p66155e14jtm.png" alt="image_1bl028649hrj10b9p66155e14jtm.png-153.8kB"><br><img src="http://static.zybuluo.com/zwh8800/0i0piuanimshib8yylomlau4/image_1bl028n31qgj1ikq13e81ktcqam13.png" alt="image_1bl028n31qgj1ikq13e81ktcqam13.png-130kB"><br><img src="http://static.zybuluo.com/zwh8800/b4nzpv6egxd8v02ar2pryqz1/image_1bl029cp41lakb6l1f1m1tfmrf91g.png" alt="image_1bl029cp41lakb6l1f1m1tfmrf91g.png-136.7kB"><br><img src="http://static.zybuluo.com/zwh8800/yesdko4og6c4izj08lc24o65/image_1bl02a0ek97d1m54foe9suips1t.png" alt="image_1bl02a0ek97d1m54foe9suips1t.png-177.8kB"><br><img src="http://static.zybuluo.com/zwh8800/4g3vx68fnyc5jqvkmtwehqjr/image_1bl02ajhhg2v1vqc1kmbmrm1ilh2a.png" alt="image_1bl02ajhhg2v1vqc1kmbmrm1ilh2a.png-124.4kB"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/服务器/">服务器</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/06/30/用thttpd+lua+cgi+jQuerymobile搭建自动关机服务器/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/06/23/为openwrt编译htop/"><span>为 openwrt 编译 htop</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/06/23/为openwrt编译htop/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-06-23T00:00:00.000Z">
+          2014-06-23
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>为 openwrt 编译 htop</p>
+<p><a href="/notename/" title="archive 20140623"></a></p>
+<p>其实就和原来给电视棒交叉编译一样, 不过这次交叉编译器可让我好找…</p>
+<p>路由器用的是华为的 hg255d, mips 的芯片, 16M flash, 64M sdram.</p>
+<p>一般嵌入式开发都把内核和 app 分开的… 这个 openwrt 却不单独提供 toolchain. 只给一个内核源码包 (也不只是内核,  是内核和软件包的混合体…)</p>
+<p>不过最后还是找到一个单独的工具链:</p>
+<p>下载地址:</p>
+<p>有了工具链一切就好办了. htop 依赖与 ncurses 所以先下载 ncurses.</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir openwrt</span><br><span class="line">cd openwrt</span><br><span class="line">wget http:<span class="regexp">//</span>ftp.gnu.org<span class="regexp">/pub/g</span>nu<span class="regexp">/ncurses/</span>ncurses-<span class="number">5.9</span>.tar.gz</span><br><span class="line">wget http:<span class="regexp">//</span>downloads.sourceforge.net<span class="regexp">/project/</span>htop<span class="regexp">/htop/</span><span class="number">1.0</span>.<span class="number">2</span><span class="regexp">/htop-1.0.2.tar.gz</span></span><br></pre></td></tr></table></figure>
+<p>下载好之后, 在当前目录建一个文件夹 build, 编译后的文件就安装在这里, 然后分步解压</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">mkdir</span> <span class="selector-tag">build</span></span><br><span class="line"><span class="selector-tag">tar</span> <span class="selector-tag">zxvf</span> <span class="selector-tag">ncurses-5</span><span class="selector-class">.9</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span></span><br><span class="line"><span class="selector-tag">tar</span> <span class="selector-tag">zxvf</span> <span class="selector-tag">htop-1</span><span class="selector-class">.0</span><span class="selector-class">.2</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span></span><br></pre></td></tr></table></figure>
+<p>然后先编译 ncurses:</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cd</span> ncurses-5.9</span><br><span class="line"><span class="string">./configure</span> <span class="params">--prefix=/home/zzz/openwrt/build</span> <span class="params">--host=mipsel-openwrt-linux</span> <span class="params">--without-cxx</span> <span class="params">--without-cxx-binding</span> <span class="params">--without-ada</span> <span class="params">--without-manpages</span> <span class="params">--without-progs</span> <span class="params">--without-tests</span> </span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>后面几个 without 是去除 c++ 和 ada 支持以及不编译 manpage 和测试程序<br>然后就能发现在 build/lib 里有编译好的 ncurses 库了</p>
+<p>之后编译 htop:</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd htop-<span class="number">1.0</span>.<span class="number">2</span></span><br><span class="line">./configure --prefix=<span class="regexp">/home/zzz</span><span class="regexp">/openwrt/build</span> --disable-unicode --host=mipsel-openwrt-linux LDFLAGS=-L/home/zzz/openwrt/build/<span class="class"><span class="keyword">lib</span></span></span><br><span class="line">make </span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>LDFLAGS=-L/home/zzz/openwrt/build/lib 选项是为了加上链接库的路径</p>
+<p>短暂等待过后, 在 build/bin 里应该能看见 htop.</p>
+<p>拿到 openwrt 上运行又发生点问题. 提示<br>Error opening terminal: xterm.<br>上网 Google 一下发现需要设置 TERMINFO 环境变量:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">export</span> <span class="attribute">TERMINFO</span>=/usr/share/terminfo</span><br></pre></td></tr></table></figure>
+<p>[EOF]</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/openwrt/">openwrt</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/06/23/为openwrt编译htop/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/05/23/自己造操作系统(2)–zOS-0.2版本发布!/"><span>自己造操作系统 (2) – zOS-0.2 版本发布!</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/05/23/自己造操作系统(2)–zOS-0.2版本发布!/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-05-23T00:00:00.000Z">
+          2014-05-23
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>自己造操作系统系列之 0.2 版</p>
+<p><a href="/notename/" title="archive 20140523"></a></p>
+<p>新增了信号量功能, 实现进程间同步.</p>
+<p>zOS 暂时分成两条线, 一条是上文说的那些功能 (类似于宏内核, 加载执行)</p>
+<p>另一条是今天发布的 zOS-mini, 只包含调度, 同步设施. 而且只需要三个文件</p>
+<p>还是只能在 stm32 上运行</p>
+<p>链接: <a href="https://lengzzz.com/zOS/zOS_mini-0.2.zip">https://lengzzz.com/zOS/zOS_mini-0.2.zip</a></p>
+<p>下面是一个测试用例<br>四个线程, 以不同的时间闪烁 led, 线程间通过 sem 信号量同步:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stm32f10x.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stm32f10x_rcc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stm32f10x_gpio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"zOS.h"</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BitP(addr, n) (*(volatile unsigned int *)(0x42000000 + (((unsigned)(addr) - 0x40000000) * 8 + (n)) * 4))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BitM(addr, n) (*(volatile unsigned int *)(0x22000000 + (((unsigned)(addr) - 0x20000000) * 8 + (n)) * 4))</span></span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STACK_SIZE 32</span></span><br><span class="line"> </span><br><span class="line">semaphore sem;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">uint32_t</span> stack0[STACK_SIZE];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">process0</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		BitP(&amp;GPIOA-&gt;ODR, <span class="number">4</span>) = <span class="number">1</span>;</span><br><span class="line">		delay_ms(<span class="number">1000</span>);</span><br><span class="line">		BitP(&amp;GPIOA-&gt;ODR, <span class="number">4</span>) = <span class="number">0</span>;</span><br><span class="line">		delay_ms(<span class="number">1000</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">uint32_t</span> stack1[STACK_SIZE];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">process1</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span><span class="comment">/*SYS_TICK &lt; 10 * 1000 * 1000*/</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		down_sem(&amp;sem);</span><br><span class="line">		BitP(&amp;GPIOA-&gt;ODR, <span class="number">0</span>) = <span class="number">1</span>;</span><br><span class="line">		delay_ms(<span class="number">125</span>);</span><br><span class="line">		BitP(&amp;GPIOA-&gt;ODR, <span class="number">0</span>) = <span class="number">0</span>;</span><br><span class="line">		delay_ms(<span class="number">125</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//create_process(&amp;stack0[STACK_SIZE], process0);</span></span><br><span class="line">	<span class="comment">//kill_process();</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">uint32_t</span> stack2[STACK_SIZE];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">process2</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		down_sem(&amp;sem);</span><br><span class="line">		BitP(&amp;GPIOA-&gt;ODR, <span class="number">1</span>) = <span class="number">1</span>;</span><br><span class="line">		delay_ms(<span class="number">250</span>);</span><br><span class="line">		BitP(&amp;GPIOA-&gt;ODR, <span class="number">1</span>) = <span class="number">0</span>;</span><br><span class="line">		delay_ms(<span class="number">250</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">uint32_t</span> stack3[STACK_SIZE];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">process3</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		down_sem(&amp;sem);</span><br><span class="line">		BitP(&amp;GPIOA-&gt;ODR, <span class="number">2</span>) = <span class="number">1</span>;</span><br><span class="line">		delay_ms(<span class="number">500</span>);</span><br><span class="line">		BitP(&amp;GPIOA-&gt;ODR, <span class="number">2</span>) = <span class="number">0</span>;</span><br><span class="line">		delay_ms(<span class="number">500</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">uint32_t</span> stack4[STACK_SIZE];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">process4</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		up_sem(&amp;sem);</span><br><span class="line">		up_sem(&amp;sem);</span><br><span class="line">		BitP(&amp;GPIOA-&gt;ODR, <span class="number">3</span>) = <span class="number">1</span>;</span><br><span class="line">		delay_ms(<span class="number">1000</span>);</span><br><span class="line">		BitP(&amp;GPIOA-&gt;ODR, <span class="number">3</span>) = <span class="number">0</span>;</span><br><span class="line">		delay_ms(<span class="number">1000</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	init();</span><br><span class="line">	init_zos();</span><br><span class="line"> </span><br><span class="line">	init_sem(&amp;sem, <span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">	create_process(&amp;stack1[STACK_SIZE], process1);</span><br><span class="line">	create_process(&amp;stack2[STACK_SIZE], process2);</span><br><span class="line">	create_process(&amp;stack3[STACK_SIZE], process3);</span><br><span class="line">	create_process(&amp;stack4[STACK_SIZE], process4);</span><br><span class="line"> </span><br><span class="line">	schedule();</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	GPIO_InitTypeDef gpio;</span><br><span class="line">	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);</span><br><span class="line"> </span><br><span class="line">	gpio.GPIO_Pin =</span><br><span class="line">		GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4;</span><br><span class="line">	gpio.GPIO_Mode = GPIO_Mode_Out_PP;</span><br><span class="line">	gpio.GPIO_Speed = GPIO_Speed_50MHz;</span><br><span class="line">	GPIO_Init(GPIOA, &amp;gpio);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/操作系统/">操作系统</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/05/23/自己造操作系统(2)–zOS-0.2版本发布!/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/04/27/Win7开启路由转发功能/"><span>Win7 开启路由转发功能</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/04/27/Win7开启路由转发功能/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-04-27T00:00:00.000Z">
+          2014-04-27
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>Win7 开启路由转发功能</p>
+<p><a href="/notename/" title="archive 20140427"></a></p>
+<p>原来以为 windows 只有 server 版本才有这个功能</p>
+<p>今天发现 win7 也有</p>
+<p>打开控制面板 -&gt; 管理工具 -&gt; 服务 -&gt;Routing and Remote Access, 默认不开启, 开启就 ok 了</p>
+<p>可以把两个网卡的网络连接起来<br><img src="http://static.zybuluo.com/zwh8800/qk4tpeqeuatvrnhqjvibo1jx/image_1bl043idv1j451elr1n8btk756i9.png" alt="image_1bl043idv1j451elr1n8btk756i9.png-108.4kB"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/win7/">win7</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/04/27/Win7开启路由转发功能/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/04/26/enc28j60驱动和udp协议栈移植到stm32成功/"><span>enc28j60 驱动和 udp 协议栈移植到 stm32 成功</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/04/26/enc28j60驱动和udp协议栈移植到stm32成功/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-04-26T00:00:00.000Z">
+          2014-04-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>enc28j60 驱动和 udp 协议栈移植到 stm32 成功</p>
+<p><a href="/notename/" title="archive 20140426"></a></p>
+<p>两点经验教训:</p>
+<p>有时候程序跑飞可能是栈太小了 (4k 都不怎么够用)<br>有时候程序死了可能是中断的优先级没设置好</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/stm32/">stm32</a><a href="/tags/协议栈/">协议栈</a><a href="/tags/网络编程/">网络编程</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/04/26/enc28j60驱动和udp协议栈移植到stm32成功/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/04/25/cortex-m3系统异常相关寄存器/"><span>cortex-m3 系统异常相关寄存器</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/04/25/cortex-m3系统异常相关寄存器/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-04-25T00:00:00.000Z">
+          2014-04-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>enc28j60 驱动和 udp 协议栈移植到 stm32 成功</p>
+<p><a href="/notename/" title="archive 20140425"></a></p>
+<h3 style="color: #080">1. 手动挂起、清除系统异常和中断挂起示意</h3>
+
+<p>软件挂起</p>
+<table>
+    <thead>
+        <tr>
+            <td>类型</td>
+            <td>NMI</td>
+            <td>PendSV</td>
+            <td>SysTick</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>寄存器位</td>
+            <td>NMIPENDSET</td>
+            <td>PENDSVSET</td>
+            <td>PENDSTSET</td>
+        </tr>
+    </tbody>
+</table>
+软件清除
+<table>
+    <thead>
+        <tr>
+            <td>类型</td>
+            <td>PendSV</td>
+            <td>SysTick</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>寄存器位</td>
+            <td>PENDSVCLR</td>
+            <td>PENDSVCLR</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>中断挂起状态示意</p>
+<p><span style="color: red">ISRPENDING</span></p>
+<p>寄存器: <span style="color: red">SCB_ICSR</span>(Interrupt Control and state register)</p>
+<p><img src="http://static.zybuluo.com/zwh8800/1191dgqrfw76d139d4omlu1n/image_1bl04ftuo1f9ck9318ol1pqn195c9.png" alt="image_1bl04ftuo1f9ck9318ol1pqn195c9.png-148.6kB"><br><img src="http://static.zybuluo.com/zwh8800/6f6kib4vfu4gk2c15b7j8lb1/image_1bl04gc7heidbq71ikbn99tanm.png" alt="image_1bl04gc7heidbq71ikbn99tanm.png-174.2kB"></p>
+<h3 style="color: #080">2. 设置系统异常优先级</h3>
+寄存器: <span style="color: red">SCB_SHPRx</span>(System handler priority)
+
+<p><img src="http://static.zybuluo.com/zwh8800/8qp2dq1oke7qkd28ew17j5wn/image_1bl04hde214oj1i9i13iv194p1vam13.png" alt="image_1bl04hde214oj1i9i13iv194p1vam13.png-101.3kB"><br><img src="http://static.zybuluo.com/zwh8800/20pp7nw51faremehckt1mqt5/image_1bl04hodm70q11la19pkuuh1jhr1g.png" alt="image_1bl04hodm70q11la19pkuuh1jhr1g.png-116.3kB"><br><img src="http://static.zybuluo.com/zwh8800/zvi2cg6p0okw2wm9pss3roam/image_1bl04i123oasa21c94f1u1r01t.png" alt="image_1bl04i123oasa21c94f1u1r01t.png-57.5kB"></p>
+<h3 style="color: #080">3. 使能 fault，和挂起状态、活动状态示意</h3>
+使能
+<table>
+    <thead>
+        <tr>
+            <td>类型</td>
+            <td>Usage fault</td>
+            <td>Bus fault</td>
+            <td>mem fault</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>寄存器位</td>
+            <td>USGFAULTENA</td>
+            <td>BUSFAULTENA</td>
+            <td>MEMFAULTENA</td>
+        </tr>
+    </tbody>
+</table>
+挂起状态
+<table>
+    <thead>
+        <tr>
+            <td>类型</td>
+            <td>SVC</td>
+            <td>Bus fault</td>
+            <td>mem fault</td>
+            <td>Usage fault</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>寄存器位</td>
+            <td>SVCALLPENDED</td>
+            <td>BUSFAULTPENDED</td>
+            <td>MEMFAULTPENDED</td>
+            <td>USGFAULTPENDED</td>
+        </tr>
+    </tbody>
+</table>
+活动状态
+<table>
+    <thead>
+        <tr>
+            <td>类型</td>
+            <td>SysTick</td>
+            <td>PendSV</td>
+            <td>Debug Monitor</td>
+            <td>SVC</td>
+            <td>Usage fault</td>
+            <td>Bus fault</td>
+            <td>Mem fault</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>寄存器位</td>
+            <td>SYSTICKACT</td>
+            <td>PENDSVACT</td>
+            <td>MONITORACT</td>
+            <td>SVCALLACT</td>
+            <td>USGFAULTACT</td>
+            <td>BUSFAULTACT</td>
+            <td>MEMFAULTACT</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>寄存器: <span style="color: red">SCB_SHCSR</span>(System handler control and state register)</p>
+<p><img src="http://static.zybuluo.com/zwh8800/61h1c9pz2dfw4lhcjgy54xpz/image_1bl04u1pi1o0v9cc19ugj11c672a.png" alt="image_1bl04u1pi1o0v9cc19ugj11c672a.png-177.9kB"></p>
+<p>一个 dump 出 scb(System control block 系统控制块) 的函数, 调试的时候有时很有用</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#define PRIORITY_Msk 0xF0</span></span><br><span class="line"><span class="comment">#define PRIORITY_Pos 4</span></span><br><span class="line">void dump_scb()</span><br><span class="line">&#123;</span><br><span class="line">	uint32_t icsr = SCB-&gt;ICSR;</span><br><span class="line">	uint32_t shcsr = SCB-&gt;SHCSR;</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"ICSR:\r\n"</span>);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t there %s interrupt pending\r\n"</span>, </span><br><span class="line">		(icsr &amp; SCB_ICSR_ISRPENDING_Msk) ? <span class="string">"is"</span> : <span class="string">"isn't"</span>);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t pending exception number:%u\r\n"</span>, </span><br><span class="line">		(icsr &amp; SCB_ICSR_VECTPENDING_Msk) &gt;&gt; SCB_ICSR_VECTPENDING_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t active exception number:%u\r\n"</span>, </span><br><span class="line">		(icsr &amp; SCB_ICSR_VECTACTIVE_Msk) &gt;&gt; SCB_ICSR_VECTACTIVE_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"SHPRx:\r\n"</span>);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Mem Manage:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">0</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Bus Fault:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">1</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Usage Fault:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">2</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t SVC:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">7</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Debug Monitor:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">8</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t PendSV:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">10</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t SysTick:%hhd\r\n"</span>, (SCB-&gt;SHP[<span class="number">11</span>] &amp; PRIORITY_Msk) &gt;&gt; PRIORITY_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"SHCSR:\r\n"</span>);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Usage Fault enable:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_USGFAULTENA_Msk) &gt;&gt; SCB_SHCSR_USGFAULTENA_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Bus Fault enable:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_BUSFAULTENA_Msk) &gt;&gt; SCB_SHCSR_BUSFAULTENA_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Mem Fault enable:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_MEMFAULTENA_Msk) &gt;&gt; SCB_SHCSR_MEMFAULTENA_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\r\n"</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t SVCall pended:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_SVCALLPENDED_Msk) &gt;&gt; SCB_SHCSR_SVCALLPENDED_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Bus Fault pended:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_BUSFAULTPENDED_Msk) &gt;&gt; SCB_SHCSR_BUSFAULTPENDED_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Mem Fault pended:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_MEMFAULTPENDED_Msk) &gt;&gt; SCB_SHCSR_MEMFAULTPENDED_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Usage Fault pended:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_USGFAULTPENDED_Msk) &gt;&gt; SCB_SHCSR_USGFAULTPENDED_Pos);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\r\n"</span>);</span><br><span class="line"> </span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t SysTick active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_SYSTICKACT_Msk) &gt;&gt; SCB_SHCSR_SYSTICKACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t PendSV active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_PENDSVACT_Msk) &gt;&gt; SCB_SHCSR_PENDSVACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Monitor active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_MONITORACT_Msk) &gt;&gt; SCB_SHCSR_MONITORACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t SVCall active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_SVCALLACT_Msk) &gt;&gt; SCB_SHCSR_SVCALLACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Usage Fault active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_USGFAULTACT_Msk) &gt;&gt; SCB_SHCSR_USGFAULTACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Bus Fault active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_BUSFAULTACT_Msk) &gt;&gt; SCB_SHCSR_BUSFAULTACT_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Mem Fault active:%u\r\n"</span>,</span><br><span class="line">		(shcsr &amp; SCB_SHCSR_MEMFAULTACT_Msk) &gt;&gt; SCB_SHCSR_MEMFAULTACT_Pos);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">#define DIVBYZERO_Pos 9</span></span><br><span class="line"><span class="comment">#define DIVBYZERO_Msk (1ul &lt;&lt; DIVBYZERO_Pos)</span></span><br><span class="line"><span class="comment">#define UNALIGNED_Pos 8</span></span><br><span class="line"><span class="comment">#define UNALIGNED_Msk (1ul &lt;&lt; UNALIGNED_Pos)</span></span><br><span class="line"><span class="comment">#define NOCP_Pos 3</span></span><br><span class="line"><span class="comment">#define NOCP_Msk (1ul &lt;&lt; NOCP_Pos)</span></span><br><span class="line"><span class="comment">#define INVPC_Pos 2</span></span><br><span class="line"><span class="comment">#define INVPC_Msk (1ul &lt;&lt; INVPC_Pos)</span></span><br><span class="line"><span class="comment">#define INVSTATE_Pos 1</span></span><br><span class="line"><span class="comment">#define INVSTATE_Msk (1ul &lt;&lt; INVSTATE_Pos)</span></span><br><span class="line"><span class="comment">#define UNDEFINSTR_Pos 0</span></span><br><span class="line"><span class="comment">#define UNDEFINSTR_Msk (1ul &lt;&lt; UNDEFINSTR_Pos)</span></span><br><span class="line">void dump_ufsr()</span><br><span class="line">&#123;</span><br><span class="line">	uint16_t ufsr = (SCB-&gt;CFSR &amp; SCB_CFSR_USGFAULTSR_Msk) &gt;&gt; SCB_CFSR_USGFAULTSR_Pos;</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"UFSR:\r\n"</span>);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Divide by zero: %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; DIVBYZERO_Msk) &gt;&gt; DIVBYZERO_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Unaligned access: %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; UNALIGNED_Msk) &gt;&gt; UNALIGNED_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t No coprocessor: %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; NOCP_Msk) &gt;&gt; NOCP_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Invaild PC load: %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; INVPC_Msk) &gt;&gt; INVPC_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Invaild state(attempt to entry ARM state): %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; INVSTATE_Msk) &gt;&gt; INVSTATE_Pos);</span><br><span class="line">	<span class="keyword">printf</span>(<span class="string">"\t Undefined instruction: %d\r\n"</span>, </span><br><span class="line">		(ufsr &amp; UNDEFINSTR_Msk) &gt;&gt; UNDEFINSTR_Pos);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/单片机/">单片机</a><a href="/tags/stm32/">stm32</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/04/25/cortex-m3系统异常相关寄存器/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/04/18/自造UDP协议栈/"><span>自造 UDP 协议栈</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/04/18/自造UDP协议栈/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-04-18T00:00:00.000Z">
+          2014-04-18
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>自造 UDP 协议栈</p>
+<p><a href="/notename/" title="archive 20140418"></a></p>
+<p>这一个星期一直在自造一个 UDP 协议栈.</p>
+<p>今天是周五, 屁屁和室友逛街去了, 我就在寝室敲代码搞了一下午, 终于是搞定了.</p>
+<p>这个是老师的项目里要用的, 实现 avr 的单片机和 PC 机通讯. 中间通过以太网进行连接, avr 上用的是 enc28j60 芯片. 这个芯片原来我在 C8051F 上写过一个驱动. 移植过来倒是不麻烦, 半天搞定.</p>
+<p>麻烦的是协议栈!</p>
+<p>原来在 51 上用的是一个我精简了的 uIP 协议栈, 因为 C8051F 系列 FLASH 足够大, 而且 ram 也大 (f340 有 4096 字节). 足够移植 uIP 过去了.</p>
+<p>在 avr 上遇了不少麻烦.</p>
+<p>首先就是蛋疼的 codevision 编译器乱改 C 语言, 不按标准来. const 修饰的变量没法直接访问. 移植起来很麻烦. 然后就是 uIP 的 ram 占用一直下不去. 我已经把以太网最大帧长度调成 512 了还是费了 1100 多个字节. 然后很不幸, ATMega16 只有 1024 字节的 RAM. 可恶的 uIP 竟然用去了 512 个字节… 知道 RAM 有多宝贵嘛你!</p>
+<p>想想算了, 还是换个内存大点的吧. 周一给老师要了 ATMEGA32, 想着鸟枪换炮! 不料, 老师给了我张板子, 说” 自己焊吧”……</p>
+<p>贴片的本身就不容易焊, 况且我烙铁吃灰 n 久了脏死了完全不想动呀! (我这个死洁癖!)</p>
+<p>切! 想想我也是立志成为驱动工程师的男人, 这种小事应该交给硬件工程师来做嘛, 哼╭(╯^╰)╮(无任何冒犯…)</p>
+<p>所以嘛这点困难完全难不倒我! 开源的不行我就自己写一个嘛.</p>
+<p>自己动手丰衣足食.</p>
+<p>↑一点都不华丽的分割线</p>
+<p>自己造轮子的话最大的好处就是可以<span style="color: red">紧密把握需求</span>, 只写需要的功能, 不需要的一概不写! 另外因为对内存需求比较严格, 所以这个协议栈<span style="color: red">几乎是不占内存</span>, 除了 6 个 ip 地址 7 个 mac 地址常驻内存以外, 全部使用栈内存.</p>
+<p>这个协议栈最大的特点就是简洁, 只有两个文件构成: udp.c, 和 udp.h<br>而且接口设计的也比较简洁, 只向外部提供三个函数:</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init_udp</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span>* mac_addr, <span class="keyword">ip_t</span> ip_addr, <span class="keyword">ip_t</span> netmask, <span class="keyword">ip_t</span> gateway,</span></span></span><br><span class="line"><span class="function"><span class="params">	INCOMING_CALLBACK incoming, SENDBUF_CALLBACK sendbuf, DELAY_CALLBACK <span class="built_in">delay</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">process</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span>* buf,  <span class="keyword">unsigned</span> short len)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">send_udp</span><span class="params">(struct address* addr, <span class="keyword">void</span>* buf,  <span class="keyword">unsigned</span> short len)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>顾名思义</p>
+<ol>
+<li>init_udp 是初始化函数, 需要提供 ip 地址和 mac 地址. 另外需要提供三个回调函数.</li>
+<li>process 函数是当主程序接收到数据帧时需要调用的函数, 直接将以太网数据帧和 size 传入即可. 协议栈会进行处理 (现在可处理 arp 请求, icmp ping 请求, 和 udp 数据)</li>
+<li>send_udp 函数是主程序发送 udp 数据的函数, 需要把对端 ip 和端口以及本地端口存入 struct address 结构体中.</li>
+</ol>
+<p>另外在 init_udp 函数中的三个回调函数:</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span> (*INCOMING_CALLBACK)(<span class="keyword">struct</span> address* addr, <span class="keyword">unsigned</span> <span class="keyword">char</span>* buf,  <span class="keyword">unsigned</span> <span class="keyword">short</span> len);</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span> (*SENDBUF_CALLBACK)(<span class="keyword">void</span>* buf,  <span class="keyword">unsigned</span> <span class="keyword">short</span> len);</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span> (*DELAY_CALLBACK)(<span class="keyword">int</span> ms);</span><br></pre></td></tr></table></figure>
+
+<p>分别是</p>
+<ol>
+<li>当有 UDP 数据到达时被调用</li>
+<li>当需要发送数据时被调用</li>
+<li>当需要 sleep 时调用</li>
+</ol>
+<p><strong>INCOMING_CALLBACK</strong> 函数的 addr 参数传来对端的 ip 端口和本地端口号, buf 中的是 <span style="color: red">UDP 数据</span>, 不包含任何报头</p>
+<p>SENDBUF_CALLBACK 函数传来 buf, <span style="color: red">SENDBUF_CALLBACK </span><code>需要将 buf 中的数据写入一个缓冲区</code> (可以是<code>硬件缓冲区</code>中). SENDBUF_CALLBACK 函数会被<code>多次</code>调用, 应当<code>依次将 buf 中数据写入缓冲</code>.</p>
+<p>当 SENDBUF_CALLBACK <span style="color: red">最后一次被调用时, buf 会传入 </span><code>NULL</code>. 此时, <span style="color: red">SENDBUF_CALLBACK 函数</span><code>应当将缓冲区中数据发送到以太网上</code>.</p>
+<p>DELAY_CALLBACK 函数需要休眠指定的毫秒数, 如果程序运行在一个 RTOS 上的话可以调用 SLEEP 来让出处理器. 如果是裸板程序的话… 那就用循环吧 (这个协议栈在通过 arp 协议查找 mac 地址时会等待, 但最多不超过 1000 毫秒 [这个数值可以改]).</p>
+<p>如果不能忍受等待的话, 可以将要紧任务放到中断中处理 (这个常识应该都用吧)</p>
+<p>大致就是这样. 下午就是在板子上简单的测试了一下, 基本可用, 能收发 udp 包, 能 ping 通.</p>
+<p>源码如下: (不做任何担保, 用了出事不怪我, 逃…</p>
+<p><a href="https://lengzzz.com/udp/udp-0.3.zip">https://lengzzz.com/udp/udp-0.3.zip</a></p>
+<p>最后上图:<br><img src="http://static.zybuluo.com/zwh8800/8udhjsjuss6yjpkyot8a2bbt/image_1bl057v6q5uq1rbf1b5ejk311q9.png" alt="image_1bl057v6q5uq1rbf1b5ejk311q9.png-579.9kB"><br><img src="http://static.zybuluo.com/zwh8800/mx6gtpluys5m0of6dm4o9rvo/image_1bl058hv31jct1gsd4slnej20dm.png" alt="image_1bl058hv31jct1gsd4slnej20dm.png-68.2kB"></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/协议栈/">协议栈</a><a href="/tags/网络编程/">网络编程</a><a href="/tags/UDP/">UDP</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/04/18/自造UDP协议栈/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2014/04/16/学成归来!/"><span>学成归来!</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/04/16/学成归来!/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-04-16T00:00:00.000Z">
+          2014-04-16
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>女票给讲编译原理</p>
+<p><a href="/notename/" title="archive 20140416"></a></p>
+<p>刚刚回到寝室大呼一声:” 学成归来!” 然后, 意料之中的, 得到三个室友一致的:”SB”…….</p>
+<p>今天屁屁在图书馆给我讲了一晚上的编译原理. 真是醍醐灌顶呀 (不知道成语用对了没…<img src="http://static.zybuluo.com/zwh8800/xxlmc30z2ioesvirawscmmjp/image_1bl05q7ge1nfe1rarokm18e0ogc9.png" alt="image_1bl05q7ge1nfe1rarokm18e0ogc9.png-18.6kB"></p>
+<p>突然就明白了好多, 而且原来对这个没什么兴趣的提起了性趣<img src="http://static.zybuluo.com/zwh8800/4q7f0kddbm1nl0qp91hql4zv/image_1bl05qkohf651vf716j61i0s1jk1m.png" alt="image_1bl05qkohf651vf716j61i0s1jk1m.png-3.7kB"></p>
+<p>过两天忙完手边的活之后打算自己撸个编译器试试<img src="http://static.zybuluo.com/zwh8800/ah9ryzjo52mz43ap1v4jy0c7/image_1bl05r86oj77olc10og1j05b1k13.png" alt="image_1bl05r86oj77olc10og1j05b1k13.png-16.1kB"></p>
+<p>——————————<br>另外, 屁屁只要给我讲题, 或者自己刷题思考问题的时候就会大脑炒鸡热!</p>
+<p>哈哈 我经常嘲笑她是个残次 CPU, 漏电流太大导致功耗变大….</p>
+<p>顺便又黑了屁屁一遍: “显卡不行, 声卡不行, 内存还不够用” 唉.. 没法回炉重练, 只能推荐她先去买个水冷暂时解决一下问题啦</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/闲扯/">闲扯</a><a href="/tags/学习/">学习</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/04/16/学成归来!/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  <a href="/page/4/" class="pagination-prev">上一页</a>
+  
+  
+  <a href="/page/6/" class="pagination-next">下一页</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

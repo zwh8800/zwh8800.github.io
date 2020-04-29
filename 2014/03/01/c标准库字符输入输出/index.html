@@ -1,0 +1,290 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>c 标准库字符输入输出 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="c 标准库字符输入输出
+
+按功能分类读取一个字符
+
+
+
+getchar
+Get character from stdin&amp;nbsp;(function)
+
+
+getc
+Get character from stream&amp;nbsp;(function)
+
+
+fgetc
+Get character fr">
+  
+
+  
+  
+  <meta name="keywords" content="C,标准库">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="c 标准库字符输入输出"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>c 标准库字符输入输出</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/01/c标准库字符输入输出/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-01T00:00:00.000Z">
+          2014-03-01
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>c 标准库字符输入输出</p>
+<p><a href="/notename/" title="archive 20140301"></a></p>
+<h2 id="按功能分类"><a href="#按功能分类" class="headerlink" title="按功能分类"></a>按功能分类</h2><h3 style="color: #080">读取一个字符</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/getchar/" target="_blank" rel="noopener" data-slimstat="5">getchar</a></b></td>
+<td>Get character from stdin&nbsp;(function)</td>
+</tr>
+<tr>
+<td><a href="https://www.cplusplus.com/reference/cstdio/getc/" target="_blank" rel="noopener" data-slimstat="5"><b>getc</b></a></td>
+<td>Get character from stream&nbsp;(function)</td>
+</tr>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/fgetc/" target="_blank" rel="noopener" data-slimstat="5">fgetc</a></b></td>
+<td>Get character from stream&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getchar</span> <span class="params">( <span class="keyword">void</span> )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getc</span> <span class="params">( FILE * stream )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fgetc</span> <span class="params">( FILE * stream )</span></span>;</span><br></pre></td></tr></table></figure>
+第一个是从 stdin 中读取, 后两个都是从 FILE * 中读取但是 getc 可能被实现为宏, 返回值都为 int.
+
+<p>当成功时, 返回被读取的字符 (会被提升为 int); <code>当读取失败时返回 EOF, 需检测 feof 和 ferror 函数来检测是读到文件尾或是发生错误</code>.</p>
+<h3 style="color: #080">写入一个字符</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/putchar/" target="_blank" rel="noopener" data-slimstat="5">putchar</a></b></td>
+<td>Write character to stdout&nbsp;(function)</td>
+</tr>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/putc/" target="_blank" rel="noopener" data-slimstat="5">putc</a></b></td>
+<td>Write character to stream&nbsp;(function)</td>
+</tr>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/fputc/" target="_blank" rel="noopener" data-slimstat="5">fputc</a></b></td>
+<td>Write character to stream&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> putchar ( <span class="built_in">int</span> <span class="keyword">character</span> );</span><br><span class="line"><span class="built_in">int</span> putc ( <span class="built_in">int</span> <span class="keyword">character</span>, <span class="keyword">FILE</span> * stream );</span><br><span class="line"><span class="built_in">int</span> fputc ( <span class="built_in">int</span> <span class="keyword">character</span>, <span class="keyword">FILE</span> * stream );</span><br></pre></td></tr></table></figure>
+当写入时 character 会被强制为 unsigned int.
+
+<p>成功时返回写入的字符, <code>失败时返回 EOF, 应检测 ferror.</code></p>
+<h3 style="color: #080">读取一行</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/gets/" target="_blank" rel="noopener" data-slimstat="5">gets</a></b></td>
+<td>Get string from stdin&nbsp;(function)</td>
+</tr>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/fgets/" target="_blank" rel="noopener" data-slimstat="5">fgets</a></b></td>
+<td>Get string from stream&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">gets</span> <span class="params">( <span class="keyword">char</span> * str )</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">fgets</span> <span class="params">( <span class="keyword">char</span> * str, <span class="keyword">int</span> num, FILE * stream )</span></span>;</span><br></pre></td></tr></table></figure>
+分别从 stdin 和 stream 中读取一行字符保存到 str 中, 使用 gets 比较危险可能会造成缓冲区溢出. `当使用 fgets 时最多会读取 num 个字符`.
+
+<p>当成功读取时, 返回参数 str. <code>当第一个字符就为 EOF 时, 返回 NULL. 当遇到错误时返回 NULL. 所以应检测 feof 和 ferror.</code></p>
+<h3 style="color: #080">写入一行</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/puts/" target="_blank" rel="noopener" data-slimstat="5">puts</a></b></td>
+<td>Write string to stdout&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">puts</span> <span class="params">( <span class="keyword">const</span> <span class="keyword">char</span> * str )</span></span>;</span><br></pre></td></tr></table></figure>
+将 str 写到 stdout, 并且在后面加一个 \ n
+
+<p>成功时返回<code>非零值, 出错时返回 EOF</code>.</p>
+<h3 style="color: #080">写入字符串</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/fputs/" target="_blank" rel="noopener" data-slimstat="5">fputs</a></b></td>
+<td>Write string to stream&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fputs</span> <span class="params">( <span class="keyword">const</span> <span class="keyword">char</span> * str, FILE * stream )</span></span>;</span><br></pre></td></tr></table></figure>
+和 puts 不同, 这个不在 str 后添加 \ n 字符
+
+<p>成功时返回非零值, <code>出错时返回 EOF</code>.</p>
+<h3 style="color: #080">读回</h3>
+<table>
+<tbody>
+<tr>
+<td><b><a href="https://www.cplusplus.com/reference/cstdio/ungetc/" target="_blank" rel="noopener" data-slimstat="5">ungetc</a></b></td>
+<td>Unget character from stream&nbsp;(function)</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> ungetc ( <span class="built_in">int</span> <span class="keyword">character</span>, <span class="keyword">FILE</span> * stream );</span><br></pre></td></tr></table></figure>
+
+<p>将 character 写回 stream 中</p>
+<p>成功时返回 character, <code>失败时返回 EOF</code></p>
+<p>[EOF]</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/C/">C</a><a href="/tags/标准库/">标准库</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

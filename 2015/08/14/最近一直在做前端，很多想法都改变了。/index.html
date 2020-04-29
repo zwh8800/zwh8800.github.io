@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>最近一直在做前端，很多想法都改变了。 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="关于前端的一些思考
+
+今年年初 3 月份，自己开始找工作。虽然自己之前的研究方向一直在底层，诸如嵌入式，驱动，操作系统方面的。但不得不说互联网公司对这方面的需求算是比较少的。我个人来讲的话，比较混搭，只要是计算机沾边的的东西都感兴趣。属于兴趣广泛的，所以各个方面都有所研究，另外加上基础扎实（这点尤其">
+  
+
+  
+  
+  <meta name="keywords" content="闲扯">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="最近一直在做前端，很多想法都改变了。"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>最近一直在做前端，很多想法都改变了。</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2015/08/14/最近一直在做前端，很多想法都改变了。/" rel="bookmark">
+        <time class="entry-date published" datetime="2015-08-14T00:00:00.000Z">
+          2015-08-14
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>关于前端的一些思考</p>
+<p><a href="/notename/" title="archive 20150814"></a></p>
+<p>今年年初 3 月份，自己开始找工作。虽然自己之前的研究方向一直在底层，诸如嵌入式，驱动，操作系统方面的。但不得不说互联网公司对这方面的需求算是比较少的。我个人来讲的话，比较混搭，只要是计算机沾边的的东西都感兴趣。属于兴趣广泛的，所以各个方面都有所研究，另外加上基础扎实（这点尤其重要），所以在北京找一份不错的工作还是很轻松的（虽然我才大三，哈哈）</p>
+<p>从 3 月到现在的 7 月也算工作了 4 个月左右了，经历还算挺丰富的，不过也确实因为太忙而顾不上更新这里了（工作上倒是不忙，处理各种生活琐事太让人心累了）。最近平稳下来了，大概总结一下吧。</p>
+<p>工作以来，大概做了三个项目。第一个是纯 web 的应用，也因为它驱动着我学习了一直有所耳闻的 MVC。项目中使用的是 Phalcon，大概用两天左右的时间搞清楚了框架的用法。确实领会到了 MVC 的一些神奇之处。但其实感觉 MVC 只是其中的一小点，很重要的整个框架的完整程度。从数据库方面，有优秀的 ORM，视图方面有易用的模板引擎。</p>
+<p>尤其说下 ORM，真的让我耳目一新，以前自己的见识都很短浅了，以为 orm 还是得写很多配置文件，需要静态生成 ORM 模型类。现在这些东西都不需要，只需要你按照自己的想法写代码就 OK 了。我也终于明白现在的语言为什么都急着加入反射和动态特性。C# 在这方面这的尤其好。</p>
+<p>比如：数据库中有一个表</p>
+<table>
+     <caption>User</caption>
+    <tr>
+        <th>username</th>
+        <th>password</th>
+        <th>token</th>
+    </tr>
+</table>
+
+<p>你只需要这样写：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> \<span class="title">Phalcon</span>\<span class="title">Mvc</span>\<span class="title">Model</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    public <span class="function"><span class="keyword">function</span> <span class="title">initialize</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        parent::initialize();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    public $username;</span><br><span class="line">    public $password;</span><br><span class="line">    public $token;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后你就可以直接使用了！什么都无需配置，ORM 框架会默认以类名在数据库中找对应的表名，字段也会自动对应成员变量这简直太棒了！<br>ORM 就应该这样，这些配置上的问题就应该交给框架去做，而且就算要配置，不是让程序员写 XML 这种东西，而是应该用程序语言来描述。</p>
+<p>因此，我的想法改变了，我不再去一味地追求底层而是更喜欢去思考一种编程模式，一种让程序员更轻松的模式去编程的模式。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/闲扯/">闲扯</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

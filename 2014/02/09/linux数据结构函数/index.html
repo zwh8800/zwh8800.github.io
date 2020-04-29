@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>linux 数据结构函数 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="linux 数据结构函数
+
+今天翻 man page, 发现 linux 下的 libc 比标准库要丰富很多, 除了提供了一些系统相关的包装函数 (fdopen popen dprintf 之类) 来降低编程难度以外, 还提供了一组数据结构相关的函数. 粗略看了一下, 提供了以下数据结构:
+
+哈希表">
+  
+
+  
+  
+  <meta name="keywords" content="linux,内核,kernel">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="linux 数据结构函数"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>linux 数据结构函数</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/02/09/linux数据结构函数/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-02-09T00:00:00.000Z">
+          2014-02-09
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux 数据结构函数</p>
+<p><a href="/notename/" title="archive 20140209"></a></p>
+<p>今天翻 man page, 发现 linux 下的 libc 比标准库要丰富很多, 除了提供了一些系统相关的包装函数 (fdopen popen dprintf 之类) 来降低编程难度以外, 还提供了一组数据结构相关的函数. 粗略看了一下, 提供了以下数据结构:</p>
+<ul>
+<li>哈希表</li>
+<li>队列</li>
+<li>二叉查找树</li>
+</ul>
+<p>还提供了简单的线性查找算法.<br>哈希表:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;search.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span>    <span class="title">hcreate</span><span class="params">(<span class="keyword">size_t</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>   <span class="title">hdestroy</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function">ENTRY *<span class="title">hsearch</span><span class="params">(ENTRY, ACTION)</span></span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _GNU_SOURCE</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hcreate_r</span><span class="params">(<span class="keyword">size_t</span> nel, struct hsearch_data *htab)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">hsearch_r</span><span class="params">(ENTRY item, ACTION action, ENTRY **retval,</span></span></span><br><span class="line"><span class="function"><span class="params">              struct hsearch_data *htab)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hdestroy_r</span><span class="params">(struct hsearch_data *htab)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>队列:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;search.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span>   <span class="title">insque</span><span class="params">(<span class="keyword">void</span> *, <span class="keyword">void</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>   <span class="title">remque</span><span class="params">(<span class="keyword">void</span> *)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>线性查找:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;search.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span>  *<span class="title">lfind</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">size_t</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">size_t</span>, <span class="keyword">int</span> (*)(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>  *<span class="title">lsearch</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">void</span> *, <span class="keyword">size_t</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">size_t</span>, <span class="keyword">int</span> (*)(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *))</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>查找树:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;search.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span>  *<span class="title">tdelete</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *<span class="keyword">restrict</span>, <span class="keyword">void</span> **<span class="keyword">restrict</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">int</span>(*)(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>  *<span class="title">tfind</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">void</span> *<span class="keyword">const</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">int</span>(*)(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>  *<span class="title">tsearch</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">void</span> **,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">int</span>(*)(<span class="keyword">const</span> <span class="keyword">void</span> *, <span class="keyword">const</span> <span class="keyword">void</span> *))</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>   <span class="title">twalk</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">          <span class="keyword">void</span> (*)(<span class="keyword">const</span> <span class="keyword">void</span> *, VISIT, <span class="keyword">int</span> ))</span></span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _GNU_SOURCE</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">tdestroy</span><span class="params">(<span class="keyword">void</span> *root, <span class="keyword">void</span> (*free_node)(<span class="keyword">void</span> *nodep))</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/内核/">内核</a><a href="/tags/kernel/">kernel</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>自己造操作系统 (1) – 开篇, zOS | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="自己造操作系统系列 0.1 版
+
+[最近一直都忙着造轮子, 博客都没空写. 今天算是把调度器写出来能用了, 算是取得阶段性成果, 过来记录一下.]
+zOS: 是本人一星期前开始的项目, 目标是做一个 stm32 平台上的非实时操作系统.
+features:
+
+初期的想法是这样:
+(“应用”, 或” ">
+  
+
+  
+  
+  <meta name="keywords" content="操作系统,造轮子">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="自己造操作系统 (1) – 开篇, zOS"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/about">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>自己造操作系统 (1) – 开篇, zOS</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/04/10/自己造操作系统(1)–开篇,zOS/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-04-10T00:00:00.000Z">
+          2014-04-10
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>自己造操作系统系列 0.1 版</p>
+<p><a href="/notename/" title="archive 20140410"></a></p>
+<p>[最近一直都忙着造轮子, 博客都没空写. 今天算是把调度器写出来能用了, 算是取得阶段性成果, 过来记录一下.]</p>
+<p><code>zOS</code>: 是本人一星期前开始的项目, 目标是做一个 stm32 平台上的非实时操作系统.</p>
+<h3 style="color: #080">features:</h3>
+
+<p>初期的想法是这样:</p>
+<p>(“应用”, 或” 应用程序” 指的是在 zOS 操作系统上运行的用户态程序)</p>
+<ol>
+<li>对于应用开发:</li>
+</ol>
+<p>多进程<br>应用程序 (用户态程序) 可以独立编译, 无需和操作系统代码一起编译<br>烧入芯片前用一个叫做 zImage 的工具 (我把操作系统和 app 合成之后的镜像叫做 zImage) 把 app 的 binary 和操作系统的 binary 合成为一个二进制 Image 文件. 之后烧入到芯片 flash 中<br>上面功能使用 pic(位置无关代码) 实现<br>调度器使用抢占式时间片轮转算法 (暂时还没实现基于优先级的调度)<br>向用户态程序提供 svc 系统调用 (供汇编程序调用), 同时提供 libc 形式的系统调用 (供 c 语言调用, 相当于对裸的 svc 加了一层 wrapper)<br>libc 中另外还提供 c 标准库 (newlib)<br>对于有 MPU 的器件使用内存保护<br>这么设计的好处是开发应用程序时就好像开发 PC 系统上的程序一样了, 不需要把 OS 的代码放到项目中去. 看着清新了很多.</p>
+<p>使用系统调用的方法使应用编写方便了很多, 而且还安全.</p>
+<ol start="2">
+<li>对于驱动开发:</li>
+</ol>
+<p>提供自旋锁, 信号量等设施<br>暂时不提供子系统 (因为现在只面向 stm32 平台, stm32 标准外设库的头文件可以直接引用. 以后考虑移植到其他平台时再提供一个统一界面的子系统层)<br>…. 还没想好<br>3. 对于用户:</p>
+<p>提供 shell(初步想法用 lua 实现, 不知可行性如何) [串口]<br>提供 GUI [液晶屏]</p>
+<h3 style="color: #080">关于 build:</h3>
+
+<p>zOS 使用 CooCox 开发环境开发 (因为比较熟悉 GNU 工具链, 而且 CooCox 调试也方便).</p>
+<p>现在只提供 CooCox 的项目文件, 以后会提供 Makefile. (关键我现在懒着写 -.-)</p>
+<p>可以现在这里下载:<a href="https://lengzzz.com/zOS/zOS-0.1-alpha.tar.gz">https://lengzzz.com/zOS/zOS-0.1-alpha.tar.gz</a> 写的还很烂 [掩面], 大神轻点喷 -.-</p>
+<p>如果手上有 stm32 的板子的话可以编译了烧上去看效果. 现在就是一个简单的调度器, 开启了两个进程, 一个让 led 闪烁, 一个让 led 常亮. 时间片设置的大了一些 (为 1 秒). 所以运行会看到 led 一秒闪烁一秒常亮.</p>
+<p>板子和我不一样的 (肯定不一样吧!) 需要把 Unit_Test/test_schedule.c 文件中关于 led 改成你的板子的 GPIO 端口. 这个估计难不倒大家.</p>
+<p>后续会写文章一步一步记录开发过程…</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/操作系统/">操作系统</a><a href="/tags/造轮子/">造轮子</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>
