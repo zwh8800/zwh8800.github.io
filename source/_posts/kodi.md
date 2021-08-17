@@ -94,7 +94,10 @@ sudo mount -t overlay overlay -o lowerdir=/home/gdrive-lower,upperdir=～/gdrive
 
 #### 后续使用
 
-既然已经搞定了读写的问题了，那么后续无论是要通过 smb 协议还是 ftp 协议访问都是配置一下的事了，我这里使用的是 docker 启动一个 smb 服务器：
+
+> 下面samba 的 docker 有点问题，会进行 chown 修改文件所有者，这会导致文件被写入到upper上层目录，会使服务器硬盘爆炸。我最后使用的 ssh 协议（sftp）来访问，kodi上需要安装下 sftp 插件
+
+~~既然已经搞定了读写的问题了，那么后续无论是要通过 smb 协议还是 ftp 协议访问都是配置一下的事了，我这里使用的是 docker 启动一个 smb 服务器：~~
 
 ```bash
 docker run -d \
@@ -127,6 +130,24 @@ TinyMediaManager 是一个很好用的媒体搜刮器，能很方便的搜挂电
 #### 搜刮
 
 等搜索结束后，点击筛选，在里面选择新增季或新增电影，能筛选出刚刚新搜刮到的媒体文件，然后全选他们，点击搜索&剐削按钮旁边的下拉菜单，点击自动匹配，它会自动一个一个下载 nfo 和海报文件，最后匹配度低于 75% （在设置里可以调整）的视频，会提示给你来手动进行搜索匹配，速度挺快的，300 部电影十几分钟就搞好了。
+
+#### docker
+
+每次使用电脑可能会有所不便，其实 tmm 也支持docker:
+
+```bash
+docker run \
+    --name=tinyMediaManager \
+    --add-host=api.themoviedb.org:13.224.161.90 \
+    --add-host=image.tmdb.org:104.16.61.155 \
+    --add-host=api.themoviedb.org:13.35.67.86 \
+    --add-host=www.themoviedb.org:54.192.151.79 \
+    -v /home/gdrive:/media \
+    -p 5800:5800 \
+    -p 5900:5900 \
+    romancin/tinymediamanager:latest
+```
+启动后就可以通过浏览器打开 http://192.168.1.123:5800/ 访问 tmm 了。事实上 docker 内部启动了个 xorg 桌面服务，然后通过 http 来访问 vnc，还是稍微有点卡顿的。
 
 ## kodi
 
@@ -166,4 +187,3 @@ TinyMediaManager 是一个很好用的媒体搜刮器，能很方便的搜挂电
   [2]: /images/20171029124743310.jpeg
   [3]: /images/WechatIMG4.png
   [4]: /images/IMG_9431.PNG
-  
