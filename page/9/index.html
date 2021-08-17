@@ -63,6 +63,70 @@
 
   
     
+    <h3 class="article-title"><a href="/2014/01/13/netstat命令help翻译/"><span>netstat命令help翻译</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/13/netstat命令help翻译/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-13T00:00:00.000Z">
+          2014-01-13
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>翻译了一下 netstat –help 的提示信息</p>
+<p><a href="/notename/" title="archive 20140113"></a></p>
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">zzz@</span><span class="string">lengzzz:</span>~$ <span class="string">netstat </span><span class="built_in">--help</span></span><br><span class="line"><span class="built_in">usage:</span> <span class="string">netstat </span>[-<span class="string">vWeenNcCF]</span> [&lt;<span class="string">Af&gt;</span>] -r         <span class="string">netstat </span>&#123;-V|<span class="built_in">--version|-h|--help&#125;</span></span><br><span class="line"><span class="built_in"></span>       <span class="string">netstat </span>[-<span class="string">vWnNcaeol]</span> [&lt;<span class="string">Socket&gt;</span> ...]</span><br><span class="line">       <span class="string">netstat </span>&#123; [-<span class="string">vWeenNac]</span> -i | [-<span class="string">cWnNe]</span> -M | -s &#125;</span><br><span class="line"></span><br><span class="line">        -r, <span class="built_in">--route</span>			显示路由表</span><br><span class="line">        -i, <span class="built_in">--interfaces</span>		显示接口列表</span><br><span class="line">        -g, <span class="built_in">--groups</span>		显示组播组成员</span><br><span class="line">        -s, <span class="built_in">--statistics</span>		显示网络统计数据（类似<span class="string">SNMP）</span></span><br><span class="line">        -M, <span class="built_in">--masquerade</span>	显示伪装连接</span><br><span class="line"></span><br><span class="line">        -v, <span class="built_in">--verbose</span>		显示详细信息</span><br><span class="line">        -W, <span class="built_in">--wide</span>			不截断<span class="string">IP地</span>址</span><br><span class="line">        -n, <span class="built_in">--numeric</span>		不解析名字</span><br><span class="line">        <span class="built_in">--numeric-hosts</span>		不解析主机名</span><br><span class="line">        <span class="built_in">--numeric-ports</span>		不解析端口名</span><br><span class="line">        <span class="built_in">--numeric-users</span>		不解析用户名</span><br><span class="line">        -N, <span class="built_in">--symbolic</span>		解析硬件名</span><br><span class="line">        -e, <span class="built_in">--extend</span>		显示更多信息</span><br><span class="line">        -p, <span class="built_in">--programs</span>		显示套接字的<span class="string">PID/</span>程序名</span><br><span class="line">        -c, <span class="built_in">--continuous</span>		刷屏显示</span><br><span class="line"></span><br><span class="line">        -l, <span class="built_in">--listening</span>		显示监听套接字</span><br><span class="line">        -a, <span class="built_in">--all,</span> <span class="built_in">--listening</span>	显示所有套接字（默认：只显示连接套接字）</span><br><span class="line">        -o, <span class="built_in">--timers</span>		显示套接字定时器状态</span><br><span class="line">        -F, <span class="built_in">--fib</span>			显示前导路由信息（默认启用）</span><br><span class="line">        -C, <span class="built_in">--cache</span>			显示路由<span class="string">cache中</span>的前导路由信息</span><br><span class="line"></span><br><span class="line">  &lt;<span class="string">Socket&gt;</span>=&#123;-t|<span class="built_in">--tcp&#125;</span> &#123;-u|<span class="built_in">--udp&#125;</span> &#123;-w|<span class="built_in">--raw&#125;</span> &#123;-x|<span class="built_in">--unix&#125;</span> <span class="built_in">--ax25</span> <span class="built_in">--ipx</span> <span class="built_in">--netrom</span></span><br><span class="line"><span class="built_in"></span>  &lt;<span class="string">AF&gt;</span>=<span class="string">Use </span><span class="string">'-6|-4'</span> <span class="string">or </span><span class="string">'-A &lt;af&gt;'</span> <span class="string">or </span><span class="string">'--&lt;af&gt;'</span>; <span class="string">default:</span> <span class="string">inet</span></span><br><span class="line"><span class="string"> </span> 可以使用的地址族列表 (支持路由的):</span><br><span class="line">    <span class="string">inet </span>(<span class="string">DARPA </span><span class="string">Internet)</span> <span class="string">inet6 </span>(<span class="string">IPv6)</span> <span class="string">ax25 </span>(<span class="string">AMPR </span><span class="string">AX.</span><span class="string">25)</span> </span><br><span class="line">    <span class="string">netrom </span>(<span class="string">AMPR </span><span class="string">NET/</span><span class="string">ROM)</span> <span class="string">ipx </span>(<span class="string">Novell </span><span class="string">IPX)</span> <span class="string">ddp </span>(<span class="string">Appletalk </span><span class="string">DDP)</span> </span><br><span class="line">    <span class="string">x25 </span>(<span class="string">CCITT </span>X.<span class="string">25)</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/系统编程/">系统编程</a><a href="/tags/unix/">unix</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/13/netstat命令help翻译/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2014/01/12/exec系列系统调用/"><span>exec系列系统调用</span></a></h3>
     
   
@@ -802,70 +866,6 @@
 
 
 
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2013/12/30/小板子的电路图/"><span>小板子的电路图</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2013/12/30/小板子的电路图/" rel="bookmark">
-        <time class="entry-date published" datetime="2013-12-30T00:00:00.000Z">
-          2013-12-30
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>小板子的电路图</p>
-<p><a href="/notename/" title="archive 20131230"></a></p>
-<p><img src="/images/0b7c394cb434dc891c86e0df832ece46.png" alt="image_1bl05am9h1r5era8b3r1n7aepl9.png-56kB"></p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/闲扯/">闲扯</a><a href="/tags/电路图/">电路图</a>
-    </span>
-    
-
-    </div>
-
-    
-    <div class="article-meta pull-right">
-      <span>
-        <i class="icon-comments"></i>
-        <span>
-          <a href="/2013/12/30/小板子的电路图/#comment">评论</a>
-        </span>
-      </span>
-    </div>
-    
-  </div>
-</article>
-
-
-
 
 <nav class="pagination">
   
@@ -883,7 +883,7 @@
     Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
     </br>
     
-    &copy; 2020 wastecat
+    &copy; 2021 wastecat
     
   </p>
 </footer>

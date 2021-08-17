@@ -63,6 +63,102 @@
 
   
     
+    <h3 class="article-title"><a href="/2014/03/04/linux设备驱动程序(6)–阻塞型io、poll/"><span>linux 设备驱动程序 (6) – 阻塞型 io、poll</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/03/04/linux设备驱动程序(6)–阻塞型io、poll/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-03-04T00:00:00.000Z">
+          2014-03-04
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>linux 设备驱动程序 (6) – 阻塞型 io、poll</p>
+<p><a href="/notename/" title="archive 20140304"></a></p>
+<h3 id="阻塞型-IO"><a href="#阻塞型-IO" class="headerlink" title="阻塞型 IO"></a>阻塞型 IO</h3><p>上篇的例子中, 当资源不可获取时 (读写指针指向同一个位置) 我们提到了采取阻塞的方式. 这一篇展开叙述阻塞 io.</p>
+<p>在用户态程序中, 调用进程通常只会简单的调用 read 和 write, 不会考虑数据是否可用, 输出缓冲区是否已满之类的问题. 在我们的驱动程序中, 当遇见这种情况应当 [默认] 阻塞该进程, 直到数据可用.</p>
+<p>但在这之前, 先来讨论一下 unix 中的 io 模型. unix 中的 io 大概包括以下几类:</p>
+<ul>
+<li>阻塞型 IO</li>
+<li>非阻塞型 IO</li>
+<li>异步 IO<br>关于异步 IO 及异步通知机制在下一篇中讲述. 这一篇关注驱动程序如何处理阻塞型 IO 和非阻塞型 IO 的问题.</li>
+</ul>
+<h3 style="color: #080">非阻塞型 io 语义</h3>
+
+<p>非常简单, 当数据不可用时, read/write 函数返回 EAGAIN. 所以我们的驱动程序只需当数据不可用时返回 - EAGAIN 即可</p>
+<h3 style="color: #080">阻塞型 IO 语义</h3>
+
+<p>这是 unix 中最常见的的 IO. 对于阻塞型 IO 语义的总结如下:</p>
+<p>对于从设备读取数据:</p>
+<ul>
+<li>如果缓冲区中有数据, 并且驱动程序可以保证数据可以很快到达 (难以察觉的延迟), 那么即使就绪的数据比请求的少 read 函数也应返回</li>
+<li>如果缓冲区中无数据, 默认下 read 应当阻塞等待直到至少一个字节到达</li>
+<li>如果缓冲区中无数据, 并且设置了 O_NONBLOCK 标志, read 应立即返回 - EAGAIN</li>
+<li>如果缓冲区中无数据, poll 函数必须报告设备不可读, 直到至少一个字节到达</li>
+<li>如果到达文件尾, read 应立即返回 0, 无论 O_NONBLOCK 标志</li>
+<li>如果到达文件尾, poll 应报告 POLLHUP</li>
+</ul>
+<p>对于向设备写入数据:</p>
+<ul>
+<li>如果输出缓冲区中有空间, write 应立即返回即使可接收的数据比请求的数据少</li>
+<li>如果缓冲区已满, 默认下 write 应阻塞等待直到有空间被释放</li>
+<li>如果缓冲区已满, 并且设置了 O_NONBLOCK 标志, write 应立即返回 - EAGAIN</li>
+<li>如果缓冲区已满, poll 函数应报告文件不可写</li>
+<li>如果设备不能再接受任何数据, write 应返回 - ENOSPC</li>
+<li>不要在 write 中等待数据传输完成 [既数据传输到真正的硬件中]write 函数只需保证数据可靠写入输出缓冲区中</li>
+<li>如果使用设备的程序必须保证数据写入硬件, 则驱动必须提供 fsync 函数<br>[未完]</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/驱动开发/">驱动开发</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/03/04/linux设备驱动程序(6)–阻塞型io、poll/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2014/03/03/linux设备驱动程序(5)–字符设备驱动例子/"><span>linux 设备驱动程序 (5) – 字符设备驱动例子</span></a></h3>
     
   
@@ -1050,97 +1146,6 @@ int, long, short, uint, ulong, ushort</code></pre><p>还有一个姐妹宏module
 
 
 
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2014/01/26/linux设备驱动程序(1)–helloworld/"><span>linux设备驱动程序(1) – helloworld</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2014/01/26/linux设备驱动程序(1)–helloworld/" rel="bookmark">
-        <time class="entry-date published" datetime="2014-01-26T00:00:00.000Z">
-          2014-01-26
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>经过这几天痛苦debug，ztun终于是勉强能用了。（bug应该还不少，但不想改了呀wwww</p>
-<p><a href="/notename/" title="archive 20140126"></a></p>
-<p>然后，昨天看完了《linux系统编程》今天开始正式学习《linux设备驱动程序》，自然先从helloworld开始。</p>
-<p>对于驱动开发，首先你得有内核源代码树。如果你是ubuntu之类的发行版，一般软件仓库里会有linux-kernel-header包，下载一个适合自己的版本就可以了，它会安装在/scr中，但一般使用/lib/module/<code>uname -r</code>/build这个路径（这是个连接，连接到/src中）</p>
-<p>如果你是使用开发板做嵌入式，那么就麻烦一些，因为没有人给你做好内核树让你用，你必须自己从kernel.org或者你的零售商那里获取合适版本的内核源代码。然后cd到源代码目录执行以下操作：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make oldconfig</span><br><span class="line">make prepare</span><br><span class="line">make scripts <span class="comment">#不一定需要, 我这里就不用</span></span><br></pre></td></tr></table></figure>
-
-<p>如果是交叉编译还应该在make前加上ARCH=XXX CROSS_COMPILE=XXX，比如：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make</span><br></pre></td></tr></table></figure>
-
-<p>好的，这样准备工作就完成了，可以写helloworld了：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* file: hello.c */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"linux/init.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"linux/module.h"</span></span></span><br><span class="line"> </span><br><span class="line">MODULE_LICENSE(<span class="string">"Dual BSD/GPL"</span>);</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hello_init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	printk(<span class="string">"Hello world\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">hello_exit</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	printk(<span class="string">"Goodbye\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">module_init(hello_init);</span><br><span class="line">module_exit(hello_exit);</span><br></pre></td></tr></table></figure>
-
-<p>而一向让人头疼的Makefile却很好写：</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">obj-m := hello.o</span><br></pre></td></tr></table></figure>
-
-<p>什么？你TM在逗我？只有一行？对，只有一行，但是命令行需要麻烦点：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -C /lib/module/`uname -r`/build M=`<span class="built_in">pwd</span>` modules</span><br></pre></td></tr></table></figure>
-
-<p>obj-m的意思是需要编译的模块，因为使用:=所以表示覆盖前面的值，所以只会编译hello.c而不会编译内核中的其他模块。命令行中/lib/module/<code>uname -r</code>/build是内核源代码树的路径，你可以改成你自己的。-C指令表示make执行时先chdir到内核源代码树，调用那里的Makefile，M=<code>pwd</code>代表模块代码在当前目录。</p>
-<p>执行成功后会在当前目录下生成一个hello.ko文件，这就是刚编译好的内核模块了。执行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo insmod ./hello.ko</span><br><span class="line">dmesg</span><br><span class="line">sudo remod ./hello.ko</span><br><span class="line">dmesg</span><br></pre></td></tr></table></figure>
-
-<p>可以在两次dmesg中看到Hello world和Goodbye。</p>
-<p>但是每次都打那么长的命令行是不能接受的，特别是交叉编译时命令行更长。这个稍复杂点的Makefile可以解救你：</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(KERNELRELEASE)</span>,)</span><br><span class="line">	obj-m := hello.o</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	KERNELDIR ?= /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build</span><br><span class="line">	PWD := <span class="variable">$(<span class="built_in">shell</span> pwd)</span></span><br><span class="line"> </span><br><span class="line"><span class="section">all:</span></span><br><span class="line">	<span class="variable">$(MAKE)</span> -C <span class="variable">$(KERNELDIR)</span> M=<span class="variable">$(PWD)</span> modules</span><br><span class="line"> </span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	<span class="variable">$(MAKE)</span> -C <span class="variable">$(KERNELDIR)</span> M=<span class="variable">$(PWD)</span> clean</span><br><span class="line"> </span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure>
-
-<p>只需要在模块目录打一个make就可以编译。</p>
-<p>下面分析一下这个Makefile。这个其实有点像递归，执行make时，KERNELRELEASE变量还没有被设置，所以执行else里的。首先吧KERNELDIR设置成内核源代码树路径。PWD变量设置成当前目录。然后执行$(MAKE) -C $(KERNELDIR) M=$(PWD) modules。这句话被翻译成刚刚的那句命令行。于是又执行一次make（递归来了。。。）递归时会先读取内核源代码树里的Makefile，里面设置了KERNELRELEASE变量所以还是刚刚的那句代码obj-m := hello.o。于是，完成编译。</p>
-<p>书上没写清楚的东西都说清楚了，希望对那些像我一样在看了书之后搞不出helloworld的人有帮助吧。</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/linux/">linux</a><a href="/tags/驱动开发/">驱动开发</a>
-    </span>
-    
-
-    </div>
-
-    
-    <div class="article-meta pull-right">
-      <span>
-        <i class="icon-comments"></i>
-        <span>
-          <a href="/2014/01/26/linux设备驱动程序(1)–helloworld/#comment">评论</a>
-        </span>
-      </span>
-    </div>
-    
-  </div>
-</article>
-
-
-
 
 <nav class="pagination">
   
@@ -1158,7 +1163,7 @@ int, long, short, uint, ulong, ushort</code></pre><p>还有一个姐妹宏module
     Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
     </br>
     
-    &copy; 2020 wastecat
+    &copy; 2021 wastecat
     
   </p>
 </footer>

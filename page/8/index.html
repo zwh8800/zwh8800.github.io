@@ -63,6 +63,97 @@
 
   
     
+    <h3 class="article-title"><a href="/2014/01/26/linux设备驱动程序(1)–helloworld/"><span>linux设备驱动程序(1) – helloworld</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/01/26/linux设备驱动程序(1)–helloworld/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-01-26T00:00:00.000Z">
+          2014-01-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>经过这几天痛苦debug，ztun终于是勉强能用了。（bug应该还不少，但不想改了呀wwww</p>
+<p><a href="/notename/" title="archive 20140126"></a></p>
+<p>然后，昨天看完了《linux系统编程》今天开始正式学习《linux设备驱动程序》，自然先从helloworld开始。</p>
+<p>对于驱动开发，首先你得有内核源代码树。如果你是ubuntu之类的发行版，一般软件仓库里会有linux-kernel-header包，下载一个适合自己的版本就可以了，它会安装在/scr中，但一般使用/lib/module/<code>uname -r</code>/build这个路径（这是个连接，连接到/src中）</p>
+<p>如果你是使用开发板做嵌入式，那么就麻烦一些，因为没有人给你做好内核树让你用，你必须自己从kernel.org或者你的零售商那里获取合适版本的内核源代码。然后cd到源代码目录执行以下操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">make oldconfig</span><br><span class="line">make prepare</span><br><span class="line">make scripts <span class="comment">#不一定需要, 我这里就不用</span></span><br></pre></td></tr></table></figure>
+
+<p>如果是交叉编译还应该在make前加上ARCH=XXX CROSS_COMPILE=XXX，比如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make</span><br></pre></td></tr></table></figure>
+
+<p>好的，这样准备工作就完成了，可以写helloworld了：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* file: hello.c */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"linux/init.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"linux/module.h"</span></span></span><br><span class="line"> </span><br><span class="line">MODULE_LICENSE(<span class="string">"Dual BSD/GPL"</span>);</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hello_init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	printk(<span class="string">"Hello world\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">hello_exit</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	printk(<span class="string">"Goodbye\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">module_init(hello_init);</span><br><span class="line">module_exit(hello_exit);</span><br></pre></td></tr></table></figure>
+
+<p>而一向让人头疼的Makefile却很好写：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">obj-m := hello.o</span><br></pre></td></tr></table></figure>
+
+<p>什么？你TM在逗我？只有一行？对，只有一行，但是命令行需要麻烦点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -C /lib/module/`uname -r`/build M=`<span class="built_in">pwd</span>` modules</span><br></pre></td></tr></table></figure>
+
+<p>obj-m的意思是需要编译的模块，因为使用:=所以表示覆盖前面的值，所以只会编译hello.c而不会编译内核中的其他模块。命令行中/lib/module/<code>uname -r</code>/build是内核源代码树的路径，你可以改成你自己的。-C指令表示make执行时先chdir到内核源代码树，调用那里的Makefile，M=<code>pwd</code>代表模块代码在当前目录。</p>
+<p>执行成功后会在当前目录下生成一个hello.ko文件，这就是刚编译好的内核模块了。执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo insmod ./hello.ko</span><br><span class="line">dmesg</span><br><span class="line">sudo remod ./hello.ko</span><br><span class="line">dmesg</span><br></pre></td></tr></table></figure>
+
+<p>可以在两次dmesg中看到Hello world和Goodbye。</p>
+<p>但是每次都打那么长的命令行是不能接受的，特别是交叉编译时命令行更长。这个稍复杂点的Makefile可以解救你：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(KERNELRELEASE)</span>,)</span><br><span class="line">	obj-m := hello.o</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	KERNELDIR ?= /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build</span><br><span class="line">	PWD := <span class="variable">$(<span class="built_in">shell</span> pwd)</span></span><br><span class="line"> </span><br><span class="line"><span class="section">all:</span></span><br><span class="line">	<span class="variable">$(MAKE)</span> -C <span class="variable">$(KERNELDIR)</span> M=<span class="variable">$(PWD)</span> modules</span><br><span class="line"> </span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	<span class="variable">$(MAKE)</span> -C <span class="variable">$(KERNELDIR)</span> M=<span class="variable">$(PWD)</span> clean</span><br><span class="line"> </span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure>
+
+<p>只需要在模块目录打一个make就可以编译。</p>
+<p>下面分析一下这个Makefile。这个其实有点像递归，执行make时，KERNELRELEASE变量还没有被设置，所以执行else里的。首先吧KERNELDIR设置成内核源代码树路径。PWD变量设置成当前目录。然后执行$(MAKE) -C $(KERNELDIR) M=$(PWD) modules。这句话被翻译成刚刚的那句命令行。于是又执行一次make（递归来了。。。）递归时会先读取内核源代码树里的Makefile，里面设置了KERNELRELEASE变量所以还是刚刚的那句代码obj-m := hello.o。于是，完成编译。</p>
+<p>书上没写清楚的东西都说清楚了，希望对那些像我一样在看了书之后搞不出helloworld的人有帮助吧。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/linux/">linux</a><a href="/tags/驱动开发/">驱动开发</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/01/26/linux设备驱动程序(1)–helloworld/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2014/01/25/到此刻为止,ztun终于勉强能用了!/"><span>到此刻为止, ztun终于勉强能用了!</span></a></h3>
     
   
@@ -911,70 +1002,6 @@
 
 
 
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2014/01/13/netstat命令help翻译/"><span>netstat命令help翻译</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2014/01/13/netstat命令help翻译/" rel="bookmark">
-        <time class="entry-date published" datetime="2014-01-13T00:00:00.000Z">
-          2014-01-13
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>翻译了一下 netstat –help 的提示信息</p>
-<p><a href="/notename/" title="archive 20140113"></a></p>
-<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">zzz@</span><span class="string">lengzzz:</span>~$ <span class="string">netstat </span><span class="built_in">--help</span></span><br><span class="line"><span class="built_in">usage:</span> <span class="string">netstat </span>[-<span class="string">vWeenNcCF]</span> [&lt;<span class="string">Af&gt;</span>] -r         <span class="string">netstat </span>&#123;-V|<span class="built_in">--version|-h|--help&#125;</span></span><br><span class="line"><span class="built_in"></span>       <span class="string">netstat </span>[-<span class="string">vWnNcaeol]</span> [&lt;<span class="string">Socket&gt;</span> ...]</span><br><span class="line">       <span class="string">netstat </span>&#123; [-<span class="string">vWeenNac]</span> -i | [-<span class="string">cWnNe]</span> -M | -s &#125;</span><br><span class="line"></span><br><span class="line">        -r, <span class="built_in">--route</span>			显示路由表</span><br><span class="line">        -i, <span class="built_in">--interfaces</span>		显示接口列表</span><br><span class="line">        -g, <span class="built_in">--groups</span>		显示组播组成员</span><br><span class="line">        -s, <span class="built_in">--statistics</span>		显示网络统计数据（类似<span class="string">SNMP）</span></span><br><span class="line">        -M, <span class="built_in">--masquerade</span>	显示伪装连接</span><br><span class="line"></span><br><span class="line">        -v, <span class="built_in">--verbose</span>		显示详细信息</span><br><span class="line">        -W, <span class="built_in">--wide</span>			不截断<span class="string">IP地</span>址</span><br><span class="line">        -n, <span class="built_in">--numeric</span>		不解析名字</span><br><span class="line">        <span class="built_in">--numeric-hosts</span>		不解析主机名</span><br><span class="line">        <span class="built_in">--numeric-ports</span>		不解析端口名</span><br><span class="line">        <span class="built_in">--numeric-users</span>		不解析用户名</span><br><span class="line">        -N, <span class="built_in">--symbolic</span>		解析硬件名</span><br><span class="line">        -e, <span class="built_in">--extend</span>		显示更多信息</span><br><span class="line">        -p, <span class="built_in">--programs</span>		显示套接字的<span class="string">PID/</span>程序名</span><br><span class="line">        -c, <span class="built_in">--continuous</span>		刷屏显示</span><br><span class="line"></span><br><span class="line">        -l, <span class="built_in">--listening</span>		显示监听套接字</span><br><span class="line">        -a, <span class="built_in">--all,</span> <span class="built_in">--listening</span>	显示所有套接字（默认：只显示连接套接字）</span><br><span class="line">        -o, <span class="built_in">--timers</span>		显示套接字定时器状态</span><br><span class="line">        -F, <span class="built_in">--fib</span>			显示前导路由信息（默认启用）</span><br><span class="line">        -C, <span class="built_in">--cache</span>			显示路由<span class="string">cache中</span>的前导路由信息</span><br><span class="line"></span><br><span class="line">  &lt;<span class="string">Socket&gt;</span>=&#123;-t|<span class="built_in">--tcp&#125;</span> &#123;-u|<span class="built_in">--udp&#125;</span> &#123;-w|<span class="built_in">--raw&#125;</span> &#123;-x|<span class="built_in">--unix&#125;</span> <span class="built_in">--ax25</span> <span class="built_in">--ipx</span> <span class="built_in">--netrom</span></span><br><span class="line"><span class="built_in"></span>  &lt;<span class="string">AF&gt;</span>=<span class="string">Use </span><span class="string">'-6|-4'</span> <span class="string">or </span><span class="string">'-A &lt;af&gt;'</span> <span class="string">or </span><span class="string">'--&lt;af&gt;'</span>; <span class="string">default:</span> <span class="string">inet</span></span><br><span class="line"><span class="string"> </span> 可以使用的地址族列表 (支持路由的):</span><br><span class="line">    <span class="string">inet </span>(<span class="string">DARPA </span><span class="string">Internet)</span> <span class="string">inet6 </span>(<span class="string">IPv6)</span> <span class="string">ax25 </span>(<span class="string">AMPR </span><span class="string">AX.</span><span class="string">25)</span> </span><br><span class="line">    <span class="string">netrom </span>(<span class="string">AMPR </span><span class="string">NET/</span><span class="string">ROM)</span> <span class="string">ipx </span>(<span class="string">Novell </span><span class="string">IPX)</span> <span class="string">ddp </span>(<span class="string">Appletalk </span><span class="string">DDP)</span> </span><br><span class="line">    <span class="string">x25 </span>(<span class="string">CCITT </span>X.<span class="string">25)</span></span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/系统编程/">系统编程</a><a href="/tags/unix/">unix</a>
-    </span>
-    
-
-    </div>
-
-    
-    <div class="article-meta pull-right">
-      <span>
-        <i class="icon-comments"></i>
-        <span>
-          <a href="/2014/01/13/netstat命令help翻译/#comment">评论</a>
-        </span>
-      </span>
-    </div>
-    
-  </div>
-</article>
-
-
-
 
 <nav class="pagination">
   
@@ -992,7 +1019,7 @@
     Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
     </br>
     
-    &copy; 2020 wastecat
+    &copy; 2021 wastecat
     
   </p>
 </footer>

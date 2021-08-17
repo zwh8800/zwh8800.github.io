@@ -63,6 +63,72 @@
 
   
     
+    <h3 class="article-title"><a href="/2014/12/26/[转]一个CSS3的自定义滚动条/"><span>[转]一个 CSS3 的自定义滚动条</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2014/12/26/[转]一个CSS3的自定义滚动条/" rel="bookmark">
+        <time class="entry-date published" datetime="2014-12-26T00:00:00.000Z">
+          2014-12-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>转载一个 css3 的自定义滚动条~</p>
+<p><a href="/notename/" title="archive 20141226"></a></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-pseudo">::-webkit-scrollbar</span> &#123;</span><br><span class="line">    <span class="attribute">height</span>:<span class="number">11px</span>;</span><br><span class="line">    <span class="attribute">width</span>:<span class="number">11px</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-button</span> &#123;</span><br><span class="line">    <span class="attribute">height</span>:<span class="number">0</span>;</span><br><span class="line">    <span class="attribute">width</span>:<span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-button</span><span class="selector-pseudo">:start</span><span class="selector-pseudo">:decrement</span>,<span class="selector-pseudo">::-webkit-scrollbar-button</span><span class="selector-pseudo">:end</span><span class="selector-pseudo">:increment</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>:block</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-button</span><span class="selector-pseudo">:vertical</span><span class="selector-pseudo">:start</span><span class="selector-pseudo">:increment</span>,<span class="selector-pseudo">::-webkit-scrollbar-button</span><span class="selector-pseudo">:vertical</span><span class="selector-pseudo">:end</span><span class="selector-pseudo">:decrement</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>:none</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:horizontal</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:horizontal</span>,<span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:horizontal</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:horizontal</span> &#123;</span><br><span class="line">    <span class="attribute">border-style</span>:solid;</span><br><span class="line">    <span class="attribute">border-color</span>:transparent</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:vertical</span><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:horizontal</span>&#123;</span><br><span class="line">    <span class="attribute">background-clip</span>:padding-box;</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="number">#fff</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-thumb</span> &#123;</span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>:inset <span class="number">1px</span> <span class="number">1px</span> <span class="number">0</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">1</span>),inset <span class="number">0</span> -<span class="number">1px</span> <span class="number">0</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">07</span>);</span><br><span class="line">    <span class="attribute">background-clip</span>:padding-box;</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">2</span>);</span><br><span class="line">    <span class="attribute">min-height</span>:<span class="number">28px</span>;</span><br><span class="line">    <span class="attribute">padding-top</span>:<span class="number">100</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>:inset <span class="number">1px</span> <span class="number">1px</span> <span class="number">1px</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">25</span>);</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">4</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:active</span> &#123;</span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>:inset <span class="number">1px</span> <span class="number">1px</span> <span class="number">3px</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">35</span>);</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">5</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:horizontal</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:vertical</span>,<span class="selector-pseudo">::-webkit-scrollbar-thumb</span><span class="selector-pseudo">:horizontal</span> &#123;</span><br><span class="line">    <span class="attribute">border-width</span>:<span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>:inset <span class="number">1px</span> <span class="number">0</span> <span class="number">0</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">1</span>);</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">05</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-webkit-scrollbar-track</span><span class="selector-pseudo">:active</span> &#123;</span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>:inset <span class="number">1px</span> <span class="number">0</span> <span class="number">0</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">14</span>),inset -<span class="number">1px</span> -<span class="number">1px</span> <span class="number">0</span> <span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">07</span>);</span><br><span class="line">    <span class="attribute">background-color</span>:<span class="built_in">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,.<span class="number">05</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/CSS3/">CSS3</a><a href="/tags/滚动条/">滚动条</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2014/12/26/[转]一个CSS3的自定义滚动条/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2014/09/22/ARM20pinJTAG和SWD定义/"><span>ARM 20pin JTAG 和 SWD 定义</span></a></h3>
     
   
@@ -852,76 +918,6 @@
 
 
 
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2014/04/16/学成归来!/"><span>学成归来!</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2014/04/16/学成归来!/" rel="bookmark">
-        <time class="entry-date published" datetime="2014-04-16T00:00:00.000Z">
-          2014-04-16
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>女票给讲编译原理</p>
-<p><a href="/notename/" title="archive 20140416"></a></p>
-<p>刚刚回到寝室大呼一声:” 学成归来!” 然后, 意料之中的, 得到三个室友一致的:”SB”…….</p>
-<p>今天屁屁在图书馆给我讲了一晚上的编译原理. 真是醍醐灌顶呀 (不知道成语用对了没…<img src="/images/a0975738ccdaf6f5953ff2642991746f.png" alt="image_1bl05q7ge1nfe1rarokm18e0ogc9.png-18.6kB"></p>
-<p>突然就明白了好多, 而且原来对这个没什么兴趣的提起了性趣<img src="/images/95f88a0e382a55a52622003369cc0042.png" alt="image_1bl05qkohf651vf716j61i0s1jk1m.png-3.7kB"></p>
-<p>过两天忙完手边的活之后打算自己撸个编译器试试<img src="/images/a8be54c7a2194f4307274ef3d4e430af.png" alt="image_1bl05r86oj77olc10og1j05b1k13.png-16.1kB"></p>
-<p>——————————<br>另外, 屁屁只要给我讲题, 或者自己刷题思考问题的时候就会大脑炒鸡热!</p>
-<p>哈哈 我经常嘲笑她是个残次 CPU, 漏电流太大导致功耗变大….</p>
-<p>顺便又黑了屁屁一遍: “显卡不行, 声卡不行, 内存还不够用” 唉.. 没法回炉重练, 只能推荐她先去买个水冷暂时解决一下问题啦</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/闲扯/">闲扯</a><a href="/tags/学习/">学习</a>
-    </span>
-    
-
-    </div>
-
-    
-    <div class="article-meta pull-right">
-      <span>
-        <i class="icon-comments"></i>
-        <span>
-          <a href="/2014/04/16/学成归来!/#comment">评论</a>
-        </span>
-      </span>
-    </div>
-    
-  </div>
-</article>
-
-
-
 
 <nav class="pagination">
   
@@ -939,7 +935,7 @@
     Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
     </br>
     
-    &copy; 2020 wastecat
+    &copy; 2021 wastecat
     
   </p>
 </footer>

@@ -63,6 +63,72 @@
 
   
     
+    <h3 class="article-title"><a href="/2016/07/18/总结golang对于stream的抽象/"><span>总结 golang 对于 stream 的抽象</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2016/07/18/总结golang对于stream的抽象/" rel="bookmark">
+        <time class="entry-date published" datetime="2016-07-18T07:23:09.000Z">
+          2016-07-18
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>本文对 golang 标准库中的 stream 进行了一些总结。</p>
+<p><a href="/notename/" title="golang stream"></a></p>
+<h2 id="Interfaces"><a href="#Interfaces" class="headerlink" title="Interfaces"></a>Interfaces</h2><p>在 golang 中，通过几个基本的 interface 对流操作进行了抽象。</p>
+<h3 id="读写"><a href="#读写" class="headerlink" title="读写"></a>读写</h3><p>首先是最基本的Reader、Writer，定义了对于一个流来说最基本的操作：<strong>读、写</strong>。这两个 interface 定义在 <code>io</code> 包里。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Reader <span class="keyword">interface</span> &#123;</span><br><span class="line">    Read(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Writer <span class="keyword">interface</span> &#123;</span><br><span class="line">    Write(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/标准库/">标准库</a><a href="/tags/golang/">golang</a><a href="/tags/stream/">stream</a><a href="/tags/io/">io</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2016/07/18/总结golang对于stream的抽象/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2016/07/08/并发难|池里究竟该放多少线程？/"><span>并发难 | 池里究竟该放多少线程？</span></a></h3>
     
   
@@ -998,77 +1064,6 @@
 
 
 
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2016/05/01/把域名托管到CloudXNS了，完美支持let'sencrypt/"><span>把域名托管到 CloudXNS 了，完美支持 let&#39;s encrypt</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2016/05/01/把域名托管到CloudXNS了，完美支持let'sencrypt/" rel="bookmark">
-        <time class="entry-date published" datetime="2016-05-01T08:41:51.000Z">
-          2016-05-01
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p><a href="https://lengzzz.com">lengzzz.com</a> 这个域名我已经用了6年了，当年年少无知用了 oray 的服务，就为了一个花生壳的功能（tplink自带花生壳）。现在越发感觉 oray 的服务质量不很好。各省解析速度不一，国外就更慢了。尤其是不支持 <code>let&#39;s encrypt</code> 让我好生郁闷。所以赶紧换上了 CloudXNS 。</p>
-<p>CloudXNS 的页面就看着比较顺眼。据说 DNSPod 也不错，但是我感觉网页太丑了，就没有使用它，哈哈，所以证明一句话 <strong>你的颜值决定了别人会不会去发现你的内心</strong> 。</p>
-<p><img src="/images/f9e146686ecd27ddbd7424e8c6a6169b.png" alt="QQ20160501-0@2x.png-321.5kB"></p>
-<p>注册了之后发现使用超级方便，只给你显示了一个超大的输入框，让你输入自己的域名。</p>
-<p><img src="/images/0e13753a1874c7bf2b348f4aca064f45.png" alt="QQ20160501-1@2x.png-43.7kB"></p>
-<p>输入之后，就进入了控制台节目了，好像你的域名已经托管在 CloudXNS 上了一样，当你设置好解析之后，只需要把之前域名的 NS 地址设置到 CloudXNS 上就好了。整个用户体验相当舒服。</p>
-<p>设置好之后，控制台上会实时显示接管状态。不过5分钟，就可以用了。立即用 let’s encrypt 更新一下 ssl 证书。果然可以用了。</p>
-<p><img src="/images/24d97e9041fe854f0a0a90461e921a72.png" alt="QQ20160501-2@2x.png-70.3kB"></p>
-<p>最后来张测速图吧。</p>
-<p><img src="/images/7d9691daa44d1454cc69023bfa78d502.png" alt="QQ20160501-3@2x.png-138.9kB"></p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/CloudXNS/">CloudXNS</a><a href="/tags/闲扯/">闲扯</a><a href="/tags/DNS/">DNS</a>
-    </span>
-    
-
-    </div>
-
-    
-    <div class="article-meta pull-right">
-      <span>
-        <i class="icon-comments"></i>
-        <span>
-          <a href="/2016/05/01/把域名托管到CloudXNS了，完美支持let'sencrypt/#comment">评论</a>
-        </span>
-      </span>
-    </div>
-    
-  </div>
-</article>
-
-
-
 
 <nav class="pagination">
   
@@ -1086,7 +1081,7 @@
     Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
     </br>
     
-    &copy; 2020 wastecat
+    &copy; 2021 wastecat
     
   </p>
 </footer>

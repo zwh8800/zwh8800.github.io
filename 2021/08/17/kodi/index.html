@@ -1,0 +1,271 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>rclone挂载Google群友盘 + OverlayFS + tmm + kodi打造家庭媒体中心 | wastecat的博客</title>
+
+  
+  <meta name="author" content="wastecat">
+  
+
+  
+  <meta name="description" content="之前我的家庭媒体中心一直是使用本地 nas 存高清片源 + tmm（TinyMediaManager）做媒体搜刮器 + 电视上安装 kodi 做播放器的方案，但是这种方式的缺点是总得自己花时间下载片源。后来白嫖了一段时间别人的 gayufan emby，然鹅现在也用不了了，自己又懒着去签到+考试。索性去tg群里买了个群友盘权限，56元不限时间，可以说是很良心了。现在持续更新的片源有了，于是这周末折腾了下媒体管理中心，踩坑各种不同的方案之后选择了一个网上不太常见但个人感觉很好用的方案，于是记录一下。">
+  
+
+  
+  
+  <meta name="keywords" content="rclone,OverlayFS,kodi,多媒体">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="rclone挂载Google群友盘 + OverlayFS + tmm + kodi打造家庭媒体中心"/>
+
+  <meta property="og:site_name" content="wastecat的博客"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="wastecat的博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">wastecat的博客</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">主页</a></li>
+      
+        <li><a href="/archives">归档</a></li>
+      
+        <li><a href="/2020/04/29/hello-world/">关于</a></li>
+      
+        <li><a href="/atom.xml">订阅</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>rclone挂载Google群友盘 + OverlayFS + tmm + kodi打造家庭媒体中心</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2021/08/17/kodi/" rel="bookmark">
+        <time class="entry-date published" datetime="2021-08-17T10:54:00.000Z">
+          2021-08-17
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>之前我的家庭媒体中心一直是使用本地 nas 存高清片源 + tmm（TinyMediaManager）做媒体搜刮器 + 电视上安装 kodi 做播放器的方案，但是这种方式的缺点是总得自己花时间下载片源。后来白嫖了一段时间别人的 gayufan emby，然鹅现在也用不了了，自己又懒着去签到+考试。索性去tg群里买了个群友盘权限，56元不限时间，可以说是很良心了。现在持续更新的片源有了，于是这周末折腾了下媒体管理中心，踩坑各种不同的方案之后选择了一个网上不太常见但个人感觉很好用的方案，于是记录一下。</p>
+<p><img src="/images/IMG_9433.PNG" alt="kodi 截图"></p>
+<a id="more"></a>
+
+<h2 id="方案对比"><a href="#方案对比" class="headerlink" title="方案对比"></a>方案对比</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>是否能播放原始文件</th>
+<th>搜刮</th>
+<th>硬件解码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>plex</td>
+<td>需付费直接放弃</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>emby</td>
+<td>大多数ok，因字幕等原因会触发转码</td>
+<td>速度一般，无法手动搜索</td>
+<td>需付费开启</td>
+</tr>
+<tr>
+<td>jellyfin</td>
+<td>大多数ok，因字幕等原因会触发转码</td>
+<td>速度一般，准确性一般，无法手动搜索</td>
+<td>可开启</td>
+</tr>
+<tr>
+<td>tmm + kodi</td>
+<td>可以</td>
+<td>速度较快，可手动搜索，提升准确性</td>
+<td>取决于电视</td>
+</tr>
+</tbody></table>
+<p>我的需求其实比较简单，观影设备只有客厅和卧室的电视，没有在移动端、web端看剧的需求。需要支持多端能同步观影记录。需要能尽可能播放原始文件，一方面是对画质的要求，另一方面是考虑家庭服务器的负载。</p>
+<p>一开始尝试了 emby ，搜刮直接花了一个白天的时间，然后发现海报怎么都加载不出来，另外很多视频都会走转码（我就很奇怪为啥，我电视端明明支持这种格式，服务端仍然会转码），emby 的硬件解码需要收费，尝试了下破解也不太好用，遂放弃。然后尝试了 jellyfin，这个转码倒是比较完美的支持硬件解码了，然鹅搜刮还是难用，一是慢，二是不好进行微调。最后还是用回了 kodi。下面是 kodi 方案的教程。</p>
+<h2 id="rclone-配置"><a href="#rclone-配置" class="headerlink" title="rclone 配置"></a>rclone 配置</h2><p>rclone 的作用是把各种网盘挂载到 Linux 服务器上，这样访问网盘的文件就像是访问本地的文件夹一样方便。</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>安装的话直接按照官方的方法，一条命令完事：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https://rclone.org/install.sh | sudo bash</span><br></pre></td></tr></table></figure>
+
+<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><p>安装好了之后首先需要配置下，在终端执行 <code>rclone config</code> 命令后是一个交互式的命令行界面，能看懂英文的话照着提示一步一步来就行了，主要就是中间会给你一个url，在浏览器里用你的Google账号打开然后进行授权，得到一个授权码填到 rclone 里就行了，很简单就不赘述了，详细可以参考这个教程： <a href="https://ley.best/rclone/" target="_blank" rel="noopener">https://ley.best/rclone/</a> </p>
+<h4 id="挂载"><a href="#挂载" class="headerlink" title="挂载"></a>挂载</h4><p>挂载同样是一条命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rclone mount g: /home/gdrive-lower -copy-links --no-gzip-encoding --no-check-certificate --allow-other --allow-non-empty --<span class="built_in">umask</span> 000 --daemon</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>g: 代表初始化的时候给网盘起的名字</li>
+<li>/home/gdrive-lower：代表要挂载的位置，需要先创建出这个目录</li>
+<li>其他参数暂时不用管</li>
+<li>这个命令会阻塞，为了开机自启动，可以创建一个systemd服务，或者更简单的放在rc.local文件里也行</li>
+</ul>
+<p>挂载好了之后，可以发现 /home/gdrive-lower 目录里已经是网盘上的文件了。不过都是只读的，我们搜刮到额外的信息海报等信息是无法存储到这个目录的，所以就需要 Linux 上另一个神器 OverlayFS 来解决这个问题。</p>
+<h2 id="OverlayFS-配置"><a href="#OverlayFS-配置" class="headerlink" title="OverlayFS 配置"></a>OverlayFS 配置</h2><p>OverlayFS 是 Linux 的一个文件系统，用途很广泛，比如 openwrt、docker 的文件系统就基于这个。简单讲一下他的作用。</p>
+<p>OverlayFS 可以多个目录进行合并成一个新的目录，比如a、b两个目录里分别有 1.mp4 和 1.nfo 文件，那么他们合并成的新目录就同时包含了1.mp4和1.nfo两个文件。另外 OverlayFS 也有层级的概念，如果a、b目录有同名的文件，那么更高层级的目录的文件会优先被访问。</p>
+<p>由于 OverlayFS 这么好用的特性，很适合用在我这个场景，能方便的把只读的目录变成可读写的。</p>
+<p><img src="/images/20171029124743310.jpeg" alt="overlayfs 原理"></p>
+<h4 id="创建必要目录"><a href="#创建必要目录" class="headerlink" title="创建必要目录"></a>创建必要目录</h4><p>首先创建两个目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/gdrive-upper ~/gdrive-work /home/gdrive</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>~/gdrive-upper：作为上层目录，对谷歌云的读写都会保存到这里，而不会真正写入谷歌云的挂载点</li>
+<li>~/gdrive-work：存储临时文件</li>
+<li>/home/gdrive：合并出的新目录</li>
+</ul>
+<h4 id="挂载-OverlayFS"><a href="#挂载-OverlayFS" class="headerlink" title="挂载 OverlayFS"></a>挂载 OverlayFS</h4><p>同样是一条命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount -t overlay overlay -o lowerdir=/home/gdrive-lower,upperdir=～/gdrive-upper,workdir=～/gdrive-work /home/gdrive</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>lowerdir=/home/gdrive-lower：代表底层目录，写操作不会实际写到这里，读操作优先读取上层目录，读不到的才会读这里（比如视频文件）</li>
+<li>upperdir=～/gdrive-upper：代表上层目录，读写优先对这里操作，会保存nfo、poster等文件</li>
+<li>workdir=～/gdrive-work：临时目录，系统需要的，我们不用管他的作用</li>
+<li>/home/gdrive：合并出的新目录，我们后续只对他进行访问</li>
+</ul>
+<h4 id="后续使用"><a href="#后续使用" class="headerlink" title="后续使用"></a>后续使用</h4><p>既然已经搞定了读写的问题了，那么后续无论是要通过 smb 协议还是 ftp 协议访问都是配置一下的事了，我这里使用的是 docker 启动一个 smb 服务器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">    --name samba \</span><br><span class="line">    -e TZ=Asia/Shanghai \</span><br><span class="line">    --net host \</span><br><span class="line">    -v /home/gdrive:/mount \</span><br><span class="line">    dperson/samba -p \</span><br><span class="line">    -u <span class="string">"xxx;xxx"</span> \</span><br><span class="line">    -s <span class="string">"gdrive;/mount;yes;no"</span> \</span><br><span class="line">    -S</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-v /home/gdrive:/mount：这里填写合并后的目录，改成你自己的</li>
+<li>-u “xxx;xxx”：samba的用户名密码，自己改一个</li>
+</ul>
+<h2 id="TinyMediaManager"><a href="#TinyMediaManager" class="headerlink" title="TinyMediaManager"></a>TinyMediaManager</h2><p>TinyMediaManager 是一个很好用的媒体搜刮器，能很方便的搜挂电影、电视剧的片名、介绍、海报、缩略图等等，并且存储成 kodi、emby 能读取的 nfo 文件。</p>
+<p><img src="/images/WechatIMG4.png" alt="overlayfs 原理"></p>
+<p>我们基本上只会用到左上角的两个按钮。</p>
+<h4 id="更新源"><a href="#更新源" class="headerlink" title="更新源"></a>更新源</h4><p>在设置里首先配置下要搜刮的目录，然后点击左上角的更新源按钮，他就开始自动搜索媒体文件了。</p>
+<h4 id="搜刮"><a href="#搜刮" class="headerlink" title="搜刮"></a>搜刮</h4><p>等搜索结束后，点击筛选，在里面选择新增季或新增电影，能筛选出刚刚新搜刮到的媒体文件，然后全选他们，点击搜索&amp;剐削按钮旁边的下拉菜单，点击自动匹配，它会自动一个一个下载 nfo 和海报文件，最后匹配度低于 75% （在设置里可以调整）的视频，会提示给你来手动进行搜索匹配，速度挺快的，300 部电影十几分钟就搞好了。</p>
+<h2 id="kodi"><a href="#kodi" class="headerlink" title="kodi"></a>kodi</h2><p>我有个特殊的需求是需要在客厅和卧室的不同电视里同步播放进度，kodi 默认是把媒体库存储到本地的 sqlite 里，但也支持存储到远端 mysql。需要写一个advancedsettings.xml配置文件：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">advancedsettings</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">videodatabase</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">type</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">host</span>&gt;</span>192.168.1.123<span class="tag">&lt;/<span class="name">host</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">port</span>&gt;</span>3306<span class="tag">&lt;/<span class="name">port</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">user</span>&gt;</span>kodi<span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">pass</span>&gt;</span>kodi<span class="tag">&lt;/<span class="name">pass</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">videodatabase</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">videolibrary</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">importwatchedstate</span>&gt;</span>true<span class="tag">&lt;/<span class="name">importwatchedstate</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">importresumepoint</span>&gt;</span>true<span class="tag">&lt;/<span class="name">importresumepoint</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">videolibrary</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">advancedsettings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的 ip 地址用户名密码改成你自己的 mysql 地址。</p>
+<p>把这个文件存储到每个电视的 <code>Android/data/org.xbmc.kodi/files/.kodi/userdata/</code> 下面，重启 kodi 后他搜挂到的信息就存储到 mysql 了。</p>
+<p>（访问电视的文件，可以安装一个 ES文件浏览器，然后开启 ftp 访问）</p>
+<p>另外推荐一个很好看的 kodi 皮肤 <code>Arctic: Zephyr - Reloaded</code>，在系统自带的插件库里就能安装，个人感觉比 emby、jellyfin 的 android app 好用/好看多了 😂</p>
+<p><img src="/images/IMG_9431.PNG" alt="kodi 截图"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>当然这个方案也不是完美的，只是比较切合我个人的需求，比如搜刮不能自动进行，需要定期手工打开 TinyMediaManager 进行搜刮。另外对 iOS 移动端支持的不好，appstore 无法直接安装 kodi。</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/rclone/">rclone</a><a href="/tags/OverlayFS/">OverlayFS</a><a href="/tags/kodi/">kodi</a><a href="/tags/多媒体/">多媒体</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+	<section id="comment" class="comment">
+	  <div id="disqus_thread">
+	  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+	  </div>
+	</section>
+
+	<script type="text/javascript">
+	var disqus_shortname = 'lengzzz';
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	(function(){
+	  var dsq = document.createElement('script');
+	  dsq.type = 'text/javascript';
+	  dsq.async = true;
+	  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	}());
+	</script>
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2021 wastecat
+    
+  </p>
+</footer>
+    
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-47471611-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+
+  </div>
+</div>
+</body>
+</html>

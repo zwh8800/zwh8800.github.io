@@ -63,6 +63,69 @@
 
   
     
+    <h3 class="article-title"><a href="/2021/08/17/kodi/"><span>rclone挂载Google群友盘 + OverlayFS + tmm + kodi打造家庭媒体中心</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2021/08/17/kodi/" rel="bookmark">
+        <time class="entry-date published" datetime="2021-08-17T10:54:00.000Z">
+          2021-08-17
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <p>之前我的家庭媒体中心一直是使用本地 nas 存高清片源 + tmm（TinyMediaManager）做媒体搜刮器 + 电视上安装 kodi 做播放器的方案，但是这种方式的缺点是总得自己花时间下载片源。后来白嫖了一段时间别人的 gayufan emby，然鹅现在也用不了了，自己又懒着去签到+考试。索性去tg群里买了个群友盘权限，56元不限时间，可以说是很良心了。现在持续更新的片源有了，于是这周末折腾了下媒体管理中心，踩坑各种不同的方案之后选择了一个网上不太常见但个人感觉很好用的方案，于是记录一下。</p>
+<p><img src="/images/IMG_9433.PNG" alt="kodi 截图"></p>
+        
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/rclone/">rclone</a><a href="/tags/OverlayFS/">OverlayFS</a><a href="/tags/kodi/">kodi</a><a href="/tags/多媒体/">多媒体</a>
+    </span>
+    
+
+    </div>
+
+    
+    <div class="article-meta pull-right">
+      <span>
+        <i class="icon-comments"></i>
+        <span>
+          <a href="/2021/08/17/kodi/#comment">评论</a>
+        </span>
+      </span>
+    </div>
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
     <h3 class="article-title"><a href="/2020/04/29/hello-world/"><span>你好世界</span></a></h3>
     
   
@@ -632,72 +695,6 @@
 
 
 
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2016/07/18/总结golang对于stream的抽象/"><span>总结 golang 对于 stream 的抽象</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2016/07/18/总结golang对于stream的抽象/" rel="bookmark">
-        <time class="entry-date published" datetime="2016-07-18T07:23:09.000Z">
-          2016-07-18
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <p>本文对 golang 标准库中的 stream 进行了一些总结。</p>
-<p><a href="/notename/" title="golang stream"></a></p>
-<h2 id="Interfaces"><a href="#Interfaces" class="headerlink" title="Interfaces"></a>Interfaces</h2><p>在 golang 中，通过几个基本的 interface 对流操作进行了抽象。</p>
-<h3 id="读写"><a href="#读写" class="headerlink" title="读写"></a>读写</h3><p>首先是最基本的Reader、Writer，定义了对于一个流来说最基本的操作：<strong>读、写</strong>。这两个 interface 定义在 <code>io</code> 包里。</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Reader <span class="keyword">interface</span> &#123;</span><br><span class="line">    Read(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Writer <span class="keyword">interface</span> &#123;</span><br><span class="line">    Write(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/标准库/">标准库</a><a href="/tags/golang/">golang</a><a href="/tags/stream/">stream</a><a href="/tags/io/">io</a>
-    </span>
-    
-
-    </div>
-
-    
-    <div class="article-meta pull-right">
-      <span>
-        <i class="icon-comments"></i>
-        <span>
-          <a href="/2016/07/18/总结golang对于stream的抽象/#comment">评论</a>
-        </span>
-      </span>
-    </div>
-    
-  </div>
-</article>
-
-
-
 
 <nav class="pagination">
   
@@ -713,7 +710,7 @@
     Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
     </br>
     
-    &copy; 2020 wastecat
+    &copy; 2021 wastecat
     
   </p>
 </footer>
