@@ -97,7 +97,7 @@ sudo mount -t overlay overlay -o lowerdir=/home/gdrive-lower,upperdir=～/gdrive
 
 > 下面samba 的 docker 有点问题，会进行 chown 修改文件所有者，这会导致文件被写入到upper上层目录，会使服务器硬盘爆炸。我最后使用的 ssh 协议（sftp）来访问，kodi上需要安装下 sftp 插件
 
-~~既然已经搞定了读写的问题了，那么后续无论是要通过 smb 协议还是 ftp 协议访问都是配置一下的事了，我这里使用的是 docker 启动一个 smb 服务器：~~
+既然已经搞定了读写的问题了，那么后续无论是要通过 smb 协议还是 ftp 协议访问都是配置一下的事了，~~我这里使用的是 docker 启动一个 smb 服务器：~~
 
 ```bash
 docker run -d \
@@ -133,7 +133,7 @@ TinyMediaManager 是一个很好用的媒体搜刮器，能很方便的搜挂电
 
 #### docker
 
-每次使用电脑可能会有所不便，其实 tmm 也支持docker:
+每次使用电脑可能会有所不便，毕竟个人电脑不能24小时开机，而服务器可以，其实 tmm 也支持docker:
 
 ```bash
 docker run \
@@ -147,11 +147,13 @@ docker run \
     -p 5900:5900 \
     romancin/tinymediamanager:latest
 ```
-启动后就可以通过浏览器打开 http://192.168.1.123:5800/ 访问 tmm 了。事实上 docker 内部启动了个 xorg 桌面服务，然后通过 http 来访问 vnc，还是稍微有点卡顿的。
+启动后就可以通过浏览器打开 http://192.168.1.123:5800/ 访问 tmm 了，这样开启搜刮任务后个人电脑就可以关机了，等有时间了再用浏览器看结果。事实上 docker 内部启动了个 xorg 桌面服务，然后通过 http 来访问 vnc，还是稍微有点卡顿的。
 
 ## kodi
 
-我有个特殊的需求是需要在客厅和卧室的不同电视里同步播放进度，kodi 默认是把媒体库存储到本地的 sqlite 里，但也支持存储到远端 mysql。需要写一个advancedsettings.xml配置文件：
+我有个特殊的需求是需要在客厅和卧室的不同电视里同步播放进度，kodi 默认是把媒体库存储到本地的 sqlite 里，但也支持存储到远端 mysql。mysql 服务器可以用docker启动，也可以用群晖 nas 里的 MariaDB 软件包。如果安装教程较多，不再赘述。
+
+针对 kodi 需要写一个 advancedsettings.xml 配置文件：
 
 ```xml
 <advancedsettings>
