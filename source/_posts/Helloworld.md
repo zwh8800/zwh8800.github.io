@@ -79,4 +79,3 @@ docker restart blog
 
 另外，最近换上了http2和let's encrypt的https证书。一个字，爽。
 基本参照一位[大神的博客](https://imququ.com/)搞得。另外这个博客里干货很多，值得一看。
-
