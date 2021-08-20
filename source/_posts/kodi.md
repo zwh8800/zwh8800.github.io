@@ -151,6 +151,7 @@ docker run \
     --env ENABLE_CJK_FONT=1 \
     --env USER_ID=0 \
     --env GROUP_ID=0 \
+    --env TZ=Asia/Shanghai \
     -v /home/gdrive:/media \
     -p 5800:5800 \
     -p 5900:5900 \
