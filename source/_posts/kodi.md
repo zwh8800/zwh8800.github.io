@@ -148,12 +148,18 @@ docker run \
     --add-host=image.tmdb.org:104.16.61.155 \
     --add-host=api.themoviedb.org:13.35.67.86 \
     --add-host=www.themoviedb.org:54.192.151.79 \
+    --env ENABLE_CJK_FONT=1 \
+    --env USER_ID=0 \
+    --env GROUP_ID=0 \
     -v /home/gdrive:/media \
     -p 5800:5800 \
     -p 5900:5900 \
     romancin/tinymediamanager:latest
 ```
-启动后就可以通过浏览器打开 http://192.168.1.123:5800/ 访问 tmm 了，这样开启搜刮任务后个人电脑就可以关机了，等有时间了再用浏览器看结果。事实上 docker 内部启动了个 xorg 桌面服务，然后通过 http 来访问 vnc，还是稍微有点卡顿的。
+
+启动后进入到容器里，`vi /etc/cont-init.d/10-cjk-font.sh` 编辑这个文件，把 http://dl-cdn.alpinelinux.org 替换为 http://mirrors.tuna.tsinghua.edu.cn/ 这样下载中文字体会快很多。然后重启容器。（如果你服务器在墙外，则不需要这一步，上面命令里的 `--add-host` 也可以删去）
+
+启动后就可以通过浏览器打开 http://[容器ip]:5800/ 访问 tmm 了，这样开启搜刮任务后个人电脑就可以关机了，等有时间了再用浏览器看结果。事实上 docker 内部启动了个 xorg 桌面服务，然后通过 http 来访问 vnc，还是稍微有点卡顿的。
 
 ## kodi
 
