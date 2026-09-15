@@ -30,3 +30,6 @@ disqus_shortname: lengzzz
 
 # google analytics
 googleTrackId: UA-47471611-1
+
+# ICP备案号（显示在页脚，留空则不显示）
+icp: 京ICP备2026061186号-1
