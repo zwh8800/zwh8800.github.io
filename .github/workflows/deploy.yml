@@ -1,0 +1,41 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - build
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generate static files
+        run: |
+          ln -f theme.config.yml themes/Hacker/_config.yml
+          npx hexo generate
+
+      - name: Deploy to server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SSH_HOST_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          TARGET_DIR: ${{ secrets.TARGET_DIR }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo "$SSH_HOST_KEY" > ~/.ssh/known_hosts
+          rsync -avz --delete \
+            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=yes" \
+            public/ "$SSH_USER@$SSH_HOST:$TARGET_DIR/"
