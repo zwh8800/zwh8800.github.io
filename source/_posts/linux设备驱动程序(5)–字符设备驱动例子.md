@@ -5,6 +5,7 @@ updated: "2014-03-03 00:00:00"
 tags:
 -  linux
 -  驱动开发
+index_img: "/images/86e4c5cbc6dbb08baa8ba93e91a4fccd.png"
 ---
 
 

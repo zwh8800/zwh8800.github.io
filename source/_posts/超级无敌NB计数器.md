@@ -4,6 +4,7 @@ date: "2013-12-14 00:00:00"
 updated: "2013-12-14 00:00:00"
 tags:
 -  闲扯
+index_img: "/images/7d278f59dbd4aeba7a7080aa2add7d5a.png"
 ---
 
 

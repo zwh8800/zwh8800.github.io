@@ -4,6 +4,7 @@ date: "2014-06-30 00:00:00"
 updated: "2014-06-30 00:00:00"
 tags:
 -  服务器
+index_img: "/images/dc6301a96e391057fb0cfb8bcd3fc74a.png"
 ---
 
 

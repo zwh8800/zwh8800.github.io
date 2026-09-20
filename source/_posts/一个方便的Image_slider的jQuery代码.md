@@ -6,6 +6,7 @@ tags:
 -  JS
 -  jquery
 -  前端
+index_img: "images/sliser_bg_img_1.jpg"
 ---
 
 

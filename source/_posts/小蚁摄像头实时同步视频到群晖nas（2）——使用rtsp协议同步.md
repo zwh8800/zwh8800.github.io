@@ -6,6 +6,7 @@ tags:
 -  linux
 -  嵌入式
 -  折腾
+index_img: "/images/0bb29b8abd72e650e5ab013749e6a4c8.png"
 ---
 
 

@@ -6,6 +6,7 @@ tags:
 -  系统编程
 -  arm-linux
 -  汇编
+index_img: "/images/28991ebc5db7944a343f3ed4838bf94b.png"
 ---
 
 

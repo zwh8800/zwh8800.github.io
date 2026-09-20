@@ -5,6 +5,7 @@ updated: "2016-05-10 03:08:18"
 tags:
 -  terminal
 -  mac技巧
+index_img: "/images/153964c26e8bc6368ba06f0efc732702.png"
 ---
 
 

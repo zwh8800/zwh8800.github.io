@@ -4,6 +4,7 @@ date: "2014-03-06 00:00:00"
 updated: "2014-03-06 00:00:00"
 tags:
 -  unix
+index_img: "/images/9ab2dc1212bb2c282e4038f5a45e0056.png"
 ---
 
 

@@ -5,6 +5,7 @@ updated: "2014-01-12 00:00:00"
 tags:
 -  unix
 -  系统编程
+index_img: "/images/810da11ecabcedf3261250743fae6981.png"
 ---
 
 

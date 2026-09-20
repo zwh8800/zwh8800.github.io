@@ -5,6 +5,7 @@ updated: "2014-01-08 00:00:00"
 tags:
 -  windows
 -  操作
+index_img: "/images/b96610542193d9d157bcb3feee0a57f1.png"
 ---
 
 

@@ -5,6 +5,7 @@ updated: "2016-05-25 08:07:30"
 tags:
 -  闲扯
 -  golang
+index_img: "/images/1f5556f01de37fc838e02d1c4d7a6682.png"
 ---
 
 

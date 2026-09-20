@@ -7,6 +7,7 @@ tags:
 -  docker
 -  迅雷
 -  远程下载
+index_img: "/images/dbc5bdf519aa5b3f0d811bddaf2c7794.png"
 ---
 
 
