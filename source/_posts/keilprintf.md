@@ -6,7 +6,7 @@ tags:
 -  c51
 -  keil
 -  单片机
-index_img: "/images/8e130967f7e72f831364c1bce484a21f.png"
+index_img: "/images/thumbs/8e130967f7e72f831364c1bce484a21f.webp"
 ---
 
 

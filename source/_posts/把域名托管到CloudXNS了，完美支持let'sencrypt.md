@@ -6,7 +6,7 @@ tags:
 -  闲扯
 -  DNS
 -  CloudXNS
-index_img: "/images/f9e146686ecd27ddbd7424e8c6a6169b.png"
+index_img: "/images/thumbs/f9e146686ecd27ddbd7424e8c6a6169b.webp"
 ---
 
 

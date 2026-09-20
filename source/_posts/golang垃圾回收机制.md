@@ -6,7 +6,7 @@ tags:
 -  golang
 -  GC
 -  垃圾回收
-index_img: "/images/d86a2fc011c99baadcde3c12b046b2ef.gif"
+index_img: "/images/thumbs/d86a2fc011c99baadcde3c12b046b2ef.webp"
 ---
 
 

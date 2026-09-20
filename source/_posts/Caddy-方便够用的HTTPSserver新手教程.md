@@ -6,7 +6,7 @@ tags:
 -  caddy
 -  http
 -  运维
-index_img: "/images/f3ac2345c6df862838743d2dd0c02830.png"
+index_img: "/images/thumbs/f3ac2345c6df862838743d2dd0c02830.webp"
 ---
 
 

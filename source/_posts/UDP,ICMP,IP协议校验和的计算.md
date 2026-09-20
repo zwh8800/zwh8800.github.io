@@ -4,7 +4,7 @@ date: "2014-04-15 00:00:00"
 updated: "2014-04-15 00:00:00"
 tags:
 -  网络协议
-index_img: "/images/5d32396325fc40f864812808283a7581.png"
+index_img: "/images/thumbs/5d32396325fc40f864812808283a7581.webp"
 ---
 
 

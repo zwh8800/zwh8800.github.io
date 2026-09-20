@@ -5,7 +5,7 @@ updated: "2016-04-23 12:17:14"
 tags:
 -  bash
 -  mac技巧
-index_img: "/images/6edcb8ffc969d2e387e32c5aba2302a0.png"
+index_img: "/images/thumbs/6edcb8ffc969d2e387e32c5aba2302a0.webp"
 ---
 
 

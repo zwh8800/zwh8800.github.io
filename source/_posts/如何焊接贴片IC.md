@@ -5,7 +5,7 @@ updated: "2014-01-04 00:00:00"
 tags:
 -  DIY
 -  单片机
-index_img: "/images/23713de8e412ff76b6f92fd2da03179c.png"
+index_img: "/images/thumbs/23713de8e412ff76b6f92fd2da03179c.webp"
 ---
 
 

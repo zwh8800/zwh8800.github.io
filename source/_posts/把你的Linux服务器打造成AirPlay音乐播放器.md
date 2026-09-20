@@ -6,7 +6,7 @@ tags:
 -  AirPlay
 -  
 -  linux
-index_img: "/images/1ee3cfdd2eb20f717381a3c95775dec8.PNG"
+index_img: "/images/thumbs/1ee3cfdd2eb20f717381a3c95775dec8.webp"
 ---
 
 

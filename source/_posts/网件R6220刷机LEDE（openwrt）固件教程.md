@@ -7,7 +7,7 @@ tags:
 -  路由器
 -  openwrt
 -  lede
-index_img: "/images/1a797a80091c5a2290a090407be0801f.png"
+index_img: "/images/thumbs/1a797a80091c5a2290a090407be0801f.webp"
 ---
 
 

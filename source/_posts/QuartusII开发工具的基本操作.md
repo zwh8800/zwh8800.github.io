@@ -5,7 +5,7 @@ updated: "2014-01-05 00:00:00"
 tags:
 -  FPGA
 -  Quartus
-index_img: "/images/7eaf49a4ca86aed1594b17f2e50c99e9.png"
+index_img: "/images/thumbs/7eaf49a4ca86aed1594b17f2e50c99e9.webp"
 ---
 
 

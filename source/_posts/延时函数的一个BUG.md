@@ -5,7 +5,7 @@ updated: "2013-12-18 00:00:00"
 tags:
 -  BUG
 -  错题本
-index_img: "/images/132ae9b227d5c8db1ebcfed996305a03.png"
+index_img: "/images/thumbs/132ae9b227d5c8db1ebcfed996305a03.webp"
 ---
 
 

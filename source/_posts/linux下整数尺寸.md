@@ -6,7 +6,7 @@ tags:
 -  系统编程
 -  linux
 -  体系架构
-index_img: "/images/c078e202803909b2cf459f62c0d5485c.png"
+index_img: "/images/thumbs/c078e202803909b2cf459f62c0d5485c.webp"
 ---
 
 

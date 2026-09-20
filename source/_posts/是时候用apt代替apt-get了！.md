@@ -6,7 +6,7 @@ tags:
 -  linux
 -  ubuntu
 -  运维
-index_img: "/images/78febf75a690a0a0b38c17a8c046defe.png"
+index_img: "/images/thumbs/78febf75a690a0a0b38c17a8c046defe.webp"
 ---
 
 

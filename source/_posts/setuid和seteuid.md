@@ -6,7 +6,7 @@ tags:
 -  系统编程
 -  linux
 -  unix
-index_img: "/images/51be3d1bb94f696d1331e6a9654b0ff5.png"
+index_img: "/images/thumbs/51be3d1bb94f696d1331e6a9654b0ff5.webp"
 ---
 
 

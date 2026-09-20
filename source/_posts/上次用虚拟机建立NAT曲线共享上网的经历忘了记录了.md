@@ -6,7 +6,7 @@ tags:
 -  Linux
 -  运维
 -  NAT
-index_img: "/images/2e95c9356c5ac4439a50150f7767c123.png"
+index_img: "/images/thumbs/2e95c9356c5ac4439a50150f7767c123.webp"
 ---
 
 

@@ -5,7 +5,7 @@ updated: "2013-11-25 00:00:00"
 tags:
 -  闲扯
 -  astyle
-index_img: "/images/11815fc5b0dc6015897dd833142053ba.png"
+index_img: "/images/thumbs/11815fc5b0dc6015897dd833142053ba.webp"
 ---
 
 

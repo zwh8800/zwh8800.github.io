@@ -4,7 +4,7 @@ date: "2014-04-27 00:00:00"
 updated: "2014-04-27 00:00:00"
 tags:
 -  win7
-index_img: "/images/faeaea83640c5bc3aa293c1d3ef9b0ea.png"
+index_img: "/images/thumbs/faeaea83640c5bc3aa293c1d3ef9b0ea.webp"
 ---
 
 

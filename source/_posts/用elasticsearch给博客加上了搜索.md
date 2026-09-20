@@ -6,7 +6,7 @@ tags:
 -  elasticsearch
 -  golang
 -  搜索引擎
-index_img: "/images/e1cb8a757d384d5cc83ac6945bdeef0e.jpg"
+index_img: "/images/thumbs/e1cb8a757d384d5cc83ac6945bdeef0e.webp"
 ---
 
 

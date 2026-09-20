@@ -6,7 +6,7 @@ tags:
 -  网络编程
 -  unix
 -  Linux
-index_img: "/images/e6fba0113ebbc5f6315342287ba3a627.png"
+index_img: "/images/thumbs/e6fba0113ebbc5f6315342287ba3a627.webp"
 ---
 
 

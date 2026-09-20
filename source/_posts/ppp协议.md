@@ -5,7 +5,7 @@ updated: "2014-01-01 00:00:00"
 tags:
 -  网络协议
 -  ppp协议
-index_img: "/images/3dc070a6f0c827a9ed80b5c778dab22c.png"
+index_img: "/images/thumbs/3dc070a6f0c827a9ed80b5c778dab22c.webp"
 ---
 
 
