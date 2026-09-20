@@ -34,6 +34,6 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           echo "$SSH_HOST_KEY" > ~/.ssh/known_hosts
-          rsync -avz --delete --timeout=120 --info=progress2,stats2 \
-            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -o IPQoS=throughput" \
+          rsync -avz --delete \
+            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=yes" \
             public/ "$SSH_USER@$SSH_HOST:$TARGET_DIR/"
