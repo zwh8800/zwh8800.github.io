@@ -10,7 +10,7 @@ tags:
 ---
 
 
-相信程序员们工作中必不可少的就是一个趁手的代理。但是 Mac 客户端只提供了系统代理（供 app 调用的）和一个裸的 socks5 代理。都不方便在命令行工具中使用。下面介绍一种方法可以方便的在命令行中使用代理的方法。
+在命令行下跑 `npm`、`go get` 这类命令时，偶尔会需要走代理来访问网络资源。但是 Mac 上的代理客户端一般只提供了系统代理（供 app 调用的）和一个裸的 socks5 代理，都不方便在命令行工具中使用。下面介绍一种可以方便地在命令行中使用代理的方法。
 
 [](/notename/ "using proxy in osx terminal")
 
@@ -48,9 +48,9 @@ alias proxy='env http_proxy=http://localhost:8123 https_proxy=http://localhost:8
 只需要每次在需要使用 proxy 的命令前面加上 `proxy` 就可以使用代理了。例如：
 
 ```bash 
-proxy curl https://google.com/
+proxy curl https://github.com/
 ```
 
-可以看见 curl 打印了 Google 首页出来
+可以看见 curl 打印了 GitHub 首页出来
 
 [^proxysetting]: 具体参考[这里](https://wiki.archlinux.org/index.php/proxy_settings)

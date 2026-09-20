@@ -86,7 +86,6 @@ pull好之后可以执行一下
 ```bash
 zzz@ubuntu-server ~ $ docker images
 REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE
-zwh8800/xware          latest              9426e8b48edc        4 days ago          176.8 MB
 gogs/gogs              latest              40ce39eb7c4b        9 days ago          81.17 MB
 zwh8800/starbucks      latest              15fbd0099e0c        12 days ago         17.22 MB
 zwh8800/douyu-notify   latest              48ee382f41b8        2 weeks ago         12.01 MB
@@ -148,7 +147,7 @@ docker commit -m "Release md-blog-gen image" -a "zwh8800" 15b042d970c9 zwh8800/m
 先看看md-blog-gen的Dockerfile
 ```Dockerfile
 FROM alpine:3.3
-MAINTAINER zwh8800 <496781108@qq.com>
+MAINTAINER zwh8800
 
 WORKDIR /app
 
@@ -182,7 +181,7 @@ CMD ["./md-blog-gen", "-log_dir", "log", "-config", "config/md-blog-gen.gcfg"]
 ```bash
 Step 1 : FROM alpine:3.3
 d7a513a663c1
-Step 2 : MAINTAINER zwh8800 <496781108@qq.com>
+Step 2 : MAINTAINER zwh8800
 Using cache
 dcf2dbbf66e2
 Step 3 : WORKDIR /app

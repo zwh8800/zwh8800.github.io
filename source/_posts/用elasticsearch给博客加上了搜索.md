@@ -50,7 +50,7 @@ PUT http://localhost:9200/mdblog/note/23432
     "id": 23,
     "notename": "golang-china-download-mirror",
     "title": "做了个 golang 安装包的镜像",
-    "content": "做了个 golang 安装包的镜像 闲扯 golang\n        \n        2016-05-25 16:04 PM\n    鉴于国情，国内下载 golang 安装包还是挺蛋疼的，就算使用代理速度也比较感人。虽然现在 docker 镜像是个比较好的选择，但还是有很多场景需要原始的 golang 环境的。所以抽空做了个 mirror ，定时拉取 golang 官网的安装包到我的服务器上。地址在这里：https://lengzzz.com/download/golang/包含了 golang 1.5 之后的所有版本，所有平台的安装包和源码包都放在里面，自行 control + f 搜一下吧。新版本的 golang release 之后，应该在一两天内可以拉取过来。欢迎使用。",
+    "content": "做了个 golang 安装包的镜像 闲扯 golang\n        \n        2016-05-25 16:04 PM\n    国内下载 golang 安装包还是挺蛋疼的。虽然现在 docker 镜像是个比较好的选择，但还是有很多场景需要原始的 golang 环境的。所以抽空做了个 mirror ，定时拉取 golang 官网的安装包到我的服务器上。包含了 golang 1.5 之后的所有版本，所有平台的安装包和源码包都放在里面，自行 control + f 搜一下吧。新版本的 golang release 之后，应该在一两天内可以拉取过来。",
     "timestamp": "2016-05-25T08:04:53Z",
     "lastModified": "2016-05-25T09:01:42.923822162Z",
     "tagList": [
@@ -95,7 +95,7 @@ GET http://localhost:9200/mdblog/note/23432
     "id": 23,
     "notename": "golang-china-download-mirror",
     "title": "做了个 golang 安装包的镜像",
-    "content": "做了个 golang 安装包的镜像 闲扯 golang\n        \n        2016-05-25 16:04 PM\n    鉴于国情，国内下载 golang 安装包还是挺蛋疼的，就算使用代理速度也比较感人。虽然现在 docker 镜像是个比较好的选择，但还是有很多场景需要原始的 golang 环境的。所以抽空做了个 mirror ，定时拉取 golang 官网的安装包到我的服务器上。地址在这里：https://lengzzz.com/download/golang/包含了 golang 1.5 之后的所有版本，所有平台的安装包和源码包都放在里面，自行 control + f 搜一下吧。新版本的 golang release 之后，应该在一两天内可以拉取过来。欢迎使用。",
+    "content": "做了个 golang 安装包的镜像 闲扯 golang\n        \n        2016-05-25 16:04 PM\n    国内下载 golang 安装包还是挺蛋疼的。虽然现在 docker 镜像是个比较好的选择，但还是有很多场景需要原始的 golang 环境的。所以抽空做了个 mirror ，定时拉取 golang 官网的安装包到我的服务器上。包含了 golang 1.5 之后的所有版本，所有平台的安装包和源码包都放在里面，自行 control + f 搜一下吧。新版本的 golang release 之后，应该在一两天内可以拉取过来。",
     "timestamp": "2016-05-25T08:04:53Z",
     "lastModified": "2016-05-25T09:01:42.923822162Z",
     "tagList": [

@@ -13,7 +13,7 @@ index_img: "/images/thumbs/f1c9058ce384de181b36051a4ccd708e.webp"
 
 [](/notename/ "archive 20140322")
 
-先安装 jlink 的工具包. 在官网下载需要输序列号, 鉴于国内大多使用盗版. 在本站放一个镜像供大家下载: https://lengzzz.com/download/Setup_JLinkARM_V480.zip
+先安装 jlink 的工具包, 从官网下载安装包即可.
 
 下载后安装
 

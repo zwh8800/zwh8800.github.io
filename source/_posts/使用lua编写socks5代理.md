@@ -18,9 +18,9 @@ tags:
 
 ## socks5 协议介绍
 
-socks5 协议可能是中国网友见得最多的协议了。很多著名的工具 都就会在本机的 1080 端口开启一个 socks5 proxy 服务，供浏览器来调用。我们今天就来聊一聊 socks5 协议。
+socks5 协议是最常见的代理协议之一。很多软件都会在本机的 1080 端口开启一个 socks5 proxy 服务，供浏览器来调用。我们今天就来聊一聊 socks5 协议。
 
-socks5 协议不只是在中国流行，它其实是最常见的代理协议之一，几乎所有浏览器都会原生支持 socks5 协议，而在 <i class="icon-apple"></i> Mac 上则是系统级别的支持，所以可见其流行程度仅次于 http 代理。由于 socks5 是工作在 tcp 层的协议，所以它又比 http 代理灵活很多。比如 http 代理只能用来看网页。但是使用 socks5 协议还可以上外网打游戏，也可以使用代理登陆 QQ 。但是 socks5 也有自己的短板，比如对 udp 支持的不好（socks5 把域名 resolve 的事都做了，就为了避免 client 调用 udp ）
+几乎所有浏览器都会原生支持 socks5 协议，而在 <i class="icon-apple"></i> Mac 上则是系统级别的支持，所以可见其流行程度仅次于 http 代理。由于 socks5 是工作在 tcp 层的协议，所以它又比 http 代理灵活很多。比如 http 代理只能用来看网页，而 socks5 可以代理任意的 tcp 流量，游戏、QQ 这类客户端软件也可以走 socks5 代理。但是 socks5 也有自己的短板，比如对 udp 支持的不好（socks5 把域名 resolve 的事都做了，就为了避免 client 调用 udp ）
 
 ## socks5 协议详解
 
