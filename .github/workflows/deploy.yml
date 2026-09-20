@@ -13,15 +13,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 22
           cache: npm
 
       - run: npm ci
 
       - name: Generate static files
-        run: |
-          ln -f theme.config.yml themes/Hacker/_config.yml
-          npx hexo generate
+        run: npx hexo generate
 
       - name: Deploy to server
         env:
